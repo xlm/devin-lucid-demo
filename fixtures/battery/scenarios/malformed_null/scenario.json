@@ -1,0 +1,14 @@
+{
+  "name": "malformed_null",
+  "description": "Malformed JSON, non-object JSON, missing/null/invalid fields, out-of-range measurements, cell_voltage_max_v below cell_voltage_min_v, NaN, an empty line, a VIN-like vehicle_id, an impossible date, an unsupported major version and a real-looking location are routed to the error path. A valid SYN-* location and an unknown additive field are accepted but never propagated; the valid readings still produce a summary.",
+  "covers": [
+    "malformed",
+    "null measurements",
+    "error path",
+    "identifier echo rules",
+    "restricted field not propagated"
+  ],
+  "run": {
+    "mode": "single"
+  }
+}

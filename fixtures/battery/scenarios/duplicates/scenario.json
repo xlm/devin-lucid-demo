@@ -1,0 +1,12 @@
+{
+  "name": "duplicates",
+  "description": "Exact duplicates, a same-event_id duplicate with a different payload (first wins), event_id reuse on another pack and on another day of the same pack (both accepted: dedupe is scoped to the daily key), and a duplicate after the day closed (silently dropped, not DROPPED_LATE).",
+  "covers": [
+    "duplicates",
+    "dedupe keeps first",
+    "dedupe is scoped to the daily key"
+  ],
+  "run": {
+    "mode": "single"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "day_boundary",
+  "description": "Readings either side of UTC midnight split into two daily keys. 23:59:59.999 belongs to the first day and 00:00:00.000 to the second. The first day closes mid-stream exactly when the watermark reaches its day end, and a later reading for it is DROPPED_LATE.",
+  "covers": [
+    "day boundary",
+    "day closes at watermark == day end",
+    "late after close"
+  ],
+  "run": {
+    "mode": "single"
+  }
+}
