@@ -72,6 +72,15 @@ def _read_jsonl(path: Path) -> tuple[list[tuple[int, object]], int, list[dict]]:
     return records, len(lines), errors
 
 
+def _missing_candidate_outputs(candidate_dir: Path) -> list[str]:
+    """Both candidate JSONL outputs must exist, even when either is empty."""
+    return [
+        filename
+        for filename in ("summaries.jsonl", "errors.jsonl")
+        if not (candidate_dir / filename).is_file()
+    ]
+
+
 def _schema_errors(
     records: list[tuple[int, object]],
     schema: dict,
@@ -335,6 +344,44 @@ def _run_scenario(ctx: RunContext, scenario: str) -> list[dict]:
                     name,
                     "skip",
                     "candidate output missing",
+                    scenario,
+                    ctx,
+                    baseline_source,
+                    baseline_dir,
+                    candidate_dir,
+                    {},
+                )
+                for name in (
+                    "json_schema",
+                    "required_fields",
+                    "field_semantics",
+                    "per_key_ordering",
+                    "replay_idempotence",
+                    "no_extra_outputs",
+                    "consumer_state",
+                )
+            ],
+        ]
+
+    missing_outputs = _missing_candidate_outputs(candidate_dir)
+    if missing_outputs:
+        return [
+            _make_check(
+                "candidate_output_files",
+                "fail",
+                "Candidate output is missing required files.",
+                scenario,
+                ctx,
+                baseline_source,
+                baseline_dir,
+                candidate_dir,
+                {"missing_files": missing_outputs},
+            ),
+            *[
+                _make_check(
+                    name,
+                    "skip",
+                    "required candidate output files missing",
                     scenario,
                     ctx,
                     baseline_source,

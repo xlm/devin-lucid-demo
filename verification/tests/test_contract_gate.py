@@ -261,10 +261,11 @@ def test_legacy_baseline_is_selected_when_present_and_expected_is_fallback(tmp_p
     prepare_candidate(ctx, [scenario])
     legacy_dir = ctx.output_dir("legacy", scenario)
     legacy_dir.mkdir(parents=True)
-    shutil.copyfile(
-        ctx.expected_dir(scenario) / "summaries.jsonl",
-        legacy_dir / "summaries.jsonl",
-    )
+    for filename in ("summaries.jsonl", "errors.jsonl"):
+        expected_path = ctx.expected_dir(scenario) / filename
+        assert expected_path.is_file()
+        shutil.copyfile(expected_path, legacy_dir / filename)
+        assert (legacy_dir / filename).is_file()
     legacy_records = read_records(legacy_dir / "summaries.jsonl")
     legacy_records[0]["total_energy_kwh"] = 999.0
     write_records(legacy_dir / "summaries.jsonl", legacy_records)
@@ -278,6 +279,10 @@ def test_legacy_baseline_is_selected_when_present_and_expected_is_fallback(tmp_p
     prepare_candidate(fallback_ctx, [scenario])
     fallback = checks_by_id(run_gate(fallback_ctx), scenario)
     assert fallback["contract.field_semantics"]["evidence"]["baseline_source"] == "expected"
+    assert all(
+        (fallback_ctx.expected_dir(scenario) / filename).is_file()
+        for filename in ("summaries.jsonl", "errors.jsonl")
+    )
 
 
 def test_missing_candidate_output_fails_and_skips_other_checks(tmp_path):
@@ -301,6 +306,49 @@ def test_missing_candidate_output_fails_and_skips_other_checks(tmp_path):
             "consumer_state",
         )
     )
+
+
+@pytest.mark.parametrize("filename", ("summaries.jsonl", "errors.jsonl"))
+def test_missing_candidate_required_file_fails(tmp_path, filename):
+    scenario = "normal_session"
+    ctx = make_context(tmp_path, [scenario])
+    prepare_candidate(ctx, [scenario])
+    (ctx.output_dir("candidate", scenario) / filename).unlink()
+
+    result = run_gate(ctx)
+    checks = checks_by_id(result, scenario)
+
+    assert result["status"] == "fail"
+    assert checks["contract.candidate_output_files"]["status"] == "fail"
+    assert checks["contract.candidate_output_files"]["evidence"]["missing_files"] == [
+        filename
+    ]
+    assert checks["contract.json_schema"]["status"] == "skip"
+
+
+def test_candidate_output_directory_does_not_satisfy_required_file(tmp_path):
+    scenario = "normal_session"
+    ctx = make_context(tmp_path, [scenario])
+    prepare_candidate(ctx, [scenario])
+    errors_path = ctx.output_dir("candidate", scenario) / "errors.jsonl"
+    errors_path.unlink()
+    errors_path.mkdir()
+
+    check = checks_by_id(run_gate(ctx), scenario)["contract.candidate_output_files"]
+
+    assert check["status"] == "fail"
+    assert check["evidence"]["missing_files"] == ["errors.jsonl"]
+
+
+def test_present_empty_errors_file_is_valid(tmp_path):
+    scenario = "normal_session"
+    ctx = make_context(tmp_path, [scenario])
+    prepare_candidate(ctx, [scenario])
+    errors_path = ctx.output_dir("candidate", scenario) / "errors.jsonl"
+
+    assert errors_path.is_file()
+    assert errors_path.read_text() == ""
+    assert run_gate(ctx)["status"] == "pass"
 
 
 def test_unparsable_candidate_line_fails_schema_without_crashing(tmp_path):
