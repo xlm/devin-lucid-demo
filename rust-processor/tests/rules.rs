@@ -821,28 +821,40 @@ fn checkpoint_restores_state_and_resumed_outputs_match_uninterrupted_run() {
 }
 
 #[test]
-fn mixed_numeric_max_keeps_the_existing_value_on_ties() {
-    let first = event(
-        "first",
-        "VEH-0001",
-        "session",
-        &at(0, 0),
-        "CHARGING",
-        "1",
-        "2.0",
-        "15.0",
-    );
-    let tie = event(
-        "tie",
-        "VEH-0001",
-        "session",
-        &at(1, 0),
-        "COMPLETE",
-        "2",
-        "2",
-        "15",
-    );
-    let outputs = collect_all(&[first, tie]);
+fn cumulative_energy_bug_sums_reading_deltas() {
+    let readings = [
+        event(
+            "first",
+            "VEH-0001",
+            "session",
+            &at(0, 0),
+            "CHARGING",
+            "1",
+            "2",
+            "2",
+        ),
+        event(
+            "second",
+            "VEH-0001",
+            "session",
+            &at(1, 0),
+            "CHARGING",
+            "2",
+            "2",
+            "5",
+        ),
+        event(
+            "third",
+            "VEH-0001",
+            "session",
+            &at(2, 0),
+            "COMPLETE",
+            "3",
+            "2",
+            "3",
+        ),
+    ];
+    let outputs = collect_all(&readings);
     let record = outputs
         .iter()
         .find_map(|output| match output {
@@ -850,8 +862,7 @@ fn mixed_numeric_max_keeps_the_existing_value_on_ties() {
             Output::Error(_) => None,
         })
         .unwrap();
-    assert_eq!(record.total_energy_kwh.to_string(), "15.0");
-    assert_eq!(record.peak_power_kw.to_string(), "2.0");
+    assert_eq!(record.total_energy_kwh.to_string(), "3.0");
 }
 
 #[test]

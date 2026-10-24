@@ -17,6 +17,7 @@ pub struct Session {
     pub last_ts: i64,
     pub max_sequence_number: u64,
     pub max_energy: Number,
+    pub previous_energy: Number,
     pub peak_power: Number,
     pub event_count: u64,
     pub complete: bool,

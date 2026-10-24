@@ -178,9 +178,21 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
         session.start_ts = session.start_ts.min(event.ts_ms);
         session.last_ts = session.last_ts.max(event.ts_ms);
         session.max_sequence_number = session.max_sequence_number.max(event.sequence_number);
-        if cmp_numbers(&event.energy_delivered_kwh, &session.max_energy) == Ordering::Greater {
-            session.max_energy = event.energy_delivered_kwh.clone();
-        }
+        let previous_energy = session
+            .previous_energy
+            .as_f64()
+            .expect("validated finite energy");
+        let current_energy = event
+            .energy_delivered_kwh
+            .as_f64()
+            .expect("validated finite energy");
+        let total_energy = session
+            .max_energy
+            .as_f64()
+            .expect("validated finite energy")
+            + (current_energy - previous_energy);
+        session.max_energy = Number::from_f64(total_energy).expect("validated finite energy delta");
+        session.previous_energy = event.energy_delivered_kwh.clone();
         if cmp_numbers(&event.charging_power_kw, &session.peak_power) == Ordering::Greater {
             session.peak_power = event.charging_power_kw.clone();
         }
@@ -196,6 +208,7 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
             last_ts: event.ts_ms,
             max_sequence_number: event.sequence_number,
             max_energy: event.energy_delivered_kwh.clone(),
+            previous_energy: event.energy_delivered_kwh.clone(),
             peak_power: event.charging_power_kw.clone(),
             event_count: 1,
             complete: event.charging_state == "COMPLETE",
