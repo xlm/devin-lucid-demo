@@ -65,11 +65,13 @@ def main(argv: list[str] | None = None) -> int:
         "reasons": ledger.reasons,
     }
     try:
+        state_text = json.dumps(state, sort_keys=True, indent=2, allow_nan=False) + "\n"
+        rejects_text = json.dumps(rejects, sort_keys=True, indent=2, allow_nan=False) + "\n"
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(json.dumps(state, sort_keys=True, indent=2) + "\n")
+        output_path.write_text(state_text)
         rejects_path.parent.mkdir(parents=True, exist_ok=True)
-        rejects_path.write_text(json.dumps(rejects, sort_keys=True, indent=2) + "\n")
-    except OSError as exc:
+        rejects_path.write_text(rejects_text)
+    except (OSError, ValueError) as exc:
         print(f"cannot write output files: {exc}", file=sys.stderr)
         return 1
 
