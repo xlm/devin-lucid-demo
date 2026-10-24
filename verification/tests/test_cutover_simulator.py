@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 import io
 import json
 import sys
@@ -435,10 +437,15 @@ def test_simulate_after_approval_runs_cutover_and_rollback(tmp_path):
     }
 
 
-def test_consume_reports_missing_consumer_package(tmp_path, capsys):
+def test_consume_reports_missing_consumer_package(tmp_path, capsys, monkeypatch):
+    from verification.cutover import commands
+
     ctx = make_context(tmp_path)
     state_dir = tmp_path / "state"
     initialize_state(state_dir)
+    env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
+    env["PYTHONPATH"] = str(tmp_path / "empty")
+    monkeypatch.setattr(commands, "_consumer_env", lambda _ctx: env)
 
     assert main(ctx, ["consume", "--state-dir", str(state_dir)]) == 3
     assert "consumer-warranty not available at this revision" in capsys.readouterr().err
