@@ -110,12 +110,25 @@ fn parse_replay_options(args: &[String]) -> Result<ReplayOptions, ()> {
 }
 
 fn run_serve() -> ExitCode {
-    eprintln!(
-        "charging-processor was built without Kafka support (rebuild with --features kafka)"
-    );
-    ExitCode::from(2)
+    #[cfg(feature = "kafka")]
+    {
+        match charging_processor::kafka::serve(charging_processor::config::ServiceConfig::from_env())
+        {
+            Ok(()) => ExitCode::SUCCESS,
+            Err(error) => {
+                eprintln!("fatal: {error}");
+                ExitCode::from(1)
+            }
+        }
+    }
+    #[cfg(not(feature = "kafka"))]
+    {
+        eprintln!(
+            "charging-processor was built without Kafka support (rebuild with --features kafka)"
+        );
+        ExitCode::from(2)
+    }
 }
-
 fn print_usage(stdout: bool) {
     if stdout {
         println!("{USAGE}");
