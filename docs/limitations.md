@@ -20,8 +20,8 @@ repository's local demo and its selected replay inputs.
 - **Behavioral and state gates:** Results cover committed synthetic
   scenarios. Numeric tolerance is not a domain accuracy guarantee, and
   strict binary64 equality is not decimal arithmetic.
-- **Privacy checks and evidence:** WP5 source describes declared-manifest,
-  runtime-observed and heuristic source-scan checks. Manifest checks are
+- **Privacy checks and evidence:** Checks cover declared-manifest,
+  runtime-observed and heuristic source-scan findings. Manifest checks are
   static-only. Runtime checks cover selected fixture outputs. The evidence
   hash does not authenticate the author. Neither checks nor evidence
   replace human privacy review.

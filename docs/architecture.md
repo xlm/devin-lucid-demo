@@ -2,9 +2,7 @@
 
 The demo uses synthetic event fixtures, two replay implementations, a
 language-neutral JSONL comparison, verification gates, a review evidence
-package and a local cutover simulator. The privacy and evidence components
-described below are from WP5 and are available on this branch after WP5
-lands.
+package and a local cutover simulator.
 
 ## Components and data flow
 
@@ -18,7 +16,7 @@ lands.
   metadata. `verification/diff_harness/` compares parsed JSONL outputs.
 - `consumer-warranty/` models the unchanged downstream consumer. The
   contract gate compares its state for baseline and candidate outputs.
-- The WP5 privacy gate compares declared inventories and checks selected
+- The privacy gate compares declared inventories and checks selected
   runtime outputs. The evidence package records run context, gates and file
   hashes.
 - `verification/cutover/` shadows candidate output away from the topic-like
@@ -31,8 +29,8 @@ flowchart LR
     L --> J[Canonical JSONL]
     R --> J
     J --> G[Behavioral, state-ordering and contract gates]
-    G --> P[Privacy gate, after WP5 lands]
-    P --> E[Evidence package, after WP5 lands]
+    G --> P[Privacy gate]
+    P --> E[Evidence package]
     E --> C[Cutover state machine]
     J --> W[Warranty consumer]
 ```
@@ -70,9 +68,8 @@ gaps or all duplicate risks.
 ## Fast and integration tiers
 
 The fast tier uses local replay and synthetic fixtures without Kafka or
-Docker. Its gates check behavior, state ordering and downstream contract.
-The WP5 privacy gate and evidence package complete the four-gate flow after
-WP5 lands.
+Docker. Its four gates check behavior, state ordering, downstream contract
+and privacy. The evidence package records the run and gate results.
 
 The optional integration tier is not implemented at this revision.
 `scripts/run-integration.sh` exits 3 when

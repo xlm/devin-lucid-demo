@@ -20,6 +20,23 @@ Gate values are the statuses recorded in `build-output/latest/evidence/evidence.
 The checker also validates the privacy recommendation and the fast command's
 exit status.
 
+## Tags
+
+State tags point to the corresponding `demo/*` tip, except the validated
+states, which point to the `build/integration` tip. Workflow aliases point
+to the same commits.
+
+| State | State tag | Workflow alias |
+|---|---|---|
+| A / `legacy-baseline` | `legacy-baseline` | `wf-a` |
+| B / `rust-scaffold` | `rust-scaffold` | `wf-b` |
+| Intermediate / `partial` | `partial` | None |
+| C / `behavioural-defect` | `behavioural-defect` | `wf-c` |
+| D / `consumer-contract-violation` | `consumer-contract-violation` | `wf-d` |
+| E / `privacy-violation` | `privacy-violation` | `wf-e` |
+| Validated migration | `validated-migration` | None |
+| F / `extra-unmigrated` | `extra-unmigrated` | `wf-f` |
+
 ## Findings by workflow
 
 - Workflow A's legacy fixture check passes all 13 scenarios. With the Rust
@@ -62,7 +79,7 @@ Run the branch-backed checker with:
 scripts/check-demo-states.sh
 ```
 
-When state-name tags are created later, the same table can be checked with:
+Check the annotated state tags with:
 
 ```sh
 scripts/check-demo-states.sh --refs tags
