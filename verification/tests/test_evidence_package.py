@@ -5,7 +5,7 @@ import json
 import re
 
 from verification.common import REPO_ROOT, RunContext, canonical
-from verification.evidence import PRIVACY_STATEMENT, build
+from verification.evidence import PRIVACY_STATEMENT, _normalize_repo_origin, build
 from verification.privacy import evaluate
 
 
@@ -28,6 +28,16 @@ def _write_json(path, value):
 
 def _checksum(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def test_normalizes_repository_origin_formats():
+    assert _normalize_repo_origin("https://synthetic-token@github.com/xlm/x.git") == (
+        "github.com/xlm/x"
+    )
+    assert _normalize_repo_origin(
+        "https://git-manager.example/proxy/github.com/xlm/devin-lucid-demo.git"
+    ) == "github.com/xlm/devin-lucid-demo"
+    assert _normalize_repo_origin("git@github.com:xlm/x.git") == "github.com/xlm/x"
 
 
 def test_builds_sections_hashes_self_contained_html_and_identical_copy(tmp_path):
@@ -75,6 +85,7 @@ def test_builds_sections_hashes_self_contained_html_and_identical_copy(tmp_path)
 
     assert set(evidence["sections"]) == set("ABCDEF")
     assert evidence["sections"]["A"]["status"] == "present"
+    assert evidence["sections"]["A"]["repo"] == "github.com/xlm/devin-lucid-demo"
     assert evidence["sections"]["A"]["processors"]["runs"] == [{
         "processor": "candidate",
         "scenario": "normal_session",
@@ -83,6 +94,20 @@ def test_builds_sections_hashes_self_contained_html_and_identical_copy(tmp_path)
         "duration_ms": 123,
     }]
     assert evidence["sections"]["B"]["status"] == "present"
+    inventory_section = evidence["sections"]["B"]
+    assert inventory_section["implementation"]["baseline"] == (
+        privacy_result["inventory"]["baseline"]["implementation"]
+    )
+    assert inventory_section["implementation"]["candidate"] == (
+        privacy_result["inventory"]["candidate"]["implementation"]
+    )
+    assert inventory_section["implementation"]["changed"] == (
+        privacy_result["inventory"]["implementation_changed"]
+    )
+    assert inventory_section["implementation"]["informational"] is True
+    assert inventory_section["dimensions"]["inputs"]["status"] == "unchanged"
+    assert "implementation" not in inventory_section["dimensions"]["inputs"]
+    assert all("implementation" not in dimension for dimension in inventory_section["dimensions"].values())
     assert evidence["sections"]["C"]["status"] == "present"
     gates = evidence["sections"]["D"]["gates"]
     assert gates["behavioural"]["status"] == "pass"
@@ -129,6 +154,30 @@ def test_builds_sections_hashes_self_contained_html_and_identical_copy(tmp_path)
     assert expected_package_hash in markdown and expected_package_hash in html_text
     assert _checksum(evidence_dir / "evidence.json") in markdown
     assert _checksum(evidence_dir / "evidence.json") in html_text
+    readable_html = html.unescape(html_text)
+    assert "<th>Gate</th>" in html_text
+    assert "MISSING" in readable_html
+    assert "Automated recommendation for a human reviewer, not a legal or compliance determination" in (
+        readable_html
+    )
+    assert html_text.count("<details><summary>Raw JSON</summary>") == 6
+    assert "| Gate | Status | Checks | Passed | Failed | Skipped | Runtime | Static |" in markdown
+    assert "| state_ordering | MISSING |" in markdown
+    assert "Automated recommendation for a human reviewer, not a legal or compliance determination" in (
+        markdown
+    )
+    assert markdown.index("## A. Identity") < markdown.index("### Raw JSON")
+    for label in (
+        "Baseline approval",
+        "Implementation (informational)",
+        "Policy results",
+        "Counts by evidence basis",
+        "Failing checks",
+        "Required human actions",
+        "Package SHA-256 method",
+    ):
+        assert label in readable_html
+        assert label in markdown
     for name in result["files"]:
         assert (out_dir / name).read_bytes() == (evidence_dir / name).read_bytes()
 
