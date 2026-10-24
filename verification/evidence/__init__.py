@@ -640,7 +640,7 @@ def _html(sections: dict, integrity: dict, evidence_json_sha256: str) -> str:
         "color:#18212f;background:#f7f8fa}section,.summary{background:white;border:1px solid #d8dee8;"
         "border-radius:8px;padding:1rem 1.25rem;margin:1rem 0}table{border-collapse:collapse;width:100%;"
         "margin:.75rem 0 1.25rem}th,td{text-align:left;vertical-align:top;padding:.45rem .6rem;"
-        "border:1px solid #d8dee8;overflow-wrap:anywhere}th{background:#eef2f7}.status-pass{color:#176b36}"
+        "border:1px solid #d8dee8;overflow-wrap:anywhere}th,td.status{white-space:nowrap}th{background:#eef2f7}.status-pass{color:#176b36}"
         ".status-fail,.status-error{color:#a21d24}.status-skip,.status-missing{color:#8a5600}"
         "pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.88rem}details{margin-top:1rem}"
         "summary{cursor:pointer;font-weight:600}.hash{font-family:monospace}</style></head><body>"
