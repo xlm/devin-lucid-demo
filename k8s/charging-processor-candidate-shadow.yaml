@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: charging-processor-candidate-shadow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: charging-processor
+      role: candidate-shadow
+  template:
+    metadata:
+      labels:
+        app: charging-processor
+        role: candidate-shadow
+    spec:
+      containers:
+        - name: processor
+          image: example.invalid/charging-processor-candidate:illustrative
+          env:
+            - name: OUTPUT_TOPIC
+              value: charging-session-summary-shadow
+            - name: MODE
+              value: shadow

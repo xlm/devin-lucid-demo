@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: charging-processor-legacy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: charging-processor
+      role: legacy
+  template:
+    metadata:
+      labels:
+        app: charging-processor
+        role: legacy
+    spec:
+      containers:
+        - name: processor
+          image: example.invalid/charging-processor-legacy:illustrative
+          env:
+            - name: OUTPUT_TOPIC
+              value: charging-session-summary
+            - name: MODE
+              value: active
