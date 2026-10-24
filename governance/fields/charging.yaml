@@ -1,0 +1,482 @@
+# Field manifest for the charging-session processor. Owned by humans
+# (privacy reviewer and data owner). Code reads this file, never writes it.
+#
+# Every value here is a synthetic demo declaration. Retention periods,
+# role names and encryption statements describe design intent; no check
+# in this repository verifies retention, access control or encryption at
+# runtime (see governance/README.md, "Limits").
+#
+# Classification is per field in isolation (ids from
+# governance/classifications.yaml). A record is handled at the most
+# restricted classification among its fields, so every summary and error
+# record is vehicle_identifying because it carries vehicle_id.
+#
+# Destination ids: charging.session.summary.v1 and charging.errors.v1
+# (topics), processor.stderr (diagnostic log), processor.checkpoint
+# (processor-managed state checkpoint).
+schema_version: "1.0"
+
+topics:
+  - id: charging.events.v1
+    schema: contracts/charging.events.v1.schema.json
+    record_classification: sensitive_location
+    note: Input topic. Records may carry synthetic_location, so the raw record is restricted.
+  - id: charging.session.summary.v1
+    schema: contracts/charging.session.summary.v1.schema.json
+    record_classification: vehicle_identifying
+  - id: charging.errors.v1
+    schema: contracts/charging.errors.v1.schema.json
+    record_classification: vehicle_identifying
+
+fields:
+  # ---------------- charging.events.v1 (input) ----------------
+  - name: event_id
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Producer-assigned event identifier, used for de-duplication within a session key.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation, input-error-reporting]
+    allowed_transformations: [DEDUPE_KEY, COUNT_ACCEPTED_DEDUPED, ECHO_IF_VALID]
+    permitted_destinations: [charging.errors.v1, processor.stderr, processor.checkpoint]
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: vehicle_id
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Synthetic vehicle key VEH-nnnn. Session key component and Kafka message key.
+    source: vehicle telemetry producer (synthetic)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [charging-session-summarisation, input-error-reporting]
+    allowed_transformations: [PASSTHROUGH, ECHO_IF_VALID]
+    permitted_destinations: [charging.session.summary.v1, charging.errors.v1, processor.checkpoint]
+    access: charging-session-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: session_id
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Charging session identifier. Treated as vehicle_identifying because session ids embed vehicle linkage.
+    source: vehicle telemetry producer (synthetic)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [charging-session-summarisation, input-error-reporting]
+    allowed_transformations: [PASSTHROUGH, ECHO_IF_VALID]
+    permitted_destinations: [charging.session.summary.v1, charging.errors.v1, processor.checkpoint]
+    access: charging-session-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: event_timestamp
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Event time (UTC, millisecond precision). Drives watermark, lateness and session timing.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [MIN, MAX, FORMAT_ISO8601_MS, DERIVE_COMPLETION]
+    permitted_destinations: [processor.checkpoint]
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: ingestion_timestamp
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Ingestion time. Validated, otherwise unused.
+    source: telemetry ingest (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [VALIDATE]
+    permitted_destinations: []
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: sequence_number
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Producer sequence number. Tracked as a per-key maximum in state, not emitted.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [VALIDATE, MAX]
+    permitted_destinations: [processor.checkpoint]
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: charging_state
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Charger state IDLE, CHARGING, COMPLETE or FAULT.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [DERIVE_COMPLETION]
+    permitted_destinations: [processor.checkpoint]
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: battery_soc
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Battery state of charge, percent. Validated, not emitted.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [VALIDATE]
+    permitted_destinations: []
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: charging_power_kw
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Instantaneous charging power in kW.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [MAX]
+    permitted_destinations: [processor.checkpoint]
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: energy_delivered_kwh
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: CUMULATIVE energy delivered since session start (not a per-event delta).
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [MAX]
+    permitted_destinations: [processor.checkpoint]
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: schema_version
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Input schema version; major must be 1.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [VALIDATE]
+    permitted_destinations: []
+    access: charging-session-processor service identity
+    logging: allowed
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: synthetic_location
+    topic: charging.events.v1
+    schema_version: "1.x"
+    description: Optional synthetic grid cell SYN-*. Restricted input only. Validated against its pattern, then discarded.
+    source: vehicle telemetry producer (synthetic)
+    classification: sensitive_location
+    personal: true
+    sensitive: true
+    purpose: []
+    allowed_transformations: [VALIDATE_AND_DISCARD]
+    permitted_destinations: []
+    prohibited_destinations: [charging.session.summary.v1, charging.errors.v1, processor.stderr, processor.checkpoint]
+    access: charging-session-processor service identity only, no human access
+    logging: prohibited
+    retention: P7D (input topic only, never held by the processor)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  # ---------------- charging.session.summary.v1 (output) ----------------
+  - name: session_id
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: Session key, passed through from the input.
+    source: charging.events.v1.session_id (PASSTHROUGH)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [PASSTHROUGH]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: vehicle_id
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: Session key and Kafka message key (per-vehicle partition ordering).
+    source: charging.events.v1.vehicle_id (PASSTHROUGH)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [PASSTHROUGH]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: start_ts
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: Earliest accepted event time of the session.
+    source: MIN(charging.events.v1.event_timestamp)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [MIN, FORMAT_ISO8601_MS]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: allowed
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: end_ts
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: Latest accepted event time of the session.
+    source: MAX(charging.events.v1.event_timestamp)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [MAX, FORMAT_ISO8601_MS]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: allowed
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: total_energy_kwh
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: MAX of cumulative energy_delivered_kwh over accepted events. Not a sum.
+    source: MAX(charging.events.v1.energy_delivered_kwh)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [MAX]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: allowed
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: peak_power_kw
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: MAX of charging_power_kw over accepted events.
+    source: MAX(charging.events.v1.charging_power_kw)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [MAX]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: allowed
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: event_count
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: Number of accepted, de-duplicated events in the session.
+    source: COUNT_ACCEPTED_DEDUPED(charging.events.v1.event_id)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [COUNT_ACCEPTED_DEDUPED]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: allowed
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: completion_reason
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: COMPLETE if any accepted event was COMPLETE, else INACTIVITY_TIMEOUT.
+    source: DERIVE_COMPLETION(charging.events.v1.charging_state, charging.events.v1.event_timestamp)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [DERIVE_COMPLETION]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: allowed
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: schema_version
+    topic: charging.session.summary.v1
+    schema_version: "1.0"
+    description: Output schema version, constant "1.0".
+    source: CONSTANT
+    classification: public
+    personal: false
+    sensitive: false
+    purpose: [charging-session-summarisation]
+    allowed_transformations: [CONSTANT]
+    permitted_destinations: [charging.session.summary.v1]
+    access: consumer-warranty service identity
+    logging: allowed
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  # ---------------- charging.errors.v1 (output) ----------------
+  - name: error_type
+    topic: charging.errors.v1
+    schema_version: "1.0"
+    description: Validation or processing error class.
+    source: VALIDATION_RESULT
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [VALIDATION_RESULT]
+    permitted_destinations: [charging.errors.v1, processor.stderr]
+    access: charging-platform-oncall
+    logging: allowed
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: field
+    topic: charging.errors.v1
+    schema_version: "1.0"
+    description: Name of the failing input field (a field name, never a field value), or null.
+    source: FIELD_NAME_ONLY
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [FIELD_NAME_ONLY]
+    permitted_destinations: [charging.errors.v1, processor.stderr]
+    access: charging-platform-oncall
+    logging: allowed
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: input_line
+    topic: charging.errors.v1
+    schema_version: "1.0"
+    description: 1-based input position of the offending line.
+    source: INPUT_POSITION
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [INPUT_POSITION]
+    permitted_destinations: [charging.errors.v1, processor.stderr]
+    access: charging-platform-oncall
+    logging: allowed
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: event_id
+    topic: charging.errors.v1
+    schema_version: "1.0"
+    description: Echo of the input event_id if valid on its own, else null.
+    source: ECHO_IF_VALID(charging.events.v1.event_id)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [ECHO_IF_VALID]
+    permitted_destinations: [charging.errors.v1, processor.stderr]
+    access: charging-platform-oncall
+    logging: allowed
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: vehicle_id
+    topic: charging.errors.v1
+    schema_version: "1.0"
+    description: Echo of the input vehicle_id if valid on its own, else null.
+    source: ECHO_IF_VALID(charging.events.v1.vehicle_id)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [ECHO_IF_VALID]
+    permitted_destinations: [charging.errors.v1]
+    access: charging-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: session_id
+    topic: charging.errors.v1
+    schema_version: "1.0"
+    description: Echo of the input session_id if valid on its own, else null.
+    source: ECHO_IF_VALID(charging.events.v1.session_id)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [ECHO_IF_VALID]
+    permitted_destinations: [charging.errors.v1]
+    access: charging-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: schema_version
+    topic: charging.errors.v1
+    schema_version: "1.0"
+    description: Output schema version, constant "1.0".
+    source: CONSTANT
+    classification: public
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [CONSTANT]
+    permitted_destinations: [charging.errors.v1]
+    access: charging-platform-oncall
+    logging: allowed
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
