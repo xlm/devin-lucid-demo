@@ -18,9 +18,11 @@ consumer's per-vehicle energy totals would be wrong.
 > state difference.
 
 ## Files to investigate
-`build-output/latest/gates/behavioural.json`, `gates/contract.json`,
+`build-output/latest/gates/behavioural.json`,
+`build-output/latest/gates/contract.json`,
 `build-output/latest/consumer/`, `rust-processor/src/processors/charging_session.rs`,
-`legacy-scala/.../SessionState.scala`, `contracts/consumer-contract.md`.
+`legacy-scala/src/main/scala/com/example/telemetry/charging/SessionState.scala`,
+`contracts/consumer-contract.md`.
 
 ## Expected changes
 Accumulate `max(energy_delivered_kwh)`, and replace the crate's wrong

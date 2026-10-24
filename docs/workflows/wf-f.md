@@ -20,7 +20,8 @@ playbook, gates and evidence.
 > baselines and policies.
 
 ## Files to investigate
-`docs/battery-health-processor.md`, `legacy-scala/src/main/scala/.../battery/`,
+`docs/battery-health-processor.md`,
+`legacy-scala/src/main/scala/com/example/telemetry/battery/`,
 `fixtures/battery/`, `contracts/battery.*`, `governance/*/battery*`,
 `processors.yaml`, the charging migration in `rust-processor/`.
 

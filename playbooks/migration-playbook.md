@@ -17,9 +17,9 @@ processor registered in `processors.yaml`. Workflows A-F in
 
 ## Procedure
 
-1. **Reset and orient.** `scripts/reset-state.sh wf-a` if a demo tag is
-   given,
-   then `export PATH="$HOME/.local/sbt/bin:$PATH"; source scripts/_env.sh`.
+1. **Reset and orient.** If starting from a demo tag, run
+   `scripts/reset-state.sh <tag>`, then
+   `export PATH="$HOME/.local/sbt/bin:$PATH"; source scripts/_env.sh`.
    Read `docs/build-contract.md`, `processors.yaml`, the processor's
    field manifest and lineage under `governance/`.
 2. **Understand the legacy job.** Read the Scala sources and tests. Write

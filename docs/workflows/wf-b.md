@@ -20,7 +20,8 @@ skeleton, behaviourally equivalent to the legacy job.
 
 ## Files to investigate
 `rust-processor/src/` (all), `rust-processor/README.md`,
-`legacy-scala/src/main/scala/.../charging/`, `docs/build-contract.md`
+`legacy-scala/src/main/scala/com/example/telemetry/charging/`,
+`docs/build-contract.md`
 sections 4-8, `processors.yaml`.
 
 ## Expected changes
