@@ -1,0 +1,44 @@
+# Field lineage for the charging-session processor: which input fields
+# feed which output fields, and which input fields stop at validation.
+# Field paths are <topic>.<field>; a bare destination id (for example
+# processor.stderr) means "may appear in that destination". Owned by
+# humans; code reads it, never writes it.
+schema_version: "1.0"
+
+edges:
+  - {from: charging.events.v1.session_id, to: charging.session.summary.v1.session_id, transform: PASSTHROUGH}
+  - {from: charging.events.v1.vehicle_id, to: charging.session.summary.v1.vehicle_id, transform: PASSTHROUGH}
+  - {from: charging.events.v1.event_timestamp, to: charging.session.summary.v1.start_ts, transform: MIN}
+  - {from: charging.events.v1.event_timestamp, to: charging.session.summary.v1.end_ts, transform: MAX}
+  - {from: charging.events.v1.energy_delivered_kwh, to: charging.session.summary.v1.total_energy_kwh, transform: MAX}
+  - {from: charging.events.v1.charging_power_kw, to: charging.session.summary.v1.peak_power_kw, transform: MAX}
+  - {from: charging.events.v1.event_id, to: charging.session.summary.v1.event_count, transform: COUNT_ACCEPTED_DEDUPED}
+  - {from: charging.events.v1.charging_state, to: charging.session.summary.v1.completion_reason, transform: DERIVE_COMPLETION}
+  - {from: charging.events.v1.event_timestamp, to: charging.session.summary.v1.completion_reason, transform: DERIVE_COMPLETION}
+  - {from: charging.events.v1.event_id, to: charging.errors.v1.event_id, transform: ECHO_IF_VALID}
+  - {from: charging.events.v1.vehicle_id, to: charging.errors.v1.vehicle_id, transform: ECHO_IF_VALID}
+  - {from: charging.events.v1.session_id, to: charging.errors.v1.session_id, transform: ECHO_IF_VALID}
+  - {from: charging.events.v1.event_id, to: processor.stderr, transform: PASSTHROUGH}
+
+# Output fields with no input-field source.
+generated:
+  - {field: charging.session.summary.v1.schema_version, transform: CONSTANT}
+  - {field: charging.errors.v1.schema_version, transform: CONSTANT}
+  - {field: charging.errors.v1.error_type, transform: VALIDATION_RESULT}
+  - {field: charging.errors.v1.field, transform: FIELD_NAME_ONLY}
+  - {field: charging.errors.v1.input_line, transform: INPUT_POSITION}
+
+# Input fields that are validated (and possibly held in state) but never
+# reach an output topic.
+validated_only:
+  - charging.events.v1.ingestion_timestamp
+  - charging.events.v1.sequence_number
+  - charging.events.v1.battery_soc
+  - charging.events.v1.schema_version
+
+# Restricted inputs: validated, then discarded. No edge may start here.
+restricted:
+  - field: charging.events.v1.synthetic_location
+    classification: sensitive_location
+    handling: restricted_input
+    prohibited_destinations: [charging.session.summary.v1, charging.errors.v1, processor.stderr, processor.checkpoint]
