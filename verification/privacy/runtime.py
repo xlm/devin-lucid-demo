@@ -152,7 +152,7 @@ def no_identifiers_in_log(ctx, scenario, output_dir: Path) -> dict:
             value = record.get(field)
             if not isinstance(value, str):
                 continue
-            pattern = re.compile(r"(?<![A-Za-z0-9_-])" + re.escape(value) + r"(?![A-Za-z0-9_-])")
+            pattern = re.compile(r"(?<![A-Za-z0-9_])" + re.escape(value) + r"(?![A-Za-z0-9_])")
             counts[field] += len(pattern.findall(text))
     matched_fields = {field: count for field, count in counts.items() if count}
     return _check(check_id, "fail" if matched_fields else "pass",

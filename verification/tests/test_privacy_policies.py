@@ -258,6 +258,9 @@ def test_source_scan_log_macro_attack_matrix(tmp_path, source, expected):
         ("VEH-00123", False),
         ("S-0012-A", True),
         ("xS-0012-A", False),
+        ("VEH-0012-x", True),
+        ("prefix-S-0012-A", True),
+        ("S-0012-A-retry", True),
     ],
 )
 def test_identifier_log_matching_uses_whole_tokens(tmp_path, log_text, matched):
