@@ -73,7 +73,14 @@ object ChargingSessionProcessor {
         System.err.println(Usage)
         sys.exit(2)
     }
-    queries.foreach(_.awaitTermination())
+    // Wait for every query, but fail as soon as any one of them fails.
+    try {
+      while (queries.exists(_.isActive)) {
+        spark.streams.awaitAnyTermination()
+        spark.streams.resetTerminated()
+      }
+      queries.flatMap(_.exception).headOption.foreach(e => throw e)
+    } finally spark.stop()
   }
 
   /** Production wiring: Kafka in, Kafka out (needs spark-sql-kafka-0-10 at runtime). */
@@ -121,7 +128,7 @@ object ChargingSessionProcessor {
         .outputMode(OutputMode.Append())
         .foreachBatch { (batch: Dataset[KafkaRecord], batchId: Long) =>
           Seq(SummaryTopic -> "summaries", ErrorTopic -> "errors").foreach { case (topic, dir) =>
-            batch.filter(_.topic == topic).map(_.value).write.mode("append").text(s"$outputDir/$dir/$name-batch-$batchId")
+            batch.filter(_.topic == topic).map(_.value).write.mode("append").text(s"$outputDir/$dir/$name-batch-${"%08d".format(batchId)}")
           }
         }
         .start()
