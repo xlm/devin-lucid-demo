@@ -70,13 +70,13 @@ def test_builds_sections_hashes_self_contained_html_and_identical_copy(tmp_path)
             "evidence": {"basis": "declared-manifest"},
         }],
     })
-    privacy_result = evaluate(ctx)
-    _write_json(ctx.run_dir / "gates" / "privacy.json", privacy_result)
     output_dir = ctx.output_dir("candidate", "normal_session")
     _write_json(output_dir / "run.json", {"exit_codes": {"candidate": 0}, "duration_ms": 123})
     (output_dir / "summaries.jsonl").write_text('{"session_id":"S-0012-A"}\n', encoding="utf-8")
     (output_dir / "errors.jsonl").write_text("", encoding="utf-8")
     (output_dir / "processor.log").write_text("processed synthetic records\n", encoding="utf-8")
+    privacy_result = evaluate(ctx)
+    _write_json(ctx.run_dir / "gates" / "privacy.json", privacy_result)
 
     out_dir = tmp_path / "copy"
     result = build(ctx, out_dir=out_dir)
@@ -114,6 +114,7 @@ def test_builds_sections_hashes_self_contained_html_and_identical_copy(tmp_path)
     assert gates["contract"]["failing_checks"][0]["id"] == "contract.example"
     assert gates["behavioural"]["by_basis"] == {"runtime-observed": 1}
     assert gates["behavioural"]["by_verification_kind"] == {"runtime": 1, "static": 0}
+    assert gates["privacy"]["status"] == privacy_result["status"]
     assert gates["privacy"]["by_basis"]
     assert gates["state_ordering"]["status"] == "missing"
     assert evidence["sections"]["E"]["disposition"]["recommendation"] == (
