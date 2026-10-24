@@ -18,10 +18,10 @@ from datetime import datetime, timezone
 ALLOWED_LATENESS_MS = 10 * 60 * 1000
 MAX_SEQUENCE = 9007199254740991
 ID_MAX_LEN = 64
-TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
+TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$", re.ASCII)
 DAY_MS = 24 * 60 * 60 * 1000
-VEHICLE_RE = re.compile(r"^VEH-\d{4}$")
-SCHEMA_RE = re.compile(r"^(\d+)\.(\d+)$")
+VEHICLE_RE = re.compile(r"^VEH-\d{4}$", re.ASCII)
+SCHEMA_RE = re.compile(r"^(\d+)\.(\d+)$", re.ASCII)
 LOCATION_RE = re.compile(r"^SYN-[A-Z0-9-]+$")
 VOLTAGE_MAX_V = 5.0
 TEMP_MIN_C = -50.0
