@@ -138,12 +138,13 @@ import sys
 
 with open(sys.argv[1], encoding="utf-8") as stream:
     evidence = json.load(stream)
-gates = evidence.get("gates", {})
-print(gates.get("behavioural", "missing"))
-print(gates.get("state_ordering", "missing"))
-print(gates.get("contract", "missing"))
-print(gates.get("privacy", "missing"))
-print(evidence.get("disposition", {}).get("recommendation", "missing"))
+sections = evidence.get("sections", {})
+gates = sections.get("D", {}).get("gates", {})
+print(gates.get("behavioural", {}).get("status", "missing"))
+print(gates.get("state_ordering", {}).get("status", "missing"))
+print(gates.get("contract", {}).get("status", "missing"))
+print(gates.get("privacy", {}).get("status", "missing"))
+print(sections.get("E", {}).get("disposition", {}).get("recommendation", "missing"))
 ' "$evidence" 2>/dev/null
     )
     if [[ ${#observed[@]} -eq 5 ]]; then
