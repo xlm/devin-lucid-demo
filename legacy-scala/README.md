@@ -86,9 +86,10 @@ legacy-scala/bin/check-fixtures --every-split  # also restart at every line
 ```
 
 It runs each scenario as `scenario.json` says (restart scenarios run
-`--stop-after` then `--resume-from`), parses both sides and compares the
-records in emission order. Numbers compare as parsed values, so `15` and
-`15.0` are equal (contract section 6.3). `--every-split` repeats every
+`--stop-after` then `--resume-from`), parses both sides and requires the
+same records, with the same order within each `(vehicle_id, session_id)`
+key. Order across keys is not checked. Numbers compare as parsed values,
+so `15` and `15.0` are equal (contract section 6.3). `--every-split` repeats every
 scenario as a restart at each possible split point and expects the same
 output as a single run.
 

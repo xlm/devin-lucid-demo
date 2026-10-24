@@ -78,7 +78,8 @@ object ReplayCheckpoint {
     try {
       val channel = FileChannel.open(tmp, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)
       try {
-        channel.write(ByteBuffer.wrap(ujson.write(toJson(state)).getBytes(StandardCharsets.UTF_8)))
+        val buf = ByteBuffer.wrap(ujson.write(toJson(state)).getBytes(StandardCharsets.UTF_8))
+        while (buf.hasRemaining) channel.write(buf)
         channel.force(true)
       } finally channel.close()
       Files.move(tmp, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
