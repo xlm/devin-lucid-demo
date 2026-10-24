@@ -34,9 +34,9 @@ repository's local demo and its selected replay inputs.
   and reports that the tier is not implemented at this revision. The
   single-node Redpanda Compose file is a demo configuration, not a live
   integration result.
-- **Fast runner evidence handling:** `scripts/run-fast.sh` returns the
-  verification status but ignores the evidence command's exit status.
-  Reviewers must confirm that the expected evidence files were produced.
+- **Fast runner evidence handling:** `scripts/run-fast.sh` runs evidence
+  packaging even when verification fails, then returns a non-zero status if
+  either verification or evidence fails.
 
 ## Risks
 

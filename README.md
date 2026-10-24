@@ -44,8 +44,8 @@ scripts/run-fast.sh
 The simulator stops at `ReadyForReview` and prints the human approval
 command. Agents must not approve. Run the verification and simulator from a
 clean committed checkout so the recorded Git context matches the current
-revision. `run-fast.sh` currently ignores an evidence-command failure, so
-confirm the evidence files exist before review.
+revision. The command now fails when verification or evidence packaging
+fails.
 
 Check that generated fixture files still match their source:
 
