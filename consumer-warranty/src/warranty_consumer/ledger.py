@@ -1,4 +1,5 @@
 import json
+import math
 from pathlib import Path
 
 import jsonschema
@@ -35,6 +36,17 @@ class WarrantyLedger:
                 "validator": error.validator,
             })
             return False
+
+        for field in ("total_energy_kwh", "peak_power_kw"):
+            value = record[field]
+            if isinstance(value, float) and not math.isfinite(value):
+                self._reject({
+                    "line": line,
+                    "delivery": delivery,
+                    "path": field,
+                    "validator": "finite",
+                })
+                return False
 
         key = (record["vehicle_id"], record["session_id"])
         self._latest[key] = record
