@@ -1,7 +1,13 @@
-# Migration privacy policies evaluated by the Python engine in
-# verification/privacy (the engine executed in this demo). The file
-# migration-policies.rego states the same rules for teams that use OPA;
-# it is not executed here and a test keeps both rule-id sets equal.
+# Migration privacy policies evaluated by the typed Python checker in
+# verification/privacy, the default and only policy engine executed in
+# this demo. migration-policies.rego is optional illustrative material
+# for teams that use OPA: it mirrors these rule ids and their intent but
+# is not executed and is not a guaranteed-equivalent implementation. A
+# test keeps the rule-id sets of both files equal.
+#
+# Static rules compare human declarations (inventories, manifest,
+# baseline) only. They do not observe data flow. Only the runtime parts
+# inspect actual candidate outputs and logs.
 #
 # Owned by humans (privacy reviewer). No automated check or agent may
 # edit this file, the baseline or the acceptance tests to make a run pass.
