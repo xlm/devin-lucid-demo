@@ -284,9 +284,14 @@ def source_scan(source_dir: Path) -> dict:
         return check(check_id, "skip", "candidate source not present; static claim not established",
                      category="static_source_scan", verification="static",
                      evidence={"severity": "clarification", "basis": "source-scan", "hits": []})
+    source_files = sorted(source_dir.rglob("*.rs"))
+    if not source_files:
+        return check(check_id, "skip", "no Rust sources found; static claim not established",
+                     category="static_source_scan", verification="static",
+                     evidence={"severity": "clarification", "basis": "source-scan", "hits": []})
     hits = []
     read_errors = []
-    for path in sorted(source_dir.rglob("*.rs")):
+    for path in source_files:
         try:
             text = path.read_text(encoding="utf-8")
         except (OSError, UnicodeError) as exc:
