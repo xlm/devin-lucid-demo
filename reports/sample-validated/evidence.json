@@ -1,0 +1,1214 @@
+{
+  "integrity": {
+    "file_statuses": {
+      "context.json": "present",
+      "gates/behavioural.json": "present",
+      "gates/contract.json": "present",
+      "gates/privacy.json": "present",
+      "gates/state_ordering.json": "present",
+      "outputs/candidate/build.json": "present",
+      "outputs/candidate/build.log": "present",
+      "outputs/candidate/concurrent_sessions/errors.jsonl": "present",
+      "outputs/candidate/concurrent_sessions/processor.log": "present",
+      "outputs/candidate/concurrent_sessions/run.json": "present",
+      "outputs/candidate/concurrent_sessions/summaries.jsonl": "present",
+      "outputs/candidate/consumer_replay/errors.jsonl": "present",
+      "outputs/candidate/consumer_replay/processor.log": "present",
+      "outputs/candidate/consumer_replay/run.json": "present",
+      "outputs/candidate/consumer_replay/summaries.jsonl": "present",
+      "outputs/candidate/downstream_contract/errors.jsonl": "present",
+      "outputs/candidate/downstream_contract/processor.log": "present",
+      "outputs/candidate/downstream_contract/run.json": "present",
+      "outputs/candidate/downstream_contract/summaries.jsonl": "present",
+      "outputs/candidate/duplicates/errors.jsonl": "present",
+      "outputs/candidate/duplicates/processor.log": "present",
+      "outputs/candidate/duplicates/run.json": "present",
+      "outputs/candidate/duplicates/summaries.jsonl": "present",
+      "outputs/candidate/late_events_window_boundary/errors.jsonl": "present",
+      "outputs/candidate/late_events_window_boundary/processor.log": "present",
+      "outputs/candidate/late_events_window_boundary/run.json": "present",
+      "outputs/candidate/late_events_window_boundary/summaries.jsonl": "present",
+      "outputs/candidate/malformed_null/errors.jsonl": "present",
+      "outputs/candidate/malformed_null/processor.log": "present",
+      "outputs/candidate/malformed_null/run.json": "present",
+      "outputs/candidate/malformed_null/summaries.jsonl": "present",
+      "outputs/candidate/normal_session/errors.jsonl": "present",
+      "outputs/candidate/normal_session/processor.log": "present",
+      "outputs/candidate/normal_session/run.json": "present",
+      "outputs/candidate/normal_session/summaries.jsonl": "present",
+      "outputs/candidate/numeric_precision/errors.jsonl": "present",
+      "outputs/candidate/numeric_precision/processor.log": "present",
+      "outputs/candidate/numeric_precision/run.json": "present",
+      "outputs/candidate/numeric_precision/summaries.jsonl": "present",
+      "outputs/candidate/out_of_order/errors.jsonl": "present",
+      "outputs/candidate/out_of_order/processor.log": "present",
+      "outputs/candidate/out_of_order/run.json": "present",
+      "outputs/candidate/out_of_order/summaries.jsonl": "present",
+      "outputs/candidate/partitioning_ordering/errors.jsonl": "present",
+      "outputs/candidate/partitioning_ordering/processor.log": "present",
+      "outputs/candidate/partitioning_ordering/run.json": "present",
+      "outputs/candidate/partitioning_ordering/summaries.jsonl": "present",
+      "outputs/candidate/processor_restart/errors.jsonl": "present",
+      "outputs/candidate/processor_restart/processor.log": "present",
+      "outputs/candidate/processor_restart/run.json": "present",
+      "outputs/candidate/processor_restart/summaries.jsonl": "present",
+      "outputs/candidate/schema_evolution/errors.jsonl": "present",
+      "outputs/candidate/schema_evolution/processor.log": "present",
+      "outputs/candidate/schema_evolution/run.json": "present",
+      "outputs/candidate/schema_evolution/summaries.jsonl": "present",
+      "outputs/candidate/state_recovery/errors.jsonl": "present",
+      "outputs/candidate/state_recovery/processor.log": "present",
+      "outputs/candidate/state_recovery/run.json": "present",
+      "outputs/candidate/state_recovery/summaries.jsonl": "present",
+      "outputs/legacy/build.json": "present",
+      "outputs/legacy/build.log": "present",
+      "outputs/legacy/concurrent_sessions/errors.jsonl": "present",
+      "outputs/legacy/concurrent_sessions/processor.log": "present",
+      "outputs/legacy/concurrent_sessions/run.json": "present",
+      "outputs/legacy/concurrent_sessions/summaries.jsonl": "present",
+      "outputs/legacy/consumer_replay/errors.jsonl": "present",
+      "outputs/legacy/consumer_replay/processor.log": "present",
+      "outputs/legacy/consumer_replay/run.json": "present",
+      "outputs/legacy/consumer_replay/summaries.jsonl": "present",
+      "outputs/legacy/downstream_contract/errors.jsonl": "present",
+      "outputs/legacy/downstream_contract/processor.log": "present",
+      "outputs/legacy/downstream_contract/run.json": "present",
+      "outputs/legacy/downstream_contract/summaries.jsonl": "present",
+      "outputs/legacy/duplicates/errors.jsonl": "present",
+      "outputs/legacy/duplicates/processor.log": "present",
+      "outputs/legacy/duplicates/run.json": "present",
+      "outputs/legacy/duplicates/summaries.jsonl": "present",
+      "outputs/legacy/late_events_window_boundary/errors.jsonl": "present",
+      "outputs/legacy/late_events_window_boundary/processor.log": "present",
+      "outputs/legacy/late_events_window_boundary/run.json": "present",
+      "outputs/legacy/late_events_window_boundary/summaries.jsonl": "present",
+      "outputs/legacy/malformed_null/errors.jsonl": "present",
+      "outputs/legacy/malformed_null/processor.log": "present",
+      "outputs/legacy/malformed_null/run.json": "present",
+      "outputs/legacy/malformed_null/summaries.jsonl": "present",
+      "outputs/legacy/normal_session/errors.jsonl": "present",
+      "outputs/legacy/normal_session/processor.log": "present",
+      "outputs/legacy/normal_session/run.json": "present",
+      "outputs/legacy/normal_session/summaries.jsonl": "present",
+      "outputs/legacy/numeric_precision/errors.jsonl": "present",
+      "outputs/legacy/numeric_precision/processor.log": "present",
+      "outputs/legacy/numeric_precision/run.json": "present",
+      "outputs/legacy/numeric_precision/summaries.jsonl": "present",
+      "outputs/legacy/out_of_order/errors.jsonl": "present",
+      "outputs/legacy/out_of_order/processor.log": "present",
+      "outputs/legacy/out_of_order/run.json": "present",
+      "outputs/legacy/out_of_order/summaries.jsonl": "present",
+      "outputs/legacy/partitioning_ordering/errors.jsonl": "present",
+      "outputs/legacy/partitioning_ordering/processor.log": "present",
+      "outputs/legacy/partitioning_ordering/run.json": "present",
+      "outputs/legacy/partitioning_ordering/summaries.jsonl": "present",
+      "outputs/legacy/processor_restart/errors.jsonl": "present",
+      "outputs/legacy/processor_restart/processor.log": "present",
+      "outputs/legacy/processor_restart/run.json": "present",
+      "outputs/legacy/processor_restart/summaries.jsonl": "present",
+      "outputs/legacy/schema_evolution/errors.jsonl": "present",
+      "outputs/legacy/schema_evolution/processor.log": "present",
+      "outputs/legacy/schema_evolution/run.json": "present",
+      "outputs/legacy/schema_evolution/summaries.jsonl": "present",
+      "outputs/legacy/state_recovery/errors.jsonl": "present",
+      "outputs/legacy/state_recovery/processor.log": "present",
+      "outputs/legacy/state_recovery/run.json": "present",
+      "outputs/legacy/state_recovery/summaries.jsonl": "present"
+    },
+    "files": {
+      "context.json": "d4d1f91e791a3ab927726b31667bcc5db950d78dadad68faea07a9743e439115",
+      "gates/behavioural.json": "16f43dca29c9d4177d9b2b277bd20d8cb13f73e9f0d946c575849259f5bb0285",
+      "gates/contract.json": "bca81c2b1e1b86cfd9132606fc8ebe5f74dad3a7cbb168a38e998dbbcd4a31c3",
+      "gates/privacy.json": "677fb1772c1a44eacc25d4999c3dc45414221ac97a19dad6867ce23e77183e0c",
+      "gates/state_ordering.json": "6f948c1882e15e26abf0f177c21664c4ca83a65d385c1f4802f5e118554c6308",
+      "outputs/candidate/build.json": "5a45b1e0763ec52cb0cb4afa4015b5b7d65ce73cb28305683304f26b785c4139",
+      "outputs/candidate/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/concurrent_sessions/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/concurrent_sessions/processor.log": "498744a6c732560fea640b7ccc751cd4684600f3a74901d70377dc01bcb582cf",
+      "outputs/candidate/concurrent_sessions/run.json": "5319e90fb89088e348307d8503b1467376c09e48b6d1762980c7884e26c83c6c",
+      "outputs/candidate/concurrent_sessions/summaries.jsonl": "c5ed2ed929640cf4e4a6e9ba923b8712a017d7142f622cf17afa1bd384430b3f",
+      "outputs/candidate/consumer_replay/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/consumer_replay/processor.log": "9181be0691eca54c98696db13e7e9e1fe49cf604cf2760394923df7ce8f35c40",
+      "outputs/candidate/consumer_replay/run.json": "2b9a5c0dc3183a92322cbba56828d50aaa5049c7b3f2dffb37f0e5e05cf783a5",
+      "outputs/candidate/consumer_replay/summaries.jsonl": "92aca789b37b02b4283a1df58a9a9a53a5d520a68da43a57ee17bf381f82f537",
+      "outputs/candidate/downstream_contract/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/downstream_contract/processor.log": "987964208799cf7a7920fe3df76133ecdfcffa6fc4abe0692dffd6a08e369b5f",
+      "outputs/candidate/downstream_contract/run.json": "9aebc10a30e77cd438aa6b3fb2856819a702b351e0bc81904c9c935b6c7635e5",
+      "outputs/candidate/downstream_contract/summaries.jsonl": "1e44ef4e522002634e6c306cf598bc3709688f418a8c9c6d54c188f91d437522",
+      "outputs/candidate/duplicates/errors.jsonl": "f5e9d93d80b46222ddacd1b353f7acf0633a33c674150b4b6300993095b180c5",
+      "outputs/candidate/duplicates/processor.log": "66657de2cc92ed4b229bcafea51d8c751d0f829b2e7cca5f96af42879fe1f56c",
+      "outputs/candidate/duplicates/run.json": "8cb78f0cb7a27f896dc7eff4ef4111956aafda9ba4adbcdbfe76915894e40d37",
+      "outputs/candidate/duplicates/summaries.jsonl": "8ba360e52df9796be14d6bf1e0ddb4970a9042c90bcf17bbc7b0f23111db57ce",
+      "outputs/candidate/late_events_window_boundary/errors.jsonl": "4b90c3962a9b3b4dd64c8038ec8b607b3d95f06e0ec18eb228bf8fe094819b33",
+      "outputs/candidate/late_events_window_boundary/processor.log": "0584fa2f9f9c27dcb233cffe3d43304869d4496b7d769cd74086fc87c36d096b",
+      "outputs/candidate/late_events_window_boundary/run.json": "0173ae9d8d2d029c38ce83a57c9a93a9d5e828ddcea1ad0e2f48ab9c54a996d8",
+      "outputs/candidate/late_events_window_boundary/summaries.jsonl": "5307dd011d6d90e07e198689b1954721e54be4e6ad91c049943d763b30fc0e19",
+      "outputs/candidate/malformed_null/errors.jsonl": "0e69043f2b809704102eda3914795325ce90a10b238eeee0ec3f3c0b8621bf61",
+      "outputs/candidate/malformed_null/processor.log": "a1480a9bceeead157f88464ecae0832528a0f2ea8f5cb64fcf2a761591e6e943",
+      "outputs/candidate/malformed_null/run.json": "15b7ae9b1eed3029f81508a01b2f5a3153717563a1351cdf24689ec78eafb563",
+      "outputs/candidate/malformed_null/summaries.jsonl": "c96b06adadcb6293d3abfcb8e8e119827a846e25c252f71f97d903d0503bd2aa",
+      "outputs/candidate/normal_session/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/normal_session/processor.log": "38b660c958a98affcb6d535d9ee9e7459bbb8210cc309c05753cbce8215918c8",
+      "outputs/candidate/normal_session/run.json": "9ec2d26dd42ea7418f3b273d9da66d6ef43722797c7d9205236e4c1933a30efe",
+      "outputs/candidate/normal_session/summaries.jsonl": "dc1c61276b543f9b782a845901caa2f786800c49169a087d6e1fead4d8c219e4",
+      "outputs/candidate/numeric_precision/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/numeric_precision/processor.log": "7bca55c11fcab07ab0bba78454626353c7ebcd449b190cbb35d0e273ea61843b",
+      "outputs/candidate/numeric_precision/run.json": "8043dd3e9fa51e6781d9bbba5fe30626608e22d828e2b3293786e7367411597e",
+      "outputs/candidate/numeric_precision/summaries.jsonl": "f47c9bbf6eac8144564ae3076ec653e6b644638852a2e93c91f605ad40df9742",
+      "outputs/candidate/out_of_order/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/out_of_order/processor.log": "3206061baad57ca70cbdf3a2a00c9657d103aa4aa669f8e61ae6e9ca3b72c3b2",
+      "outputs/candidate/out_of_order/run.json": "50e23cd49181aaae8feb8182afc4b7c7a3da659e65e48a16dce004db890d5019",
+      "outputs/candidate/out_of_order/summaries.jsonl": "008247c9303f79ab55ae2e0443957720f514ae1062e258d7d8d612e939aeea1f",
+      "outputs/candidate/partitioning_ordering/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/partitioning_ordering/processor.log": "d392714937ce4c645752f753ee259d409001b21dc815649e8e312273bb96f40f",
+      "outputs/candidate/partitioning_ordering/run.json": "f98252c7835980b9eb92b9ba3214b5938ab52675ed0f847944cc789bc42191a2",
+      "outputs/candidate/partitioning_ordering/summaries.jsonl": "9379108d04fbc3a42f57eabc84a61c0b38fd89a6653f8150bc4301be1f5a68cf",
+      "outputs/candidate/processor_restart/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/candidate/processor_restart/processor.log": "f6275f6958cee1c0dbd7f7071423c767a1e715782db0640d29b1d97625f2bb4f",
+      "outputs/candidate/processor_restart/run.json": "9f34f3ac7ec0d001b980de66c82cea03f14b5889acec64b4001fe5dab7bd703d",
+      "outputs/candidate/processor_restart/summaries.jsonl": "c157a948c54dd7a69decd6e2906d3d0e2b9912fd95019cc6399f32b0cb1e1ed1",
+      "outputs/candidate/schema_evolution/errors.jsonl": "bf57b04103ce49866e626b72d49ee9f977a5d949b0a9b92b6191b4b58eb6f7c0",
+      "outputs/candidate/schema_evolution/processor.log": "ee4ce35dd5b25dda466718dfa89af17710be67fe271ce495d0fabaeb6560f35f",
+      "outputs/candidate/schema_evolution/run.json": "58ff8ca0fb2c5f2acd58bbc0ff9fdd4a5330805f8a87ad6cb2211c0229781006",
+      "outputs/candidate/schema_evolution/summaries.jsonl": "e8cd8233a6bc7c7c924c1833ba1b42b2384f635d4ddc276068d8ae7a101f574c",
+      "outputs/candidate/state_recovery/errors.jsonl": "bf9c45c3481db3babed09ea6d4562414a5700f0c28175fd686f3d4d2e88092d3",
+      "outputs/candidate/state_recovery/processor.log": "ee1b103f5c56ff51aedf8287e7313f676146c294cbe8d394d1054676e555f9d7",
+      "outputs/candidate/state_recovery/run.json": "7be42be3cea2bedd8ae58cf5411e2e1a922940dd83e7283d539d3a6063b7cb91",
+      "outputs/candidate/state_recovery/summaries.jsonl": "6dc557ad8bda3ead47ef3b5be0cfaac9cd6c98c41892de0fad199673b5aa4ad3",
+      "outputs/legacy/build.json": "f1c1a58a656bcb69c7f3344ecfc64c5bbec6a086216fac28c2107c2d50ad3502",
+      "outputs/legacy/build.log": "c545d0d233682d3542278c7615dd682cbd7d7987f836dcf059944b4c4d706dbb",
+      "outputs/legacy/concurrent_sessions/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/legacy/concurrent_sessions/processor.log": "9bdea2a7c3133b73c3cd05c2325466d0a6e21095075cd1871f6c07131906e5e5",
+      "outputs/legacy/concurrent_sessions/run.json": "63c333cc66e10631ac93cf90d8a6c3745dc7bc0908dce4f0bbac34e88a48a3e0",
+      "outputs/legacy/concurrent_sessions/summaries.jsonl": "64c1ab512e0a443d17d5489955f45d44f4a808fc96f7fb68bbec74fc1581fe7f",
+      "outputs/legacy/consumer_replay/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/legacy/consumer_replay/processor.log": "45f2629fa7d878f84eb78ca74ecf4f90d482048f527ce42b013fbf27fcd2ac58",
+      "outputs/legacy/consumer_replay/run.json": "ae23ebe50cfd66bc073980d8dd30fb3a8de04320e50e68fdfa8ed1e7aafbca79",
+      "outputs/legacy/consumer_replay/summaries.jsonl": "e8946fccaf354ccf5be687a1093cb6c1fa731355897b7bf2d282590f02651bbd",
+      "outputs/legacy/downstream_contract/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/legacy/downstream_contract/processor.log": "133087f419c81ed8d79b50dfaffc7a7ca448e33f6a29bdb39c9003a091341da6",
+      "outputs/legacy/downstream_contract/run.json": "c433e8a83cafc2dff2e7fded5d90572611f646cafa84c2fbde6643ac2096538f",
+      "outputs/legacy/downstream_contract/summaries.jsonl": "8199253634ee605c062b6c85f647f68ab766ff2eba1a5112bd1942089b076535",
+      "outputs/legacy/duplicates/errors.jsonl": "4df3c8e8c2c304aa59785ecddbfd8468e3b45698cc662bc85b9879b90930fd4a",
+      "outputs/legacy/duplicates/processor.log": "48626b53290c8b1be66476fcb1449c6272f27975d4004655ff15977abb08837b",
+      "outputs/legacy/duplicates/run.json": "ba3f722c855a608ebdcfccac3113abe21541479cfd11477646ad89c796e627e0",
+      "outputs/legacy/duplicates/summaries.jsonl": "9613e569374dc80ed2febe92f5e327b8d25856d0d8b122e88925235bb06e7981",
+      "outputs/legacy/late_events_window_boundary/errors.jsonl": "123d32f340b6d57c09247d692c42e202941180b93d7efb300f4257d4d8adf59d",
+      "outputs/legacy/late_events_window_boundary/processor.log": "a9b3412786b2f373f04942824e44d364dd146d70edd8bd9bb64ee5b8262a9ae6",
+      "outputs/legacy/late_events_window_boundary/run.json": "84b2ad8153554ea7f83234b0e5d1db63454c43121fedf0499e57ee09f7f257da",
+      "outputs/legacy/late_events_window_boundary/summaries.jsonl": "3cc887c44d50e910fe1dae6fc3291c385f1e1eb24bc57edcd06bf1cbad89dd92",
+      "outputs/legacy/malformed_null/errors.jsonl": "ca3058d837ce3867cdaa8c6e7b2971ab7ed62ac4cb17a7a16dcb86a98159ed20",
+      "outputs/legacy/malformed_null/processor.log": "5e20a4e8f86b92d06a71bc6e52e53da8c986c8fecb856ed509591926f095943b",
+      "outputs/legacy/malformed_null/run.json": "58f8044b84f01d08836d30d4343d2e0c040532ca1253552a9399f8a55bfb2a8f",
+      "outputs/legacy/malformed_null/summaries.jsonl": "4d7c1357df9663ecbe76ce56465a3a269550abeef6ff313d30bd31dc50b8df7c",
+      "outputs/legacy/normal_session/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/legacy/normal_session/processor.log": "1787463960c16ebbaa5beea822c2aebdb78c9411b5b3ba6bf5032fc7edc0d682",
+      "outputs/legacy/normal_session/run.json": "c8ec2f5b0af2d64af060073c758dbcd70f087944ea284dbc8fb3d19ada640849",
+      "outputs/legacy/normal_session/summaries.jsonl": "bf8565d58707f7b1c9b049870048852d29e898fb6ced1ba99b9b14a1c4717723",
+      "outputs/legacy/numeric_precision/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/legacy/numeric_precision/processor.log": "86a634e0041807df1b2a95a6ac46d4c4c69b170cd778ab219de61e94bf195ff0",
+      "outputs/legacy/numeric_precision/run.json": "b9268caf24ca33768272ac7b5ca247b4988706152fe78cb9aa6b9dc50b3eb2e1",
+      "outputs/legacy/numeric_precision/summaries.jsonl": "575a5bc1d33781b491403f3de6f8ac6ed164433f238c892bb19ce6515e94ec85",
+      "outputs/legacy/out_of_order/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/legacy/out_of_order/processor.log": "375a374f2ac6479e28288e720f411cd2d8e319149f638158742788c0a73be08f",
+      "outputs/legacy/out_of_order/run.json": "92ab26ce9bf068a5d2c02c5a3df0e0b47cbd9a8f89d4b17b6dd1a9389e403aab",
+      "outputs/legacy/out_of_order/summaries.jsonl": "a7613a511c1615b271c23d950636b654d4b672b7425d712afca3262395285192",
+      "outputs/legacy/partitioning_ordering/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/legacy/partitioning_ordering/processor.log": "4befc96487be60976c3307c6ff889c9f92df0cd53b057ba6dbe157a50c9cc797",
+      "outputs/legacy/partitioning_ordering/run.json": "8dc8947f9e9fdfe53d3f8842c092e058d7badaff6781b297f8be09210bfc5bfd",
+      "outputs/legacy/partitioning_ordering/summaries.jsonl": "ee33419783ac6e7021448e374929c3513255a4c09ee4e7a4355c25c1a72ed534",
+      "outputs/legacy/processor_restart/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs/legacy/processor_restart/processor.log": "dd47f278df8ed1ad47ac0d454d982eda804ad8b17d900e03923a64a04976c3d0",
+      "outputs/legacy/processor_restart/run.json": "8626c92625c9779df20c57e27bf241ee30898a0b957bea86952d6b5be28707ac",
+      "outputs/legacy/processor_restart/summaries.jsonl": "97dda4c7ffded5f7a74f13a123ec6e70f6fcd2cf3168161bee320c7b57d14aa0",
+      "outputs/legacy/schema_evolution/errors.jsonl": "f32fcc1bb339bfd361eed9967d8c741b6f5e3163e71f55245554c65f2af71d3f",
+      "outputs/legacy/schema_evolution/processor.log": "20d38e2466d693ce30c543db2633933af8a21f8ba512a5fd19a842090a5cb312",
+      "outputs/legacy/schema_evolution/run.json": "6451159c100bcf3c84c7b65eac281880781051cb561103e5a0dc24edadd9be33",
+      "outputs/legacy/schema_evolution/summaries.jsonl": "b8f3cbd28f7cdda71cd8f2a51b95a005ea6f96a538a8978491c149832aa30070",
+      "outputs/legacy/state_recovery/errors.jsonl": "82f6ac19fc92f74f7dffc6e4904c23cdb9677b17da4b72b91d129ef4f6abab7f",
+      "outputs/legacy/state_recovery/processor.log": "ef1295a7d8dba335f568d398377c4bb4219ecb2e0981de91772a74256a60748a",
+      "outputs/legacy/state_recovery/run.json": "4e996d3a9ee936100b45602c9b127391bacb020a1368a9e798e9d1c7aa210cd2",
+      "outputs/legacy/state_recovery/summaries.jsonl": "707e2808fcaa3dcf4c4f4d99667f72105e6285ea30882ca37488106ef762a149"
+    },
+    "git_shas": {
+      "built_at": "ec296b073955ff6153c81bcc2362aceda0399bee",
+      "run_time": "ec296b073955ff6153c81bcc2362aceda0399bee",
+      "sha_mismatch": false
+    },
+    "package_sha256": "0409be872169165da4f7ee2eb0c8750e281577013c5560cad04264dda5ee4d9e",
+    "package_sha256_method": "SHA-256 of canonical JSON (sorted keys, compact separators, UTF-8) for the complete evidence.json object with integrity.package_sha256 set to null."
+  },
+  "sections": {
+    "A": {
+      "git": {
+        "built_at": {
+          "git_dirty": false,
+          "git_sha": "ec296b073955ff6153c81bcc2362aceda0399bee"
+        },
+        "run_time": {
+          "git_dirty": false,
+          "git_sha": "ec296b073955ff6153c81bcc2362aceda0399bee"
+        },
+        "sha_mismatch": false
+      },
+      "mode": {
+        "baseline": "legacy",
+        "strict": false,
+        "tolerance": 1e-06
+      },
+      "processors": {
+        "baseline": "legacy",
+        "candidate": "candidate",
+        "runs": [
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "concurrent_sessions",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "consumer_replay",
+            "status": "present"
+          },
+          {
+            "duration_ms": 3,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "downstream_contract",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "duplicates",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "late_events_window_boundary",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "malformed_null",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "normal_session",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "numeric_precision",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "out_of_order",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "partitioning_ordering",
+            "status": "present"
+          },
+          {
+            "duration_ms": 4,
+            "exit_codes": [
+              0,
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "processor_restart",
+            "status": "present"
+          },
+          {
+            "duration_ms": 1,
+            "exit_codes": [
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "schema_evolution",
+            "status": "present"
+          },
+          {
+            "duration_ms": 4,
+            "exit_codes": [
+              0,
+              0
+            ],
+            "processor": "candidate",
+            "scenario": "state_recovery",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "concurrent_sessions",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "consumer_replay",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "downstream_contract",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "duplicates",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "late_events_window_boundary",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "malformed_null",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "normal_session",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "numeric_precision",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "out_of_order",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "partitioning_ordering",
+            "status": "present"
+          },
+          {
+            "duration_ms": 529,
+            "exit_codes": [
+              0,
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "processor_restart",
+            "status": "present"
+          },
+          {
+            "duration_ms": 265,
+            "exit_codes": [
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "schema_evolution",
+            "status": "present"
+          },
+          {
+            "duration_ms": 530,
+            "exit_codes": [
+              0,
+              0
+            ],
+            "processor": "legacy",
+            "scenario": "state_recovery",
+            "status": "present"
+          }
+        ]
+      },
+      "repo": "github.com/xlm/devin-lucid-demo",
+      "scenario_set": [
+        "concurrent_sessions",
+        "consumer_replay",
+        "downstream_contract",
+        "duplicates",
+        "late_events_window_boundary",
+        "malformed_null",
+        "normal_session",
+        "numeric_precision",
+        "out_of_order",
+        "partitioning_ordering",
+        "processor_restart",
+        "schema_evolution",
+        "state_recovery"
+      ],
+      "status": "present",
+      "tool_versions": {
+        "PyYAML": "6.0.3",
+        "cargo": "cargo 1.97.1 (c980f4866 2026-06-30)",
+        "java": "openjdk version \"17.0.19\" 2026-04-21",
+        "jsonschema": "4.26.0",
+        "python": "3.10.12",
+        "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+      },
+      "tool_versions_label": "observed when the evidence package was built"
+    },
+    "B": {
+      "baseline": {
+        "content_sha256_computed": "d1be4378aefa777ba09a54dcc9ca885780f5172ebbdfa43b5c3c80941ae7b8fa",
+        "content_sha256_recorded": "d1be4378aefa777ba09a54dcc9ca885780f5172ebbdfa43b5c3c80941ae7b8fa",
+        "path": "governance/baselines/charging.baseline.json",
+        "processor": "legacy"
+      },
+      "baseline_approval": {
+        "approved_at": "2026-01-10T09:00:00Z",
+        "approved_by": "privacy-reviewer (synthetic demo)",
+        "reference": "DEMO-APPROVAL-0001",
+        "scope": "The 12 processing dimensions of charging-session-processor as declared in legacy-scala/processing-inventory.yaml. Covers declared processing only. Does not approve any migration, cutover or production release."
+      },
+      "candidate": {
+        "path": "rust-processor/processing-inventory.yaml",
+        "processor": "candidate"
+      },
+      "dimensions": {
+        "access": {
+          "baseline_ids": [
+            "charging.errors.v1",
+            "charging.events.v1",
+            "charging.session.summary.v1",
+            "processor.checkpoint",
+            "processor.stderr"
+          ],
+          "candidate_ids": [
+            "charging.errors.v1",
+            "charging.events.v1",
+            "charging.session.summary.v1",
+            "processor.checkpoint",
+            "processor.stderr"
+          ],
+          "status": "unchanged"
+        },
+        "deployment_boundary": {
+          "baseline_ids": [
+            "charging-processing-zone"
+          ],
+          "candidate_ids": [
+            "charging-processing-zone"
+          ],
+          "status": "unchanged"
+        },
+        "external_deps": {
+          "baseline_ids": [
+            "kafka-compatible-broker"
+          ],
+          "candidate_ids": [
+            "kafka-compatible-broker"
+          ],
+          "status": "unchanged"
+        },
+        "inputs": {
+          "baseline_ids": [
+            "charging.events.v1"
+          ],
+          "candidate_ids": [
+            "charging.events.v1"
+          ],
+          "status": "unchanged"
+        },
+        "logging": {
+          "baseline_ids": [
+            "processor.stderr"
+          ],
+          "candidate_ids": [
+            "processor.stderr"
+          ],
+          "status": "unchanged"
+        },
+        "output_destinations": {
+          "baseline_ids": [
+            "charging.errors.v1",
+            "charging.session.summary.v1",
+            "processor.stderr"
+          ],
+          "candidate_ids": [
+            "charging.errors.v1",
+            "charging.session.summary.v1",
+            "processor.stderr"
+          ],
+          "status": "unchanged"
+        },
+        "output_schema": {
+          "baseline_ids": [
+            "charging.errors.v1",
+            "charging.session.summary.v1"
+          ],
+          "candidate_ids": [
+            "charging.errors.v1",
+            "charging.session.summary.v1"
+          ],
+          "status": "unchanged"
+        },
+        "purposes": {
+          "baseline_ids": [
+            "charging-session-summarisation",
+            "input-error-reporting"
+          ],
+          "candidate_ids": [
+            "charging-session-summarisation",
+            "input-error-reporting"
+          ],
+          "status": "unchanged"
+        },
+        "replication": {
+          "baseline_ids": [
+            "processor.checkpoint"
+          ],
+          "candidate_ids": [
+            "processor.checkpoint"
+          ],
+          "status": "unchanged"
+        },
+        "retention": {
+          "baseline_ids": [
+            "charging.errors.v1",
+            "charging.session.summary.v1",
+            "processor.checkpoint",
+            "processor.stderr"
+          ],
+          "candidate_ids": [
+            "charging.errors.v1",
+            "charging.session.summary.v1",
+            "processor.checkpoint",
+            "processor.stderr"
+          ],
+          "status": "unchanged"
+        },
+        "sensitive_fields": {
+          "baseline_ids": [
+            "session_id",
+            "synthetic_location",
+            "vehicle_id"
+          ],
+          "candidate_ids": [
+            "session_id",
+            "synthetic_location",
+            "vehicle_id"
+          ],
+          "status": "unchanged"
+        },
+        "transforms": {
+          "baseline_ids": [
+            "charging.errors.v1.error_type",
+            "charging.errors.v1.event_id",
+            "charging.errors.v1.field",
+            "charging.errors.v1.input_line",
+            "charging.errors.v1.schema_version",
+            "charging.errors.v1.session_id",
+            "charging.errors.v1.vehicle_id",
+            "charging.events.v1.synthetic_location",
+            "charging.session.summary.v1.completion_reason",
+            "charging.session.summary.v1.end_ts",
+            "charging.session.summary.v1.event_count",
+            "charging.session.summary.v1.peak_power_kw",
+            "charging.session.summary.v1.schema_version",
+            "charging.session.summary.v1.session_id",
+            "charging.session.summary.v1.start_ts",
+            "charging.session.summary.v1.total_energy_kwh",
+            "charging.session.summary.v1.vehicle_id"
+          ],
+          "candidate_ids": [
+            "charging.errors.v1.error_type",
+            "charging.errors.v1.event_id",
+            "charging.errors.v1.field",
+            "charging.errors.v1.input_line",
+            "charging.errors.v1.schema_version",
+            "charging.errors.v1.session_id",
+            "charging.errors.v1.vehicle_id",
+            "charging.events.v1.synthetic_location",
+            "charging.session.summary.v1.completion_reason",
+            "charging.session.summary.v1.end_ts",
+            "charging.session.summary.v1.event_count",
+            "charging.session.summary.v1.peak_power_kw",
+            "charging.session.summary.v1.schema_version",
+            "charging.session.summary.v1.session_id",
+            "charging.session.summary.v1.start_ts",
+            "charging.session.summary.v1.total_energy_kwh",
+            "charging.session.summary.v1.vehicle_id"
+          ],
+          "status": "unchanged"
+        }
+      },
+      "implementation": {
+        "baseline": {
+          "logs": "diagnostic logs to stderr only, no identifiers or location",
+          "runtime": "Scala 2.13 on JDK 17; Spark 3.5 Structured Streaming for the streaming job, plain JVM for replay mode",
+          "source": "legacy-scala/"
+        },
+        "candidate": {
+          "logs": "diagnostic logs to stderr only, no identifiers or location",
+          "runtime": "Rust (stable) single-process binary, no Spark or JVM; default build has no Kafka or C dependencies",
+          "source": "rust-processor/"
+        },
+        "changed": true,
+        "informational": true
+      },
+      "status": "present"
+    },
+    "C": {
+      "diff": {
+        "access": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "deployment_boundary": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "external_deps": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "inputs": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "logging": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "output_destinations": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "output_schema": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "purposes": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "replication": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "retention": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "sensitive_fields": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        },
+        "transforms": {
+          "added": [],
+          "changed": [],
+          "removed": []
+        }
+      },
+      "implementation_changed": true,
+      "policies": [
+        {
+          "id": "no-new-sensitive-output-fields",
+          "severity": "violation",
+          "status": "pass",
+          "title": "No new or sensitive output fields"
+        },
+        {
+          "id": "no-sensitive-location-propagation",
+          "severity": "violation",
+          "status": "pass",
+          "title": "Restricted location never leaves the processor"
+        },
+        {
+          "id": "no-identifiers-to-unapproved-destinations",
+          "severity": "violation",
+          "status": "pass",
+          "title": "Vehicle-identifying values only reach approved topics, never logs"
+        },
+        {
+          "id": "no-retention-change",
+          "severity": "violation",
+          "status": "pass",
+          "title": "No retention change"
+        },
+        {
+          "id": "no-new-destinations",
+          "severity": "violation",
+          "status": "pass",
+          "title": "No new output destinations"
+        },
+        {
+          "id": "no-expanded-access",
+          "severity": "violation",
+          "status": "pass",
+          "title": "No expanded access"
+        },
+        {
+          "id": "no-altered-sensitive-transformations",
+          "severity": "violation",
+          "status": "pass",
+          "title": "No silently altered transformations of personal or sensitive fields"
+        },
+        {
+          "id": "no-relaxed-logging-restrictions",
+          "severity": "violation",
+          "status": "pass",
+          "title": "No relaxed logging restrictions"
+        },
+        {
+          "id": "review-new-external-dependencies",
+          "severity": "review",
+          "status": "pass",
+          "title": "New or changed external dependencies need review"
+        },
+        {
+          "id": "review-replication-change",
+          "severity": "review",
+          "status": "pass",
+          "title": "Replication changes need review"
+        },
+        {
+          "id": "review-deployment-boundary-change",
+          "severity": "review",
+          "status": "pass",
+          "title": "Deployment-boundary changes need review"
+        },
+        {
+          "id": "review-new-inputs-or-purposes",
+          "severity": "review",
+          "status": "pass",
+          "title": "New inputs, purposes or personal fields need review"
+        }
+      ],
+      "status": "present"
+    },
+    "D": {
+      "gates": {
+        "behavioural": {
+          "by_basis": {
+            "unspecified": 456
+          },
+          "by_verification_kind": {
+            "runtime": 456,
+            "static": 0
+          },
+          "failing_checks": [],
+          "skipped_count": 0,
+          "status": "pass",
+          "summary_counts": {
+            "checks": 456,
+            "failed": 0,
+            "passed": 456,
+            "skipped": 0
+          }
+        },
+        "contract": {
+          "by_basis": {
+            "unspecified": 91
+          },
+          "by_verification_kind": {
+            "runtime": 91,
+            "static": 0
+          },
+          "failing_checks": [],
+          "skipped_count": 0,
+          "status": "pass",
+          "summary_counts": {
+            "checks": 91,
+            "failed": 0,
+            "passed": 91,
+            "skipped": 0
+          }
+        },
+        "privacy": {
+          "by_basis": {
+            "declared-manifest": 34,
+            "integrity": 1,
+            "runtime-observed": 39,
+            "source-scan": 1
+          },
+          "by_verification_kind": {
+            "runtime": 39,
+            "static": 36
+          },
+          "failing_checks": [],
+          "skipped_count": 0,
+          "status": "pass",
+          "summary_counts": {
+            "checks": 75,
+            "failed": 0,
+            "passed": 75,
+            "skipped": 0
+          }
+        },
+        "state_ordering": {
+          "by_basis": {
+            "unspecified": 22
+          },
+          "by_verification_kind": {
+            "runtime": 22,
+            "static": 0
+          },
+          "failing_checks": [],
+          "skipped_count": 0,
+          "status": "pass",
+          "summary_counts": {
+            "checks": 22,
+            "failed": 0,
+            "passed": 22,
+            "skipped": 0
+          }
+        }
+      },
+      "status": "present"
+    },
+    "E": {
+      "disposition": {
+        "reasons": {
+          "clarification": [],
+          "review": [],
+          "violation": []
+        },
+        "recommendation": "no-material-change",
+        "required_human_actions": [
+          "A privacy reviewer reviews this package and decides what action is appropriate.",
+          "ReadyForReview -> ApprovedForCutover is a human action.",
+          "Only humans change baselines and policies."
+        ],
+        "statement": "Automated recommendation for a human privacy reviewer. It is not a legal or compliance determination, does not approve cutover and does not discharge privacy-review obligations."
+      },
+      "guarantee_boundaries": "This package covers fast-tier replay. The contract provides per-key ordering only; restart behavior is at-least-once. No exactly-once, global ordering or atomic cutover claim is made.",
+      "required_human_actions": [
+        "A privacy reviewer reviews this package and decides what action is appropriate.",
+        "ReadyForReview -> ApprovedForCutover is a human action.",
+        "Only humans change baselines and policies."
+      ],
+      "statement": "This automated result does not approve cutover or production release and does not discharge privacy-review obligations. Passing checks are not proof of production safety. The ReadyForReview -> ApprovedForCutover transition is a human decision."
+    },
+    "F": {
+      "file_statuses": {
+        "context.json": "present",
+        "gates/behavioural.json": "present",
+        "gates/contract.json": "present",
+        "gates/privacy.json": "present",
+        "gates/state_ordering.json": "present",
+        "outputs/candidate/build.json": "present",
+        "outputs/candidate/build.log": "present",
+        "outputs/candidate/concurrent_sessions/errors.jsonl": "present",
+        "outputs/candidate/concurrent_sessions/processor.log": "present",
+        "outputs/candidate/concurrent_sessions/run.json": "present",
+        "outputs/candidate/concurrent_sessions/summaries.jsonl": "present",
+        "outputs/candidate/consumer_replay/errors.jsonl": "present",
+        "outputs/candidate/consumer_replay/processor.log": "present",
+        "outputs/candidate/consumer_replay/run.json": "present",
+        "outputs/candidate/consumer_replay/summaries.jsonl": "present",
+        "outputs/candidate/downstream_contract/errors.jsonl": "present",
+        "outputs/candidate/downstream_contract/processor.log": "present",
+        "outputs/candidate/downstream_contract/run.json": "present",
+        "outputs/candidate/downstream_contract/summaries.jsonl": "present",
+        "outputs/candidate/duplicates/errors.jsonl": "present",
+        "outputs/candidate/duplicates/processor.log": "present",
+        "outputs/candidate/duplicates/run.json": "present",
+        "outputs/candidate/duplicates/summaries.jsonl": "present",
+        "outputs/candidate/late_events_window_boundary/errors.jsonl": "present",
+        "outputs/candidate/late_events_window_boundary/processor.log": "present",
+        "outputs/candidate/late_events_window_boundary/run.json": "present",
+        "outputs/candidate/late_events_window_boundary/summaries.jsonl": "present",
+        "outputs/candidate/malformed_null/errors.jsonl": "present",
+        "outputs/candidate/malformed_null/processor.log": "present",
+        "outputs/candidate/malformed_null/run.json": "present",
+        "outputs/candidate/malformed_null/summaries.jsonl": "present",
+        "outputs/candidate/normal_session/errors.jsonl": "present",
+        "outputs/candidate/normal_session/processor.log": "present",
+        "outputs/candidate/normal_session/run.json": "present",
+        "outputs/candidate/normal_session/summaries.jsonl": "present",
+        "outputs/candidate/numeric_precision/errors.jsonl": "present",
+        "outputs/candidate/numeric_precision/processor.log": "present",
+        "outputs/candidate/numeric_precision/run.json": "present",
+        "outputs/candidate/numeric_precision/summaries.jsonl": "present",
+        "outputs/candidate/out_of_order/errors.jsonl": "present",
+        "outputs/candidate/out_of_order/processor.log": "present",
+        "outputs/candidate/out_of_order/run.json": "present",
+        "outputs/candidate/out_of_order/summaries.jsonl": "present",
+        "outputs/candidate/partitioning_ordering/errors.jsonl": "present",
+        "outputs/candidate/partitioning_ordering/processor.log": "present",
+        "outputs/candidate/partitioning_ordering/run.json": "present",
+        "outputs/candidate/partitioning_ordering/summaries.jsonl": "present",
+        "outputs/candidate/processor_restart/errors.jsonl": "present",
+        "outputs/candidate/processor_restart/processor.log": "present",
+        "outputs/candidate/processor_restart/run.json": "present",
+        "outputs/candidate/processor_restart/summaries.jsonl": "present",
+        "outputs/candidate/schema_evolution/errors.jsonl": "present",
+        "outputs/candidate/schema_evolution/processor.log": "present",
+        "outputs/candidate/schema_evolution/run.json": "present",
+        "outputs/candidate/schema_evolution/summaries.jsonl": "present",
+        "outputs/candidate/state_recovery/errors.jsonl": "present",
+        "outputs/candidate/state_recovery/processor.log": "present",
+        "outputs/candidate/state_recovery/run.json": "present",
+        "outputs/candidate/state_recovery/summaries.jsonl": "present",
+        "outputs/legacy/build.json": "present",
+        "outputs/legacy/build.log": "present",
+        "outputs/legacy/concurrent_sessions/errors.jsonl": "present",
+        "outputs/legacy/concurrent_sessions/processor.log": "present",
+        "outputs/legacy/concurrent_sessions/run.json": "present",
+        "outputs/legacy/concurrent_sessions/summaries.jsonl": "present",
+        "outputs/legacy/consumer_replay/errors.jsonl": "present",
+        "outputs/legacy/consumer_replay/processor.log": "present",
+        "outputs/legacy/consumer_replay/run.json": "present",
+        "outputs/legacy/consumer_replay/summaries.jsonl": "present",
+        "outputs/legacy/downstream_contract/errors.jsonl": "present",
+        "outputs/legacy/downstream_contract/processor.log": "present",
+        "outputs/legacy/downstream_contract/run.json": "present",
+        "outputs/legacy/downstream_contract/summaries.jsonl": "present",
+        "outputs/legacy/duplicates/errors.jsonl": "present",
+        "outputs/legacy/duplicates/processor.log": "present",
+        "outputs/legacy/duplicates/run.json": "present",
+        "outputs/legacy/duplicates/summaries.jsonl": "present",
+        "outputs/legacy/late_events_window_boundary/errors.jsonl": "present",
+        "outputs/legacy/late_events_window_boundary/processor.log": "present",
+        "outputs/legacy/late_events_window_boundary/run.json": "present",
+        "outputs/legacy/late_events_window_boundary/summaries.jsonl": "present",
+        "outputs/legacy/malformed_null/errors.jsonl": "present",
+        "outputs/legacy/malformed_null/processor.log": "present",
+        "outputs/legacy/malformed_null/run.json": "present",
+        "outputs/legacy/malformed_null/summaries.jsonl": "present",
+        "outputs/legacy/normal_session/errors.jsonl": "present",
+        "outputs/legacy/normal_session/processor.log": "present",
+        "outputs/legacy/normal_session/run.json": "present",
+        "outputs/legacy/normal_session/summaries.jsonl": "present",
+        "outputs/legacy/numeric_precision/errors.jsonl": "present",
+        "outputs/legacy/numeric_precision/processor.log": "present",
+        "outputs/legacy/numeric_precision/run.json": "present",
+        "outputs/legacy/numeric_precision/summaries.jsonl": "present",
+        "outputs/legacy/out_of_order/errors.jsonl": "present",
+        "outputs/legacy/out_of_order/processor.log": "present",
+        "outputs/legacy/out_of_order/run.json": "present",
+        "outputs/legacy/out_of_order/summaries.jsonl": "present",
+        "outputs/legacy/partitioning_ordering/errors.jsonl": "present",
+        "outputs/legacy/partitioning_ordering/processor.log": "present",
+        "outputs/legacy/partitioning_ordering/run.json": "present",
+        "outputs/legacy/partitioning_ordering/summaries.jsonl": "present",
+        "outputs/legacy/processor_restart/errors.jsonl": "present",
+        "outputs/legacy/processor_restart/processor.log": "present",
+        "outputs/legacy/processor_restart/run.json": "present",
+        "outputs/legacy/processor_restart/summaries.jsonl": "present",
+        "outputs/legacy/schema_evolution/errors.jsonl": "present",
+        "outputs/legacy/schema_evolution/processor.log": "present",
+        "outputs/legacy/schema_evolution/run.json": "present",
+        "outputs/legacy/schema_evolution/summaries.jsonl": "present",
+        "outputs/legacy/state_recovery/errors.jsonl": "present",
+        "outputs/legacy/state_recovery/processor.log": "present",
+        "outputs/legacy/state_recovery/run.json": "present",
+        "outputs/legacy/state_recovery/summaries.jsonl": "present"
+      },
+      "files": {
+        "context.json": "d4d1f91e791a3ab927726b31667bcc5db950d78dadad68faea07a9743e439115",
+        "gates/behavioural.json": "16f43dca29c9d4177d9b2b277bd20d8cb13f73e9f0d946c575849259f5bb0285",
+        "gates/contract.json": "bca81c2b1e1b86cfd9132606fc8ebe5f74dad3a7cbb168a38e998dbbcd4a31c3",
+        "gates/privacy.json": "677fb1772c1a44eacc25d4999c3dc45414221ac97a19dad6867ce23e77183e0c",
+        "gates/state_ordering.json": "6f948c1882e15e26abf0f177c21664c4ca83a65d385c1f4802f5e118554c6308",
+        "outputs/candidate/build.json": "5a45b1e0763ec52cb0cb4afa4015b5b7d65ce73cb28305683304f26b785c4139",
+        "outputs/candidate/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/concurrent_sessions/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/concurrent_sessions/processor.log": "498744a6c732560fea640b7ccc751cd4684600f3a74901d70377dc01bcb582cf",
+        "outputs/candidate/concurrent_sessions/run.json": "5319e90fb89088e348307d8503b1467376c09e48b6d1762980c7884e26c83c6c",
+        "outputs/candidate/concurrent_sessions/summaries.jsonl": "c5ed2ed929640cf4e4a6e9ba923b8712a017d7142f622cf17afa1bd384430b3f",
+        "outputs/candidate/consumer_replay/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/consumer_replay/processor.log": "9181be0691eca54c98696db13e7e9e1fe49cf604cf2760394923df7ce8f35c40",
+        "outputs/candidate/consumer_replay/run.json": "2b9a5c0dc3183a92322cbba56828d50aaa5049c7b3f2dffb37f0e5e05cf783a5",
+        "outputs/candidate/consumer_replay/summaries.jsonl": "92aca789b37b02b4283a1df58a9a9a53a5d520a68da43a57ee17bf381f82f537",
+        "outputs/candidate/downstream_contract/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/downstream_contract/processor.log": "987964208799cf7a7920fe3df76133ecdfcffa6fc4abe0692dffd6a08e369b5f",
+        "outputs/candidate/downstream_contract/run.json": "9aebc10a30e77cd438aa6b3fb2856819a702b351e0bc81904c9c935b6c7635e5",
+        "outputs/candidate/downstream_contract/summaries.jsonl": "1e44ef4e522002634e6c306cf598bc3709688f418a8c9c6d54c188f91d437522",
+        "outputs/candidate/duplicates/errors.jsonl": "f5e9d93d80b46222ddacd1b353f7acf0633a33c674150b4b6300993095b180c5",
+        "outputs/candidate/duplicates/processor.log": "66657de2cc92ed4b229bcafea51d8c751d0f829b2e7cca5f96af42879fe1f56c",
+        "outputs/candidate/duplicates/run.json": "8cb78f0cb7a27f896dc7eff4ef4111956aafda9ba4adbcdbfe76915894e40d37",
+        "outputs/candidate/duplicates/summaries.jsonl": "8ba360e52df9796be14d6bf1e0ddb4970a9042c90bcf17bbc7b0f23111db57ce",
+        "outputs/candidate/late_events_window_boundary/errors.jsonl": "4b90c3962a9b3b4dd64c8038ec8b607b3d95f06e0ec18eb228bf8fe094819b33",
+        "outputs/candidate/late_events_window_boundary/processor.log": "0584fa2f9f9c27dcb233cffe3d43304869d4496b7d769cd74086fc87c36d096b",
+        "outputs/candidate/late_events_window_boundary/run.json": "0173ae9d8d2d029c38ce83a57c9a93a9d5e828ddcea1ad0e2f48ab9c54a996d8",
+        "outputs/candidate/late_events_window_boundary/summaries.jsonl": "5307dd011d6d90e07e198689b1954721e54be4e6ad91c049943d763b30fc0e19",
+        "outputs/candidate/malformed_null/errors.jsonl": "0e69043f2b809704102eda3914795325ce90a10b238eeee0ec3f3c0b8621bf61",
+        "outputs/candidate/malformed_null/processor.log": "a1480a9bceeead157f88464ecae0832528a0f2ea8f5cb64fcf2a761591e6e943",
+        "outputs/candidate/malformed_null/run.json": "15b7ae9b1eed3029f81508a01b2f5a3153717563a1351cdf24689ec78eafb563",
+        "outputs/candidate/malformed_null/summaries.jsonl": "c96b06adadcb6293d3abfcb8e8e119827a846e25c252f71f97d903d0503bd2aa",
+        "outputs/candidate/normal_session/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/normal_session/processor.log": "38b660c958a98affcb6d535d9ee9e7459bbb8210cc309c05753cbce8215918c8",
+        "outputs/candidate/normal_session/run.json": "9ec2d26dd42ea7418f3b273d9da66d6ef43722797c7d9205236e4c1933a30efe",
+        "outputs/candidate/normal_session/summaries.jsonl": "dc1c61276b543f9b782a845901caa2f786800c49169a087d6e1fead4d8c219e4",
+        "outputs/candidate/numeric_precision/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/numeric_precision/processor.log": "7bca55c11fcab07ab0bba78454626353c7ebcd449b190cbb35d0e273ea61843b",
+        "outputs/candidate/numeric_precision/run.json": "8043dd3e9fa51e6781d9bbba5fe30626608e22d828e2b3293786e7367411597e",
+        "outputs/candidate/numeric_precision/summaries.jsonl": "f47c9bbf6eac8144564ae3076ec653e6b644638852a2e93c91f605ad40df9742",
+        "outputs/candidate/out_of_order/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/out_of_order/processor.log": "3206061baad57ca70cbdf3a2a00c9657d103aa4aa669f8e61ae6e9ca3b72c3b2",
+        "outputs/candidate/out_of_order/run.json": "50e23cd49181aaae8feb8182afc4b7c7a3da659e65e48a16dce004db890d5019",
+        "outputs/candidate/out_of_order/summaries.jsonl": "008247c9303f79ab55ae2e0443957720f514ae1062e258d7d8d612e939aeea1f",
+        "outputs/candidate/partitioning_ordering/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/partitioning_ordering/processor.log": "d392714937ce4c645752f753ee259d409001b21dc815649e8e312273bb96f40f",
+        "outputs/candidate/partitioning_ordering/run.json": "f98252c7835980b9eb92b9ba3214b5938ab52675ed0f847944cc789bc42191a2",
+        "outputs/candidate/partitioning_ordering/summaries.jsonl": "9379108d04fbc3a42f57eabc84a61c0b38fd89a6653f8150bc4301be1f5a68cf",
+        "outputs/candidate/processor_restart/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/candidate/processor_restart/processor.log": "f6275f6958cee1c0dbd7f7071423c767a1e715782db0640d29b1d97625f2bb4f",
+        "outputs/candidate/processor_restart/run.json": "9f34f3ac7ec0d001b980de66c82cea03f14b5889acec64b4001fe5dab7bd703d",
+        "outputs/candidate/processor_restart/summaries.jsonl": "c157a948c54dd7a69decd6e2906d3d0e2b9912fd95019cc6399f32b0cb1e1ed1",
+        "outputs/candidate/schema_evolution/errors.jsonl": "bf57b04103ce49866e626b72d49ee9f977a5d949b0a9b92b6191b4b58eb6f7c0",
+        "outputs/candidate/schema_evolution/processor.log": "ee4ce35dd5b25dda466718dfa89af17710be67fe271ce495d0fabaeb6560f35f",
+        "outputs/candidate/schema_evolution/run.json": "58ff8ca0fb2c5f2acd58bbc0ff9fdd4a5330805f8a87ad6cb2211c0229781006",
+        "outputs/candidate/schema_evolution/summaries.jsonl": "e8cd8233a6bc7c7c924c1833ba1b42b2384f635d4ddc276068d8ae7a101f574c",
+        "outputs/candidate/state_recovery/errors.jsonl": "bf9c45c3481db3babed09ea6d4562414a5700f0c28175fd686f3d4d2e88092d3",
+        "outputs/candidate/state_recovery/processor.log": "ee1b103f5c56ff51aedf8287e7313f676146c294cbe8d394d1054676e555f9d7",
+        "outputs/candidate/state_recovery/run.json": "7be42be3cea2bedd8ae58cf5411e2e1a922940dd83e7283d539d3a6063b7cb91",
+        "outputs/candidate/state_recovery/summaries.jsonl": "6dc557ad8bda3ead47ef3b5be0cfaac9cd6c98c41892de0fad199673b5aa4ad3",
+        "outputs/legacy/build.json": "f1c1a58a656bcb69c7f3344ecfc64c5bbec6a086216fac28c2107c2d50ad3502",
+        "outputs/legacy/build.log": "c545d0d233682d3542278c7615dd682cbd7d7987f836dcf059944b4c4d706dbb",
+        "outputs/legacy/concurrent_sessions/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/legacy/concurrent_sessions/processor.log": "9bdea2a7c3133b73c3cd05c2325466d0a6e21095075cd1871f6c07131906e5e5",
+        "outputs/legacy/concurrent_sessions/run.json": "63c333cc66e10631ac93cf90d8a6c3745dc7bc0908dce4f0bbac34e88a48a3e0",
+        "outputs/legacy/concurrent_sessions/summaries.jsonl": "64c1ab512e0a443d17d5489955f45d44f4a808fc96f7fb68bbec74fc1581fe7f",
+        "outputs/legacy/consumer_replay/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/legacy/consumer_replay/processor.log": "45f2629fa7d878f84eb78ca74ecf4f90d482048f527ce42b013fbf27fcd2ac58",
+        "outputs/legacy/consumer_replay/run.json": "ae23ebe50cfd66bc073980d8dd30fb3a8de04320e50e68fdfa8ed1e7aafbca79",
+        "outputs/legacy/consumer_replay/summaries.jsonl": "e8946fccaf354ccf5be687a1093cb6c1fa731355897b7bf2d282590f02651bbd",
+        "outputs/legacy/downstream_contract/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/legacy/downstream_contract/processor.log": "133087f419c81ed8d79b50dfaffc7a7ca448e33f6a29bdb39c9003a091341da6",
+        "outputs/legacy/downstream_contract/run.json": "c433e8a83cafc2dff2e7fded5d90572611f646cafa84c2fbde6643ac2096538f",
+        "outputs/legacy/downstream_contract/summaries.jsonl": "8199253634ee605c062b6c85f647f68ab766ff2eba1a5112bd1942089b076535",
+        "outputs/legacy/duplicates/errors.jsonl": "4df3c8e8c2c304aa59785ecddbfd8468e3b45698cc662bc85b9879b90930fd4a",
+        "outputs/legacy/duplicates/processor.log": "48626b53290c8b1be66476fcb1449c6272f27975d4004655ff15977abb08837b",
+        "outputs/legacy/duplicates/run.json": "ba3f722c855a608ebdcfccac3113abe21541479cfd11477646ad89c796e627e0",
+        "outputs/legacy/duplicates/summaries.jsonl": "9613e569374dc80ed2febe92f5e327b8d25856d0d8b122e88925235bb06e7981",
+        "outputs/legacy/late_events_window_boundary/errors.jsonl": "123d32f340b6d57c09247d692c42e202941180b93d7efb300f4257d4d8adf59d",
+        "outputs/legacy/late_events_window_boundary/processor.log": "a9b3412786b2f373f04942824e44d364dd146d70edd8bd9bb64ee5b8262a9ae6",
+        "outputs/legacy/late_events_window_boundary/run.json": "84b2ad8153554ea7f83234b0e5d1db63454c43121fedf0499e57ee09f7f257da",
+        "outputs/legacy/late_events_window_boundary/summaries.jsonl": "3cc887c44d50e910fe1dae6fc3291c385f1e1eb24bc57edcd06bf1cbad89dd92",
+        "outputs/legacy/malformed_null/errors.jsonl": "ca3058d837ce3867cdaa8c6e7b2971ab7ed62ac4cb17a7a16dcb86a98159ed20",
+        "outputs/legacy/malformed_null/processor.log": "5e20a4e8f86b92d06a71bc6e52e53da8c986c8fecb856ed509591926f095943b",
+        "outputs/legacy/malformed_null/run.json": "58f8044b84f01d08836d30d4343d2e0c040532ca1253552a9399f8a55bfb2a8f",
+        "outputs/legacy/malformed_null/summaries.jsonl": "4d7c1357df9663ecbe76ce56465a3a269550abeef6ff313d30bd31dc50b8df7c",
+        "outputs/legacy/normal_session/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/legacy/normal_session/processor.log": "1787463960c16ebbaa5beea822c2aebdb78c9411b5b3ba6bf5032fc7edc0d682",
+        "outputs/legacy/normal_session/run.json": "c8ec2f5b0af2d64af060073c758dbcd70f087944ea284dbc8fb3d19ada640849",
+        "outputs/legacy/normal_session/summaries.jsonl": "bf8565d58707f7b1c9b049870048852d29e898fb6ced1ba99b9b14a1c4717723",
+        "outputs/legacy/numeric_precision/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/legacy/numeric_precision/processor.log": "86a634e0041807df1b2a95a6ac46d4c4c69b170cd778ab219de61e94bf195ff0",
+        "outputs/legacy/numeric_precision/run.json": "b9268caf24ca33768272ac7b5ca247b4988706152fe78cb9aa6b9dc50b3eb2e1",
+        "outputs/legacy/numeric_precision/summaries.jsonl": "575a5bc1d33781b491403f3de6f8ac6ed164433f238c892bb19ce6515e94ec85",
+        "outputs/legacy/out_of_order/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/legacy/out_of_order/processor.log": "375a374f2ac6479e28288e720f411cd2d8e319149f638158742788c0a73be08f",
+        "outputs/legacy/out_of_order/run.json": "92ab26ce9bf068a5d2c02c5a3df0e0b47cbd9a8f89d4b17b6dd1a9389e403aab",
+        "outputs/legacy/out_of_order/summaries.jsonl": "a7613a511c1615b271c23d950636b654d4b672b7425d712afca3262395285192",
+        "outputs/legacy/partitioning_ordering/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/legacy/partitioning_ordering/processor.log": "4befc96487be60976c3307c6ff889c9f92df0cd53b057ba6dbe157a50c9cc797",
+        "outputs/legacy/partitioning_ordering/run.json": "8dc8947f9e9fdfe53d3f8842c092e058d7badaff6781b297f8be09210bfc5bfd",
+        "outputs/legacy/partitioning_ordering/summaries.jsonl": "ee33419783ac6e7021448e374929c3513255a4c09ee4e7a4355c25c1a72ed534",
+        "outputs/legacy/processor_restart/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "outputs/legacy/processor_restart/processor.log": "dd47f278df8ed1ad47ac0d454d982eda804ad8b17d900e03923a64a04976c3d0",
+        "outputs/legacy/processor_restart/run.json": "8626c92625c9779df20c57e27bf241ee30898a0b957bea86952d6b5be28707ac",
+        "outputs/legacy/processor_restart/summaries.jsonl": "97dda4c7ffded5f7a74f13a123ec6e70f6fcd2cf3168161bee320c7b57d14aa0",
+        "outputs/legacy/schema_evolution/errors.jsonl": "f32fcc1bb339bfd361eed9967d8c741b6f5e3163e71f55245554c65f2af71d3f",
+        "outputs/legacy/schema_evolution/processor.log": "20d38e2466d693ce30c543db2633933af8a21f8ba512a5fd19a842090a5cb312",
+        "outputs/legacy/schema_evolution/run.json": "6451159c100bcf3c84c7b65eac281880781051cb561103e5a0dc24edadd9be33",
+        "outputs/legacy/schema_evolution/summaries.jsonl": "b8f3cbd28f7cdda71cd8f2a51b95a005ea6f96a538a8978491c149832aa30070",
+        "outputs/legacy/state_recovery/errors.jsonl": "82f6ac19fc92f74f7dffc6e4904c23cdb9677b17da4b72b91d129ef4f6abab7f",
+        "outputs/legacy/state_recovery/processor.log": "ef1295a7d8dba335f568d398377c4bb4219ecb2e0981de91772a74256a60748a",
+        "outputs/legacy/state_recovery/run.json": "4e996d3a9ee936100b45602c9b127391bacb020a1368a9e798e9d1c7aa210cd2",
+        "outputs/legacy/state_recovery/summaries.jsonl": "707e2808fcaa3dcf4c4f4d99667f72105e6285ea30882ca37488106ef762a149"
+      },
+      "git_shas": {
+        "built_at": "ec296b073955ff6153c81bcc2362aceda0399bee",
+        "run_time": "ec296b073955ff6153c81bcc2362aceda0399bee",
+        "sha_mismatch": false
+      },
+      "package_sha256_method": "SHA-256 of canonical JSON (sorted keys, compact separators, UTF-8) for the complete evidence.json object with integrity.package_sha256 set to null.",
+      "status": "present"
+    }
+  }
+}
