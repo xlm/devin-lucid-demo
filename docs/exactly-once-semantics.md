@@ -12,12 +12,15 @@ Its lease is one coordination file protected by `fcntl.flock`. This is a
 local demonstration mechanism, not a distributed lease, a broker fence, or
 an exactly-once protocol.
 
-## Optional Kafka integration tier
+## Planned Kafka integration tier
 
-The optional integration tier can exercise keyed Kafka records, producer
-transactions, `read_committed` consumers, and offsets committed in the same
-transaction as produced records. Records are keyed by `vehicle_id`, so Kafka
-partition order is per vehicle key.
+The optional integration tier is not implemented at this revision.
+`scripts/run-integration.sh` exits with status 3 until
+`verification/integration/__init__.py` is present. Once implemented, it is
+intended to exercise keyed Kafka records, producer transactions,
+`read_committed` consumers, and offsets committed in the same transaction as
+produced records. Records are keyed by `vehicle_id`, so Kafka partition
+order is per vehicle key.
 
 Kafka transactions provide exactly-once processing only within Kafka-to-Kafka
 transactions on one cluster, when producers and consumers are configured and
