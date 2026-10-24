@@ -1,7 +1,6 @@
 """Build a self-contained evidence package from a verification run directory."""
 from __future__ import annotations
 
-import copy
 import hashlib
 import html
 import importlib.metadata
@@ -82,17 +81,28 @@ def _sanitize_text(value):
     return value
 
 
+def _normalize_repo_origin(remote: str) -> str:
+    if "://" in remote:
+        authority, _, path = remote.split("://", 1)[1].partition("/")
+        authority = authority.rsplit("@", 1)[-1]
+        remote = f"{authority}/{path}" if path else authority
+    else:
+        remote = remote.rsplit("@", 1)[-1]
+        scp_match = re.match(r"^([^/:]+):(.+)$", remote)
+        if scp_match:
+            remote = f"{scp_match.group(1)}/{scp_match.group(2)}"
+    remote = remote.strip("/")
+    remote = re.sub(r"^[^/]+/proxy/", "", remote, count=1)
+    return remote.removesuffix(".git")
+
+
 def _repo_origin(repo_root: Path) -> str:
     try:
         result = subprocess.run(
             ["git", "remote", "get-url", "origin"], cwd=repo_root,
             capture_output=True, text=True, check=True, timeout=10,
         )
-        remote = result.stdout.strip()
-        if "://" in remote:
-            remote = re.sub(r"(?<=://)[^/@]+@", "", remote, count=1)
-        elif "@" in remote:
-            remote = remote.rsplit("@", 1)[-1]
+        remote = _normalize_repo_origin(result.stdout.strip())
         return remote or repo_root.name
     except (OSError, subprocess.SubprocessError):
         return repo_root.name
@@ -217,16 +227,26 @@ def _inventory_section(privacy: dict | None, privacy_status: str) -> dict:
         candidate = {}
     baseline_ids = baseline.get("dimensions", {})
     candidate_ids = candidate.get("dimensions", {})
+    if not isinstance(baseline_ids, dict):
+        baseline_ids = {}
+    if not isinstance(candidate_ids, dict):
+        candidate_ids = {}
+    diff = inventory.get("diff", {})
+    if not isinstance(diff, dict):
+        diff = {}
+    implementation_changed = inventory.get("implementation_changed")
+    if not isinstance(implementation_changed, bool):
+        implementation_changed = baseline.get("implementation") != candidate.get("implementation")
     dimensions = {}
     for name in list(baseline_ids) + [key for key in candidate_ids if key not in baseline_ids]:
+        delta = diff.get(name)
+        status = "unknown"
+        if isinstance(delta, dict) and all(key in delta for key in ("added", "removed", "changed")):
+            status = "changed" if any(delta[key] for key in ("added", "removed", "changed")) else "unchanged"
         dimensions[name] = {
             "baseline_ids": baseline_ids.get(name, []),
             "candidate_ids": candidate_ids.get(name, []),
-            "implementation": {
-                "baseline": baseline.get("implementation"),
-                "candidate": candidate.get("implementation"),
-                "informational": True,
-            },
+            "status": status,
         }
     return {
         "status": "present" if privacy_status in {"pass", "fail", "error"} else privacy_status,
@@ -235,6 +255,12 @@ def _inventory_section(privacy: dict | None, privacy_status: str) -> dict:
             "path", "processor", "content_sha256_recorded", "content_sha256_computed"
         )},
         "candidate": {key: candidate.get(key) for key in ("path", "processor")},
+        "implementation": {
+            "baseline": baseline.get("implementation"),
+            "candidate": candidate.get("implementation"),
+            "changed": implementation_changed,
+            "informational": True,
+        },
         "dimensions": dimensions,
     }
 
@@ -286,64 +312,353 @@ def _disposition_section(privacy: dict | None, privacy_status: str,
     }
 
 
+SECTION_TITLES = (
+    ("A", "Identity"),
+    ("B", "Processing inventory"),
+    ("C", "Change assessment"),
+    ("D", "Validation evidence"),
+    ("E", "Review disposition"),
+    ("F", "Integrity"),
+)
+REVIEWER_RECOMMENDATION = (
+    "Automated recommendation for a human reviewer, not a legal or compliance determination"
+)
+
+
+def _display(value) -> str:
+    if value is None:
+        return "unknown"
+    if isinstance(value, (dict, list)):
+        return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
+
+
+def _id_list(value) -> str:
+    if not isinstance(value, list):
+        return _display(value)
+    return ", ".join(_display(item) for item in value) if value else "none"
+
+
+def _table(headers: list[str], rows: list[list], status_column: int | None = None) -> tuple:
+    return ("table", headers, rows, status_column)
+
+
+def _section_blocks(key: str, sections: dict, integrity: dict) -> list[tuple]:
+    if key == "A":
+        identity = sections["A"]
+        git = identity.get("git", {})
+        processors = identity.get("processors", {})
+        return [
+            _table(["Item", "Value"], [
+                ["Repository", identity.get("repo")],
+                ["Run git SHA / dirty", git.get("run_time")],
+                ["Built-at SHA / mismatch", {
+                    "git_sha": git.get("built_at", {}).get("git_sha"),
+                    "sha_mismatch": git.get("sha_mismatch"),
+                }],
+                ["Processors", {
+                    "baseline": processors.get("baseline"),
+                    "candidate": processors.get("candidate"),
+                    "runs": processors.get("runs", []),
+                }],
+                ["Scenarios", identity.get("scenario_set")],
+                ["Mode", identity.get("mode")],
+                ["Tool versions", identity.get("tool_versions")],
+            ]),
+        ]
+    if key == "B":
+        inventory = sections["B"]
+        dimensions = inventory.get("dimensions", {})
+        implementation = inventory.get("implementation", {})
+        return [
+            ("heading", "Baseline approval"),
+            _table(["Item", "Value"], [
+                ["Approval", inventory.get("baseline_approval")],
+                ["Baseline inventory", inventory.get("baseline")],
+                ["Candidate inventory", inventory.get("candidate")],
+            ]),
+            _table(
+                ["Dimension", "Baseline IDs", "Candidate IDs", "Status"],
+                [[
+                    name,
+                    _id_list(item.get("baseline_ids")),
+                    _id_list(item.get("candidate_ids")),
+                    item.get("status", "unknown"),
+                ] for name, item in dimensions.items()],
+                status_column=3,
+            ),
+            ("paragraph", "Implementation (informational): baseline "
+             f"{_display(implementation.get('baseline'))}, candidate "
+             f"{_display(implementation.get('candidate'))}, changed "
+             f"{_display(implementation.get('changed'))}."),
+        ]
+    if key == "C":
+        assessment = sections["C"]
+        diff = assessment.get("diff", {})
+        policies = assessment.get("policies", [])
+        return [
+            _table(
+                ["Dimension", "Added", "Removed", "Changed"],
+                [[
+                    name,
+                    _id_list(delta.get("added")),
+                    _id_list(delta.get("removed")),
+                    _id_list(delta.get("changed")),
+                ] for name, delta in diff.items() if isinstance(delta, dict)],
+            ),
+            ("heading", "Policy results"),
+            _table(
+                ["ID", "Severity", "Status"],
+                [[item.get("id"), item.get("severity"), item.get("status")]
+                 for item in policies if isinstance(item, dict)],
+                status_column=2,
+            ),
+        ]
+    if key == "D":
+        gates = sections["D"].get("gates", {})
+        blocks = []
+        for name, gate in gates.items():
+            blocks.extend([
+                ("heading", f"{name} gate"),
+                ("paragraph", f"Status: {_status_label(gate.get('status'))}"),
+                ("heading", "Counts by evidence basis"),
+                _table(
+                    ["Basis", "Checks"],
+                    [[basis, count] for basis, count in gate.get("by_basis", {}).items()]
+                    or [["None", 0]],
+                ),
+                ("heading", "Failing checks"),
+                _table(
+                    ["ID", "Scenario", "Category", "Verification", "Detail"],
+                    [[item.get(field) for field in (
+                        "id", "scenario", "category", "verification", "detail"
+                    )] for item in gate.get("failing_checks", [])]
+                    or [["None", "", "", "", ""]],
+                ),
+            ])
+        return blocks
+    if key == "E":
+        review = sections["E"]
+        disposition = review.get("disposition", {})
+        reasons = disposition.get("reasons", {})
+        return [
+            ("paragraph", f"Recommendation: {_display(disposition.get('recommendation'))}"),
+            ("heading", "Reasons"),
+            _table(
+                ["Severity", "Checks or reasons"],
+                [[severity, _id_list(reasons.get(severity, []))]
+                 for severity in ("violation", "review", "clarification")],
+            ),
+            ("heading", "Required human actions"),
+            ("list", review.get("required_human_actions", [])),
+            ("heading", "Guarantee boundaries"),
+            ("paragraph", review.get("guarantee_boundaries", GUARANTEE_BOUNDARIES)),
+        ]
+    files = integrity.get("files", {})
+    statuses = integrity.get("file_statuses", {})
+    file_names = sorted(set(files) | set(statuses))
+    git_shas = integrity.get("git_shas", {})
+    return [
+        _table(
+            ["File", "SHA-256", "Status"],
+            [[name, files.get(name), statuses.get(name, "unknown")] for name in file_names],
+            status_column=2,
+        ),
+        ("paragraph", f"Package SHA-256: {integrity.get('package_sha256')}"),
+        ("paragraph", f"Package SHA-256 method: {integrity.get('package_sha256_method')}"),
+        ("heading", "Git SHAs"),
+        _table(["Item", "Value"], [
+            ["Run-time", git_shas.get("run_time")],
+            ["Built-at", git_shas.get("built_at")],
+            ["SHA mismatch", git_shas.get("sha_mismatch")],
+        ]),
+    ]
+
+
+def _status_label(status) -> str:
+    return "MISSING" if status == "missing" else _display(status)
+
+
+def _summary_gate_rows(sections: dict) -> list[list]:
+    gates = sections.get("D", {}).get("gates", {})
+    rows = []
+    for name in GATE_NAMES:
+        gate = gates.get(name, {})
+        counts = gate.get("summary_counts", {})
+        kinds = gate.get("by_verification_kind", {})
+        rows.append([
+            name,
+            gate.get("status", "missing"),
+            counts.get("checks", 0),
+            counts.get("passed", 0),
+            counts.get("failed", 0),
+            counts.get("skipped", 0),
+            kinds.get("runtime", 0),
+            kinds.get("static", 0),
+        ])
+    return rows
+
+
+def _markdown_cell(value, status: bool = False) -> str:
+    text = _status_label(value) if status else _display(value)
+    return html.escape(text, quote=False).replace("|", r"\|").replace("\n", " ")
+
+
+def _markdown_table(headers: list[str], rows: list[list], status_column: int | None = None) -> str:
+    lines = [
+        "| " + " | ".join(_markdown_cell(item) for item in headers) + " |",
+        "| " + " | ".join("---" for _ in headers) + " |",
+    ]
+    for row in rows:
+        cells = [
+            _markdown_cell(value, status=index == status_column)
+            for index, value in enumerate(row)
+        ]
+        lines.append("| " + " | ".join(cells) + " |")
+    return "\n".join(lines)
+
+
+def _markdown_blocks(blocks: list[tuple]) -> list[str]:
+    lines = []
+    for block in blocks:
+        kind = block[0]
+        if kind == "heading":
+            lines.extend((f"### {block[1]}", ""))
+        elif kind == "paragraph":
+            lines.extend((html.escape(str(block[1]), quote=False), ""))
+        elif kind == "list":
+            lines.extend([
+                f"- {html.escape(_display(item), quote=False)}" for item in block[1]
+            ] or ["- None"])
+            lines.append("")
+        else:
+            lines.extend((_markdown_table(block[1], block[2], block[3]), ""))
+    return lines
+
+
+def _html_table(headers: list[str], rows: list[list], status_column: int | None = None) -> str:
+    header_html = "".join(f"<th>{html.escape(_display(item), quote=False)}</th>" for item in headers)
+    row_html = []
+    for row in rows:
+        cells = []
+        for index, value in enumerate(row):
+            text = _status_label(value) if index == status_column else _display(value)
+            if index == status_column:
+                status_class = str(value).lower() if value in {
+                    "pass", "fail", "skip", "missing", "error"
+                } else "neutral"
+                if status_class == "missing":
+                    status_class = "missing"
+                cells.append(
+                    f'<td class="status status-{status_class}">{html.escape(text, quote=False)}</td>'
+                )
+            else:
+                cells.append(f"<td>{html.escape(text, quote=False)}</td>")
+        row_html.append("<tr>" + "".join(cells) + "</tr>")
+    return (
+        "<table><thead><tr>" + header_html + "</tr></thead><tbody>"
+        + "".join(row_html) + "</tbody></table>"
+    )
+
+
+def _html_blocks(blocks: list[tuple]) -> str:
+    rendered = []
+    for block in blocks:
+        kind = block[0]
+        if kind == "heading":
+            rendered.append(f"<h3>{html.escape(block[1], quote=False)}</h3>")
+        elif kind == "paragraph":
+            rendered.append(f"<p>{html.escape(str(block[1]), quote=False)}</p>")
+        elif kind == "list":
+            items = "".join(f"<li>{html.escape(_display(item), quote=False)}</li>" for item in block[1])
+            rendered.append("<ul>" + (items or "<li>None</li>") + "</ul>")
+        else:
+            rendered.append(_html_table(block[1], block[2], block[3]))
+    return "".join(rendered)
+
+
+def _markdown_json(data: dict) -> str:
+    raw = json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True)
+    longest_run = max((len(run) for run in re.findall(r"`+", raw)), default=0)
+    fence = "`" * max(3, longest_run + 1)
+    return f"{fence}json\n{raw}\n{fence}"
+
+
 def _markdown(sections: dict, integrity: dict, evidence_json_sha256: str) -> str:
+    disposition = sections["E"].get("disposition", {})
     lines = [
         "# Verification evidence",
+        "",
+        "## Disposition",
+        "",
+        f"**Recommendation:** {_display(disposition.get('recommendation'))}",
+        "",
+        REVIEWER_RECOMMENDATION + ".",
+        "",
+        PRIVACY_STATEMENT,
+        "",
+        "## Gate summary",
+        "",
+        _markdown_table(
+            ["Gate", "Status", "Checks", "Passed", "Failed", "Skipped", "Runtime", "Static"],
+            _summary_gate_rows(sections),
+            status_column=1,
+        ),
         "",
         f"Package SHA-256: `{integrity['package_sha256']}`",
         f"evidence.json SHA-256: `{evidence_json_sha256}`",
         "",
     ]
-    for key, title in (
-        ("A", "Identity"),
-        ("B", "Processing inventory"),
-        ("C", "Change assessment"),
-        ("D", "Validation evidence"),
-        ("E", "Review disposition"),
-        ("F", "Integrity"),
-    ):
-        lines.extend((f"## {key}. {title}", "", "```json",
-                      json.dumps(sections[key], indent=2, ensure_ascii=False, sort_keys=True),
-                      "```", ""))
-    lines.extend((
-        PRIVACY_STATEMENT,
-        "",
-        GUARANTEE_BOUNDARIES,
-        "",
-    ))
+    for key, title in SECTION_TITLES:
+        lines.extend((f"## {key}. {title}", ""))
+        lines.extend(_markdown_blocks(_section_blocks(key, sections, integrity)))
+        lines.extend(("### Raw JSON", "", _markdown_json(sections[key]), ""))
+    lines.extend((GUARANTEE_BOUNDARIES, ""))
     return "\n".join(lines)
 
 
 def _html(sections: dict, integrity: dict, evidence_json_sha256: str) -> str:
+    disposition = sections["E"].get("disposition", {})
     html_sections = []
-    for key, title in (
-        ("A", "Identity"),
-        ("B", "Processing inventory"),
-        ("C", "Change assessment"),
-        ("D", "Validation evidence"),
-        ("E", "Review disposition"),
-        ("F", "Integrity"),
-    ):
-        data = copy.deepcopy(sections[key])
-        if key == "A" and isinstance(data.get("repo"), str):
-            data["repo"] = re.sub(r"^[A-Za-z][A-Za-z0-9+.-]*://", "", data["repo"])
-        content = html.escape(json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True), quote=False)
+    for key, title in SECTION_TITLES:
+        content = html.escape(
+            json.dumps(sections[key], indent=2, ensure_ascii=False, sort_keys=True),
+            quote=False,
+        )
         html_sections.append(
-            f"<section><h2>{key}. {html.escape(title, quote=False)}</h2><pre>{content}</pre></section>"
+            f"<section><h2>{key}. {html.escape(title, quote=False)}</h2>"
+            f"{_html_blocks(_section_blocks(key, sections, integrity))}"
+            f"<details><summary>Raw JSON</summary><pre>{content}</pre></details></section>"
         )
     return (
         "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">"
         "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
         "<title>Verification evidence</title>"
         "<style>body{font:16px/1.5 system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;"
-        "color:#18212f;background:#f7f8fa}section{background:white;border:1px solid #d8dee8;"
-        "border-radius:8px;padding:1rem 1.25rem;margin:1rem 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;"
-        "font-size:.88rem}code{overflow-wrap:anywhere}.hash{font-family:monospace}</style></head><body>"
+        "color:#18212f;background:#f7f8fa}section,.summary{background:white;border:1px solid #d8dee8;"
+        "border-radius:8px;padding:1rem 1.25rem;margin:1rem 0}table{border-collapse:collapse;width:100%;"
+        "margin:.75rem 0 1.25rem}th,td{text-align:left;vertical-align:top;padding:.45rem .6rem;"
+        "border:1px solid #d8dee8;overflow-wrap:anywhere}th{background:#eef2f7}.status-pass{color:#176b36}"
+        ".status-fail,.status-error{color:#a21d24}.status-skip,.status-missing{color:#8a5600}"
+        "pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.88rem}details{margin-top:1rem}"
+        "summary{cursor:pointer;font-weight:600}.hash{font-family:monospace}</style></head><body>"
         "<h1>Verification evidence</h1>"
-        f"<p class=\"hash\">Package SHA-256: {html.escape(integrity['package_sha256'], quote=False)}</p>"
-        f"<p class=\"hash\">evidence.json SHA-256: {html.escape(evidence_json_sha256, quote=False)}</p>"
+        "<div class=\"summary\"><h2>Disposition</h2>"
+        f"<p><strong>Recommendation:</strong> {html.escape(_display(disposition.get('recommendation')), quote=False)}</p>"
+        f"<p>{html.escape(REVIEWER_RECOMMENDATION + '.', quote=False)}</p>"
+        f"<p>{html.escape(PRIVACY_STATEMENT, quote=False)}</p></div>"
+        "<section><h2>Gate summary</h2>"
+        + _html_table(
+            ["Gate", "Status", "Checks", "Passed", "Failed", "Skipped", "Runtime", "Static"],
+            _summary_gate_rows(sections),
+            status_column=1,
+        )
+        + "</section>"
+        + f"<p class=\"hash\">Package SHA-256: {html.escape(integrity['package_sha256'], quote=False)}</p>"
+        + f"<p class=\"hash\">evidence.json SHA-256: {html.escape(evidence_json_sha256, quote=False)}</p>"
         + "".join(html_sections)
-        + f"<p>{html.escape(PRIVACY_STATEMENT, quote=False)}</p>"
         + f"<p>{html.escape(GUARANTEE_BOUNDARIES, quote=False)}</p>"
         + "</body></html>\n"
     )
