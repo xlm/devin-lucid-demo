@@ -1,0 +1,13 @@
+{
+  "name": "downstream_contract",
+  "description": "A mix that exercises every consumer-state field: high-power DC, slow AC, a FAULT mid-session, an inactivity timeout, multiple sessions per vehicle and out-of-order arrival of cumulative readings.",
+  "covers": [
+    "downstream contract",
+    "consumer state",
+    "out-of-order cumulative readings"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

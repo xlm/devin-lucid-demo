@@ -1,0 +1,2 @@
+{"completion_reason":"COMPLETE","end_ts":"2026-01-15T08:03:00.000Z","event_count":2,"peak_power_kw":30.0,"schema_version":"1.0","session_id":"S-0029-A","start_ts":"2026-01-15T08:01:00.000Z","total_energy_kwh":1.0,"vehicle_id":"VEH-0029"}
+{"completion_reason":"COMPLETE","end_ts":"2026-01-15T08:25:00.000Z","event_count":7,"peak_power_kw":66.0,"schema_version":"1.0","session_id":"S-0019-A","start_ts":"2026-01-15T08:00:00.000Z","total_energy_kwh":22.0,"vehicle_id":"VEH-0019"}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "vehicles": {
+    "VEH-0009": {
+      "high_power_session_count": 0,
+      "inactivity_timeout_count": 0,
+      "session_count": 1,
+      "warranty_energy_kwh": 47.0
+    },
+    "VEH-0010": {
+      "high_power_session_count": 0,
+      "inactivity_timeout_count": 1,
+      "session_count": 1,
+      "warranty_energy_kwh": 1.5
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "state_recovery",
+  "description": "Restart after line 8. After resuming, a duplicate of a pre-restart event, a late event and an event for a session closed before the restart must be handled exactly as in an uninterrupted run, so dedupe set, watermark and closed-session state must be part of the checkpoint.",
+  "covers": [
+    "state recovery",
+    "checkpointed dedupe",
+    "checkpointed watermark",
+    "checkpointed closed sessions"
+  ],
+  "run": {
+    "mode": "restart",
+    "stop_after": 8
+  },
+  "consumer_replays": 1
+}

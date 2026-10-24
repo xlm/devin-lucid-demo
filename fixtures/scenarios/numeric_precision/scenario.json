@@ -1,0 +1,13 @@
+{
+  "name": "numeric_precision",
+  "description": "Decimal-looking cumulative readings (0.1 steps), long mantissas, an integer literal, exponent notation, tiny values and the 150 kW high-power boundary. MAX must pass values through exactly; strict mode compares exact binary64 values.",
+  "covers": [
+    "numeric precision",
+    "strict vs tolerance comparison",
+    "high-power boundary"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

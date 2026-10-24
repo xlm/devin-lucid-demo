@@ -1,0 +1,15 @@
+{"error_type":"MALFORMED_JSON","event_id":null,"field":null,"input_line":2,"schema_version":"1.0","session_id":null,"vehicle_id":null}
+{"error_type":"MALFORMED_JSON","event_id":null,"field":null,"input_line":3,"schema_version":"1.0","session_id":null,"vehicle_id":null}
+{"error_type":"MISSING_FIELD","event_id":null,"field":"event_id","input_line":4,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"MISSING_FIELD","event_id":"EVT-MAL-B02","field":"energy_delivered_kwh","input_line":5,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B03","field":"charging_power_kw","input_line":7,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B04","field":"charging_state","input_line":8,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B05","field":"battery_soc","input_line":9,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B06","field":"event_timestamp","input_line":10,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"MALFORMED_JSON","event_id":null,"field":null,"input_line":11,"schema_version":"1.0","session_id":null,"vehicle_id":null}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B07","field":"sequence_number","input_line":12,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B08","field":"energy_delivered_kwh","input_line":13,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"MISSING_FIELD","event_id":"EVT-MAL-B09","field":"schema_version","input_line":14,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B10","field":"vehicle_id","input_line":15,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":null}
+{"error_type":"MALFORMED_JSON","event_id":null,"field":null,"input_line":16,"schema_version":"1.0","session_id":null,"vehicle_id":null}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B12","field":"event_timestamp","input_line":17,"schema_version":"1.0","session_id":"S-0011-A","vehicle_id":"VEH-0011"}

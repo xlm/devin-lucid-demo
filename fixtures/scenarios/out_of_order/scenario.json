@@ -1,0 +1,13 @@
+{
+  "name": "out_of_order",
+  "description": "Events arrive out of event-time order within allowed lateness; cumulative energy readings arrive non-monotonically, and the peak-power reading arrives after its session's COMPLETE event, exactly at the watermark.",
+  "covers": [
+    "out-of-order",
+    "cumulative energy = MAX",
+    "start_ts = min event time"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

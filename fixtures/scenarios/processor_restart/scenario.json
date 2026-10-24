@@ -1,0 +1,13 @@
+{
+  "name": "processor_restart",
+  "description": "The processor is stopped after line 9, checkpoints, and resumes; the concatenated output must equal an uninterrupted run.",
+  "covers": [
+    "processor restart",
+    "checkpoint/resume"
+  ],
+  "run": {
+    "mode": "restart",
+    "stop_after": 9
+  },
+  "consumer_replays": 1
+}

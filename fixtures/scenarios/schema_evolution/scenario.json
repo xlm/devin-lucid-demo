@@ -1,0 +1,13 @@
+{
+  "name": "schema_evolution",
+  "description": "Minor versions 1.0, 1.1 and 1.10 are accepted and unknown additive fields are ignored; major version 2.0 is rejected; a malformed version string is invalid. synthetic_location is accepted on input but never propagated; a real-looking coordinate string is rejected.",
+  "covers": [
+    "schema evolution",
+    "unknown fields ignored",
+    "restricted field not propagated"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

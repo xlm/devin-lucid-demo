@@ -1,0 +1,18 @@
+# Integration tier only. Redpanda is a Kafka-API-compatible broker used as a
+# lighter drop-in for Kafka; this is a demo simplification, not a production
+# topology (single node, no replication, no auth).
+services:
+  redpanda:
+    image: redpandadata/redpanda:v24.2.7
+    command:
+      - redpanda start
+      - --mode dev-container
+      - --smp 1
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://localhost:9092
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "health", "--exit-when-healthy"]
+      interval: 5s
+      retries: 20

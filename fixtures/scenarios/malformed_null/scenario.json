@@ -1,0 +1,14 @@
+{
+  "name": "malformed_null",
+  "description": "Malformed JSON, non-object JSON, missing/null/invalid fields, NaN, an empty line, a VIN-like vehicle_id and an impossible date are routed to the error path; the valid events of the same session still produce a summary.",
+  "covers": [
+    "malformed",
+    "null measurements",
+    "error path",
+    "identifier echo rules"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

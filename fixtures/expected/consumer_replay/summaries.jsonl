@@ -1,0 +1,4 @@
+{"completion_reason":"COMPLETE","end_ts":"2026-01-15T08:20:00.000Z","event_count":3,"peak_power_kw":62.0,"schema_version":"1.0","session_id":"S-0016-A","start_ts":"2026-01-15T08:00:00.000Z","total_energy_kwh":14.0,"vehicle_id":"VEH-0016"}
+{"completion_reason":"COMPLETE","end_ts":"2026-01-15T08:25:00.000Z","event_count":3,"peak_power_kw":18.0,"schema_version":"1.0","session_id":"S-0017-A","start_ts":"2026-01-15T08:05:00.000Z","total_energy_kwh":5.5,"vehicle_id":"VEH-0017"}
+{"completion_reason":"INACTIVITY_TIMEOUT","end_ts":"2026-01-15T08:17:00.000Z","event_count":2,"peak_power_kw":15.0,"schema_version":"1.0","session_id":"S-0018-A","start_ts":"2026-01-15T08:07:00.000Z","total_energy_kwh":2.5,"vehicle_id":"VEH-0018"}
+{"completion_reason":"COMPLETE","end_ts":"2026-01-15T09:00:00.000Z","event_count":3,"peak_power_kw":155.0,"schema_version":"1.0","session_id":"S-0016-B","start_ts":"2026-01-15T08:40:00.000Z","total_energy_kwh":31.0,"vehicle_id":"VEH-0016"}

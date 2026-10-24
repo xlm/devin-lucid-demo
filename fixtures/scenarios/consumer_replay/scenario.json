@@ -1,0 +1,12 @@
+{
+  "name": "consumer_replay",
+  "description": "The summary stream is delivered to the consumer twice; consumer state must be identical to a single delivery (idempotent upsert by session key).",
+  "covers": [
+    "consumer replay",
+    "idempotence"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 2
+}

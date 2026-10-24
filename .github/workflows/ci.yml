@@ -1,0 +1,52 @@
+name: ci
+on:
+  push:
+    branches: [main, "build/**", "wp*"]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.10"}
+      - run: pip install -r requirements.txt
+      - run: python fixtures/tools/generate_fixtures.py --check
+      - run: PYTHONPATH=.:consumer-warranty/src python -m pytest -q verification $(ls -d consumer-warranty/tests 2>/dev/null)
+
+  rust:
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('rust-processor/Cargo.toml') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --manifest-path rust-processor/Cargo.toml
+      - run: cargo build --release --manifest-path rust-processor/Cargo.toml
+
+  scala:
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('legacy-scala/build.sbt') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: "17"}
+      - uses: sbt/setup-sbt@v1
+      - run: cd legacy-scala && sbt -batch test
+
+  fast-tier:
+    runs-on: ubuntu-latest
+    needs: [python]
+    if: ${{ hashFiles('rust-processor/Cargo.toml') != '' && hashFiles('verification/runner.py') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.10"}
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: "17"}
+      - uses: sbt/setup-sbt@v1
+      - run: PYTHON=python scripts/run-fast.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: build-output, path: build-output/}

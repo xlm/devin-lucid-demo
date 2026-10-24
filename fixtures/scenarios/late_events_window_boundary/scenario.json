@@ -1,0 +1,14 @@
+{
+  "name": "late_events_window_boundary",
+  "description": "Watermark = max event time - 10 min. An event exactly at the watermark is accepted, one 1 ms before it is dropped late, a late-but-allowed event updates peak power, a session times out exactly when watermark == last_ts + 30 min, and a later event for that closed session is routed to the error path.",
+  "covers": [
+    "late events",
+    "window boundary",
+    "inactivity timeout boundary",
+    "closed session"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}
