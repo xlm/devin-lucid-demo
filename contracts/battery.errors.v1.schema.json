@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/battery.errors.v1.schema.json",
+  "title": "battery.errors.v1",
+  "description": "Error-path record. Never carries the raw payload, measurements or synthetic_location. Identifier echoes are independently validated.",
+  "type": "object",
+  "required": ["error_type", "field", "input_line", "event_id", "vehicle_id", "pack_id", "schema_version"],
+  "properties": {
+    "error_type": {"enum": ["MALFORMED_JSON", "MISSING_FIELD", "INVALID_FIELD", "UNSUPPORTED_SCHEMA_VERSION", "DROPPED_LATE"]},
+    "field": {"type": ["string", "null"]},
+    "input_line": {"type": "integer", "minimum": 1},
+    "event_id": {"type": ["string", "null"]},
+    "vehicle_id": {"type": ["string", "null"], "pattern": "^VEH-[0-9]{4}$"},
+    "pack_id": {"type": ["string", "null"]},
+    "schema_version": {"const": "1.0"}
+  },
+  "additionalProperties": false
+}
