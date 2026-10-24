@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Runs the legacy processor in replay mode (no Spark runtime).
+set -euo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CP_FILE="$HERE/target/replay-classpath.txt"
+if [[ ! -f "$CP_FILE" ]]; then
+  echo "charging-processor: $CP_FILE is missing; run legacy-scala/bin/build first" >&2
+  exit 1
+fi
+exec java -Xss8m -cp "$(cat "$CP_FILE")" com.example.telemetry.charging.ReplayMain "$@"
