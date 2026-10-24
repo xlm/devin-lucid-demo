@@ -52,20 +52,12 @@ pub fn run(opts: &ReplayOptions) -> Result<ReplayStats, ReplayError> {
         ));
     }
 
-    let input = fs::read(&opts.input).map_err(|error| {
-        ReplayError::new(format!(
-            "cannot read input {}: {error}",
-            opts.input.display()
-        ))
-    })?;
+    let input = fs::read(&opts.input)
+        .map_err(|error| ReplayError::new(format!("cannot read input: {error}")))?;
     let lines = input_lines(&input);
     let state = match &opts.resume_from {
-        Some(path) => read_checkpoint(path).map_err(|error| {
-            ReplayError::new(format!(
-                "cannot read checkpoint {}: {error}",
-                path.display()
-            ))
-        })?,
+        Some(path) => read_checkpoint(path)
+            .map_err(|error| ReplayError::new(format!("cannot read checkpoint: {error}")))?,
         None => ProcessorState::default(),
     };
     let offset = state.input_offset;
@@ -76,16 +68,12 @@ pub fn run(opts: &ReplayOptions) -> Result<ReplayStats, ReplayError> {
     }
     log_line(&format!("start offset={offset}"));
 
-    fs::create_dir_all(&opts.output_dir).map_err(|error| {
-        ReplayError::new(format!(
-            "cannot create output directory {}: {error}",
-            opts.output_dir.display()
-        ))
-    })?;
+    fs::create_dir_all(&opts.output_dir)
+        .map_err(|error| ReplayError::new(format!("cannot create output directory: {error}")))?;
     let summaries_path = opts.output_dir.join("summaries.jsonl");
     let errors_path = opts.output_dir.join("errors.jsonl");
-    let summaries_file = open_append(&summaries_path)?;
-    let errors_file = open_append(&errors_path)?;
+    let summaries_file = open_append(&summaries_path, "summaries")?;
+    let errors_file = open_append(&errors_path, "errors")?;
     let mut summaries_writer = BufWriter::new(summaries_file);
     let mut errors_writer = BufWriter::new(errors_file);
 
@@ -117,8 +105,8 @@ pub fn run(opts: &ReplayOptions) -> Result<ReplayStats, ReplayError> {
     stats.duplicates_dropped = counters.duplicates_dropped;
 
     if opts.stop_after.is_some() {
-        flush_and_sync(&mut summaries_writer, &summaries_path)?;
-        flush_and_sync(&mut errors_writer, &errors_path)?;
+        flush_and_sync(&mut summaries_writer, "summaries")?;
+        flush_and_sync(&mut errors_writer, "errors")?;
         write_checkpoint_atomic(
             opts.checkpoint
                 .as_deref()
@@ -138,10 +126,10 @@ pub fn run(opts: &ReplayOptions) -> Result<ReplayStats, ReplayError> {
         }
         summaries_writer
             .flush()
-            .map_err(|error| file_error("cannot flush", &summaries_path, error))?;
+            .map_err(|error| file_error("cannot flush summaries output", error))?;
         errors_writer
             .flush()
-            .map_err(|error| file_error("cannot flush", &errors_path, error))?;
+            .map_err(|error| file_error("cannot flush errors output", error))?;
     }
 
     log_stats(&stats);
@@ -159,12 +147,12 @@ fn input_lines(input: &[u8]) -> Vec<&[u8]> {
     lines
 }
 
-fn open_append(path: &Path) -> Result<File, ReplayError> {
+fn open_append(path: &Path, output_name: &str) -> Result<File, ReplayError> {
     OpenOptions::new()
         .create(true)
         .append(true)
         .open(path)
-        .map_err(|error| file_error("cannot open output", path, error))
+        .map_err(|error| file_error(&format!("cannot open {output_name} output"), error))
 }
 
 fn write_output(
@@ -202,18 +190,18 @@ fn write_json_line<T: serde::Serialize>(
         .map_err(|error| ReplayError::new(format!("cannot write output record: {error}")))
 }
 
-fn flush_and_sync(writer: &mut BufWriter<File>, path: &Path) -> Result<(), ReplayError> {
+fn flush_and_sync(writer: &mut BufWriter<File>, output_name: &str) -> Result<(), ReplayError> {
     writer
         .flush()
-        .map_err(|error| file_error("cannot flush", path, error))?;
+        .map_err(|error| file_error(&format!("cannot flush {output_name} output"), error))?;
     writer
         .get_ref()
         .sync_all()
-        .map_err(|error| file_error("cannot sync", path, error))
+        .map_err(|error| file_error(&format!("cannot sync {output_name} output"), error))
 }
 
-fn file_error(action: &str, path: &Path, error: std::io::Error) -> ReplayError {
-    ReplayError::new(format!("{action} {}: {error}", path.display()))
+fn file_error(action: &str, error: std::io::Error) -> ReplayError {
+    ReplayError::new(format!("{action}: {error}"))
 }
 
 fn log_line(message: &str) {

@@ -115,8 +115,8 @@ fn run_serve() -> ExitCode {
         match charging_processor::kafka::serve(charging_processor::config::ServiceConfig::from_env())
         {
             Ok(()) => ExitCode::SUCCESS,
-            Err(error) => {
-                eprintln!("fatal: {error}");
+            Err(_) => {
+                eprintln!("fatal: Kafka serve failed");
                 ExitCode::from(1)
             }
         }

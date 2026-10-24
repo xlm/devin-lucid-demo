@@ -117,6 +117,14 @@ fn assert_private_stderr(stderr: &[u8]) {
     }
 }
 
+fn assert_redacted_fatal(output: Output, expected_role: &str) {
+    assert_eq!(output.status.code(), Some(1));
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains(expected_role));
+    assert!(!stderr.contains("VEH-0001"));
+    assert!(!stderr.contains("S-secret"));
+}
+
 #[test]
 fn usage_and_fatal_errors_have_the_expected_exit_codes() {
     assert_eq!(run_cli(&[]).status.code(), Some(2));
@@ -222,6 +230,39 @@ fn usage_and_fatal_errors_have_the_expected_exit_codes() {
         .code(),
         Some(1)
     );
+}
+
+#[test]
+fn fatal_errors_do_not_log_operator_supplied_paths() {
+    let directory = tempdir().unwrap();
+    let missing_input = directory
+        .path()
+        .join("VEH-0001-S-secret-missing-input.jsonl");
+    let output_dir = directory.path().join("out");
+    let input_error = run_cli(&[
+        "replay",
+        "--input",
+        missing_input.to_str().unwrap(),
+        "--output-dir",
+        output_dir.to_str().unwrap(),
+    ]);
+    assert_redacted_fatal(input_error, "cannot read input:");
+
+    let input = directory.path().join("empty.jsonl");
+    fs::write(&input, b"").unwrap();
+    let missing_checkpoint = directory
+        .path()
+        .join("VEH-0001-S-secret-missing-checkpoint");
+    let checkpoint_error = run_cli(&[
+        "replay",
+        "--input",
+        input.to_str().unwrap(),
+        "--output-dir",
+        output_dir.to_str().unwrap(),
+        "--resume-from",
+        missing_checkpoint.to_str().unwrap(),
+    ]);
+    assert_redacted_fatal(checkpoint_error, "cannot read checkpoint:");
 }
 
 #[test]
