@@ -26,7 +26,8 @@ processor registered in `processors.yaml`. Workflows A-F in
    down the per-key state, dedupe rule, window and timeout rules, late
    data handling, error paths, and every aggregate's exact semantics
    (cumulative versus delta, per-event versus per-window). Confirm with
-   `legacy-scala/bin/check-fixtures` (or the processor's own self-check).
+   `legacy-scala/bin/build`, then `legacy-scala/bin/check-fixtures` (or
+   the processor's own self-check).
    Cite file and line for each rule.
 3. **Implement the candidate** on the established Rust skeleton
    (`rust-processor/`): keep `main.rs`, `config.rs`, `kafka.rs`,

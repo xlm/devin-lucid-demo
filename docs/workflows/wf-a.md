@@ -27,8 +27,9 @@ None. The output is an explanation.
 
 ## Verification
 ```sh
+legacy-scala/bin/build
 legacy-scala/bin/check-fixtures          # 13/13 scenarios match
-"$PY" verification/cli.py verify          # candidate reported unavailable
+"$PY" verification/cli.py verify          # exits 1 with candidate build errors, not a dedicated unavailable status
 ```
 
 ## Observable evidence

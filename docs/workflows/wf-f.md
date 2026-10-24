@@ -31,6 +31,7 @@ an inventory, tests.
 
 ## Verification
 ```sh
+legacy-scala/bin/build
 legacy-scala/bin/check-battery-fixtures
 (cd rust-processor && cargo test)
 scripts/run-fast.sh
