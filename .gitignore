@@ -8,5 +8,6 @@ legacy-scala/project/project/
 .bsp/
 .metals/
 .idea/
+.worktrees/
 build-output/
 .cutover/
