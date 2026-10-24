@@ -9,6 +9,7 @@ use crate::state::{InMemoryStateStore, ProcessorState, Session, SessionKey, Stat
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SummaryRecord {
+    pub avg_power_kw: Number,
     pub completion_reason: String,
     pub end_ts: String,
     pub event_count: u64,
@@ -251,6 +252,7 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
     /// Builds the canonical summary fields for a finalized session.
     fn build_summary(key: &SessionKey, session: &Session) -> SummaryRecord {
         SummaryRecord {
+            avg_power_kw: session.peak_power.clone(),
             completion_reason: if session.complete {
                 "COMPLETE"
             } else {

@@ -222,7 +222,9 @@ pub fn format_ts(timestamp_ms: i64) -> String {
     let second = (day_ms % 60_000) / 1_000;
     let millisecond = day_ms % 1_000;
 
-    format!("{year:04}-{month:02}-{day:02}T{hour:02}:{minute:02}:{second:02}.{millisecond:03}Z")
+    format!(
+        "{year:04}-{month:02}-{day:02}T{hour:02}:{minute:02}:{second:02}.{millisecond:03}+00:00"
+    )
 }
 
 fn required<'a>(
