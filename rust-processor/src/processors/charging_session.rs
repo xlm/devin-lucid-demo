@@ -16,6 +16,8 @@ pub struct SummaryRecord {
     pub schema_version: String,
     pub session_id: String,
     pub start_ts: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub synthetic_location: Option<String>,
     pub total_energy_kwh: Number,
     pub vehicle_id: String,
 }
@@ -186,6 +188,9 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
         }
         session.event_count += 1;
         session.complete |= event.charging_state == "COMPLETE";
+        if event.synthetic_location.is_some() {
+            session.synthetic_location = event.synthetic_location.clone();
+        }
     }
 
     /// Opens a session for the first accepted event at a key.
@@ -197,6 +202,7 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
             max_sequence_number: event.sequence_number,
             max_energy: event.energy_delivered_kwh.clone(),
             peak_power: event.charging_power_kw.clone(),
+            synthetic_location: event.synthetic_location.clone(),
             event_count: 1,
             complete: event.charging_state == "COMPLETE",
         });
@@ -250,6 +256,7 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
 
     /// Builds the canonical summary fields for a finalized session.
     fn build_summary(key: &SessionKey, session: &Session) -> SummaryRecord {
+        eprintln!("session closed vehicle_id={}", key.0);
         SummaryRecord {
             completion_reason: if session.complete {
                 "COMPLETE"
@@ -263,6 +270,7 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
             schema_version: "1.0".to_owned(),
             session_id: key.1.clone(),
             start_ts: crate::model::format_ts(session.start_ts),
+            synthetic_location: session.synthetic_location.clone(),
             total_energy_kwh: session.max_energy.clone(),
             vehicle_id: key.0.clone(),
         }

@@ -18,6 +18,7 @@ pub struct Session {
     pub max_sequence_number: u64,
     pub max_energy: Number,
     pub peak_power: Number,
+    pub synthetic_location: Option<String>,
     pub event_count: u64,
     pub complete: bool,
 }

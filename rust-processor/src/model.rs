@@ -60,6 +60,7 @@ pub struct ValidatedEvent {
     pub charging_state: String,
     pub charging_power_kw: Number,
     pub energy_delivered_kwh: Number,
+    pub synthetic_location: Option<String>,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -200,6 +201,10 @@ pub fn validate_line(line: &str) -> Result<ValidatedEvent, ValidationError> {
             return Err(invalid_error("synthetic_location", &ids));
         }
     }
+    let synthetic_location = object
+        .get("synthetic_location")
+        .and_then(Value::as_str)
+        .map(str::to_owned);
 
     Ok(ValidatedEvent {
         event_id,
@@ -210,6 +215,7 @@ pub fn validate_line(line: &str) -> Result<ValidatedEvent, ValidationError> {
         charging_state,
         charging_power_kw,
         energy_delivered_kwh,
+        synthetic_location,
     })
 }
 
