@@ -1,0 +1,113 @@
+# Declared processing inventory of the legacy battery-health processor.
+# This is the inventory that governance/baselines/battery.baseline.json
+# approves. Synthetic demo declarations only. Owned by humans. Verification
+# code reads it.
+schema_version: "1.0"
+processor: battery-health-legacy
+service: battery-health-processor
+# Informational, not a governed dimension: shown to the reviewer, not diffed
+# as a policy input.
+implementation:
+  runtime: Scala 2.13 on JDK 17, Spark 3.5 Structured Streaming for the streaming job, plain JVM for replay mode
+  source: legacy-scala/
+  logs: diagnostic logs to stderr contain counts only, with no identifiers or location
+dimensions:
+  inputs:
+    - id: battery.telemetry.v1
+      kind: topic
+      schema: contracts/battery.telemetry.v1.schema.json
+      message_key: vehicle_id
+      fields_read: [cell_voltage_max_v, cell_voltage_min_v, event_id, event_timestamp, ingestion_timestamp, pack_id, pack_temp_c, schema_version, sequence_number, state_of_health_pct, synthetic_location, vehicle_id]
+
+  sensitive_fields:
+    - id: synthetic_location
+      source: battery.telemetry.v1
+      classification: sensitive_location
+      handling: validated against ^SYN-[A-Z0-9-]+$, then discarded, never held in daily state
+      propagates_to: []
+    - id: vehicle_id
+      source: battery.telemetry.v1
+      classification: vehicle_identifying
+      handling: daily key component and Kafka message key of the summary topic
+      propagates_to: [battery.errors.v1, battery.health.daily.v1, processor.checkpoint]
+    - id: pack_id
+      source: battery.telemetry.v1
+      classification: vehicle_identifying
+      handling: daily key component
+      propagates_to: [battery.errors.v1, battery.health.daily.v1, processor.checkpoint]
+
+  purposes:
+    - id: daily-health-summarisation
+      description: Aggregate battery telemetry into one pack health summary per (vehicle_id, pack_id, UTC day).
+    - id: input-error-reporting
+      description: Report invalid and late input on the error topic without raw payload, measurements or location.
+
+  transforms:
+    - {id: battery.health.daily.v1.vehicle_id, op: PASSTHROUGH, inputs: [vehicle_id]}
+    - {id: battery.health.daily.v1.pack_id, op: PASSTHROUGH, inputs: [pack_id]}
+    - {id: battery.health.daily.v1.day, op: UTC_DAY_KEY, inputs: [event_timestamp]}
+    - {id: battery.health.daily.v1.min_cell_voltage_v, op: MIN, inputs: [cell_voltage_min_v]}
+    - {id: battery.health.daily.v1.max_cell_voltage_v, op: MAX, inputs: [cell_voltage_max_v]}
+    - {id: battery.health.daily.v1.max_cell_imbalance_v, op: MAX_PER_EVENT_SPREAD, inputs: [cell_voltage_min_v, cell_voltage_max_v]}
+    - {id: battery.health.daily.v1.max_pack_temp_c, op: MAX, inputs: [pack_temp_c]}
+    - {id: battery.health.daily.v1.latest_state_of_health_pct, op: LATEST_BY_EVENT_TIMESTAMP_SEQUENCE, inputs: [state_of_health_pct, event_timestamp, sequence_number]}
+    - {id: battery.health.daily.v1.event_count, op: COUNT_ACCEPTED_DEDUPED, inputs: [event_id]}
+    - {id: battery.health.daily.v1.schema_version, op: CONSTANT, inputs: []}
+    - {id: battery.errors.v1.error_type, op: VALIDATION_RESULT, inputs: []}
+    - {id: battery.errors.v1.field, op: FIELD_NAME_ONLY, inputs: []}
+    - {id: battery.errors.v1.input_line, op: INPUT_POSITION, inputs: []}
+    - {id: battery.errors.v1.event_id, op: ECHO_IF_VALID, inputs: [event_id]}
+    - {id: battery.errors.v1.vehicle_id, op: ECHO_IF_VALID, inputs: [vehicle_id]}
+    - {id: battery.errors.v1.pack_id, op: ECHO_IF_VALID, inputs: [pack_id]}
+    - {id: battery.errors.v1.schema_version, op: CONSTANT, inputs: []}
+    - {id: battery.telemetry.v1.synthetic_location, op: VALIDATE_AND_DISCARD, inputs: [synthetic_location]}
+
+  output_schema:
+    - id: battery.health.daily.v1
+      schema: contracts/battery.health.daily.v1.schema.json
+      fields: [day, event_count, latest_state_of_health_pct, max_cell_imbalance_v, max_cell_voltage_v, max_pack_temp_c, min_cell_voltage_v, pack_id, schema_version, vehicle_id]
+    - id: battery.errors.v1
+      schema: contracts/battery.errors.v1.schema.json
+      fields: [error_type, event_id, field, input_line, pack_id, schema_version, vehicle_id]
+
+  output_destinations:
+    - {id: battery.health.daily.v1, kind: topic, schema: battery.health.daily.v1, message_key: vehicle_id, identifiers: [pack_id, vehicle_id]}
+    - {id: battery.errors.v1, kind: topic, schema: battery.errors.v1, message_key: null, identifiers: [pack_id, vehicle_id]}
+    - {id: processor.stderr, kind: log, schema: null, message_key: null, identifiers: []}
+
+  retention:
+    - {id: battery.health.daily.v1, period: P90D}
+    - {id: battery.errors.v1, period: P14D}
+    - {id: processor.stderr, period: P14D}
+    - {id: processor.checkpoint, period: "latest checkpoint only, replaced on each write"}
+
+  access:
+    - {id: battery.telemetry.v1, readers: [battery-health-processor], writers: [battery-event-ingest]}
+    - {id: battery.health.daily.v1, readers: [consumer-battery-health], writers: [battery-health-processor]}
+    - {id: battery.errors.v1, readers: [battery-platform-oncall], writers: [battery-health-processor]}
+    - {id: processor.stderr, readers: [battery-platform-oncall], writers: [battery-health-processor]}
+    - {id: processor.checkpoint, readers: [battery-health-processor], writers: [battery-health-processor]}
+
+  logging:
+    - id: processor.stderr
+      sink: stderr
+      allowed_content: [counts]
+      prohibited_content: [event_id, pack_id, synthetic_location, vehicle_id]
+
+  external_deps:
+    - id: kafka-compatible-broker
+      kind: message-broker
+      carries: [battery.errors.v1, battery.health.daily.v1, battery.telemetry.v1]
+      note: Kafka in the streaming design. Replay mode reads JSONL files and requires no broker.
+
+  replication:
+    - id: processor.checkpoint
+      contents: [closed-day status, event_id dedupe sets per (vehicle_id, pack_id, UTC day) key, input offset, max_event_ts, open daily aggregates keyed by (vehicle_id, pack_id, UTC day)]
+      excludes: [synthetic_location]
+      location: processor-managed checkpoint storage inside the deployment boundary
+
+  deployment_boundary:
+    - id: battery-processing-zone
+      region: synthetic-region-1
+      network_zone: telemetry-internal
+      operator: battery-platform-team

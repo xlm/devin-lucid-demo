@@ -10,3 +10,10 @@ processors:
     description: Rust charging-session processor (replay mode)
     build: ["cargo", "build", "--release", "--quiet", "--manifest-path", "rust-processor/Cargo.toml"]
     command: ["rust-processor/target/release/charging-processor"]
+
+unmigrated:
+  battery-health-legacy:
+    description: Legacy Scala/Spark battery-health daily processor (replay mode, no Spark runtime). Not yet migrated, no candidate exists (see Workflow F).
+    build: ["legacy-scala/bin/build"]
+    command: ["legacy-scala/bin/battery-health-processor"]
+    candidate: null
