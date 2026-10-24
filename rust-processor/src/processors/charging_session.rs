@@ -97,14 +97,7 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
         }
         self.record_event_id(&key, &event.event_id);
 
-        if Self::is_late(self.watermark(), event.ts_ms) {
-            return vec![Output::Error(error_record(
-                line_no,
-                ErrorType::LateEventDropped,
-                None,
-                event_ids(&event),
-            ))];
-        }
+        // TODO(workflow-c): route events behind the watermark to the late path.
 
         let mut outputs = Vec::new();
         if self.is_closed(&key) {
@@ -158,11 +151,6 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
         self.state
             .max_event_ts
             .map(|timestamp| timestamp - self.rules.allowed_lateness_ms)
-    }
-
-    /// Rejects timestamps strictly behind an existing watermark.
-    fn is_late(watermark: Option<i64>, timestamp: i64) -> bool {
-        watermark.is_some_and(|watermark| timestamp < watermark)
     }
 
     /// Checks whether the session key has already been finalized.
@@ -229,6 +217,10 @@ impl<S: StateStore> ChargingSessionProcessor<S> {
             .iter()
             .filter_map(|(key, key_state)| {
                 let session = key_state.session?;
+                if !session.complete {
+                    // TODO(workflow-c): emit sessions after inactivity timeout.
+                    return None;
+                }
                 let expiry = Self::session_expiry(&session, self.rules);
                 watermark
                     .map_or(true, |watermark| expiry <= watermark)

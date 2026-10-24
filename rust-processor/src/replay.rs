@@ -94,7 +94,12 @@ pub fn run(opts: &ReplayOptions) -> Result<ReplayStats, ReplayError> {
         .map(|count| offset.saturating_add(count))
         .unwrap_or(lines.len() as u64);
     let end = requested_end.min(lines.len() as u64);
-    let mut processor = ChargingSessionProcessor::from_state(Rules::CONTRACT, state);
+    let mut processor = if opts.resume_from.is_some() {
+        // TODO(workflow-c): restore keyed state, dedupe and watermark on resume.
+        ChargingSessionProcessor::new(Rules::CONTRACT)
+    } else {
+        ChargingSessionProcessor::from_state(Rules::CONTRACT, state)
+    };
     let mut stats = ReplayStats::default();
 
     for index in offset..end {
