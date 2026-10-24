@@ -1,0 +1,14 @@
+{
+  "name": "processor_restart",
+  "description": "The processor stops after line 5, checkpoints and resumes across a UTC midnight. After resuming, a duplicate of a pre-restart reading and a reading behind the checkpointed watermark must be handled exactly as in an uninterrupted run.",
+  "covers": [
+    "processor restart",
+    "checkpoint/resume",
+    "checkpointed dedupe",
+    "checkpointed watermark"
+  ],
+  "run": {
+    "mode": "restart",
+    "stop_after": 5
+  }
+}

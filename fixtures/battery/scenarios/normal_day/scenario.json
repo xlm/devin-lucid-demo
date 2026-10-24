@@ -1,0 +1,12 @@
+{
+  "name": "normal_day",
+  "description": "One vehicle with two packs, readings in order within one UTC day; one summary per (vehicle_id, pack_id, day), emitted by the end-of-input flush.",
+  "covers": [
+    "normal day",
+    "per-pack key",
+    "end-of-input flush"
+  ],
+  "run": {
+    "mode": "single"
+  }
+}
