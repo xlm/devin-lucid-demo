@@ -41,11 +41,26 @@ def _skip(check_id, scenario, rule):
                   "clarification", scenario=scenario, rule=rule)
 
 
+def _skip_incomplete(check_id, scenario, rule, missing_files):
+    return _check(
+        check_id, "skip",
+        f"candidate output incomplete; missing: {missing_files}; runtime claim not established",
+        "clarification", scenario=scenario, rule=rule,
+        evidence={"missing_files": missing_files},
+    )
+
+
 def output_fields(ctx, scenario, output_dir: Path, baseline_dimensions: dict) -> dict:
     check_id = "runtime.output_fields"
     rule = "no-new-sensitive-output-fields"
     if not output_dir.is_dir():
         return _skip(check_id, scenario, rule)
+    missing_files = [
+        filename for filename in OUTPUT_FILES
+        if not (output_dir / filename).is_file()
+    ]
+    if missing_files:
+        return _skip_incomplete(check_id, scenario, rule, missing_files)
     schema_fields = {
         item.get("id"): set(item.get("fields", []))
         for item in baseline_dimensions.get("output_schema", [])
@@ -73,9 +88,6 @@ def output_fields(ctx, scenario, output_dir: Path, baseline_dimensions: dict) ->
             for field in extra:
                 key = f"{filename}:{field}"
                 unexpected[key] = unexpected.get(key, 0) + 1
-    if not readable_files:
-        return _check(check_id, "skip", "candidate output files not present; runtime claim not established",
-                      "clarification", scenario=scenario, rule=rule)
     status = "fail" if unexpected or unparsable else "pass"
     severity = "violation" if unexpected else ("clarification" if unparsable else "violation")
     if unexpected:
@@ -94,6 +106,13 @@ def no_sensitive_location(ctx, scenario, output_dir: Path, params: dict) -> dict
     rule = "no-sensitive-location-propagation"
     if not output_dir.is_dir():
         return _skip(check_id, scenario, rule)
+    output_filenames = [*OUTPUT_FILES, "processor.log"]
+    missing_files = [
+        filename for filename in output_filenames
+        if not (output_dir / filename).is_file()
+    ]
+    if missing_files:
+        return _skip_incomplete(check_id, scenario, rule, missing_files)
     source = ctx.scenario_dir(scenario) / "input.jsonl"
     location_values = {
         record.get("synthetic_location") for record in _input_records(source)
@@ -102,19 +121,14 @@ def no_sensitive_location(ctx, scenario, output_dir: Path, params: dict) -> dict
     pattern = re.compile(params["restricted_value_pattern"])
     checked = []
     matches = {}
-    for filename in ("summaries.jsonl", "errors.jsonl", "processor.log"):
+    for filename in output_filenames:
         path = output_dir / filename
-        if not path.is_file():
-            continue
         checked.append(filename)
         text = path.read_text(encoding="utf-8")
         pattern_count = len(pattern.findall(text))
         value_counts = {value: text.count(value) for value in sorted(location_values) if value in text}
         if pattern_count or value_counts:
             matches[filename] = {"pattern_matches": pattern_count, "synthetic_location_values": value_counts}
-    if not checked:
-        return _check(check_id, "skip", "candidate output files not present; runtime claim not established",
-                      "clarification", scenario=scenario, rule=rule)
     return _check(check_id, "fail" if matches else "pass",
                   "restricted location values occur in candidate output" if matches
                   else "no restricted location values found in candidate output",

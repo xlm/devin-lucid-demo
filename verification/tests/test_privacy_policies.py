@@ -178,6 +178,48 @@ def test_missing_outputs_and_source_do_not_claim_no_material_change(tmp_path):
     assert missing_source["disposition"]["recommendation"] == "needs-clarification"
 
 
+def test_missing_errors_file_skips_output_runtime_checks(tmp_path):
+    ctx, source_dir = _context(tmp_path)
+    output_dir = ctx.output_dir("candidate", "normal_session")
+    (output_dir / "errors.jsonl").unlink()
+
+    result = _evaluate(ctx, source_dir)
+
+    checks = {
+        item["id"]: item for item in result["checks"]
+        if item["id"] in {"runtime.output_fields", "runtime.no_sensitive_location"}
+    }
+    for check in checks.values():
+        assert check["status"] == "skip"
+        assert check["detail"] == (
+            "candidate output incomplete; missing: ['errors.jsonl']; "
+            "runtime claim not established"
+        )
+        assert check["evidence"]["missing_files"] == ["errors.jsonl"]
+    assert set(checks) == {"runtime.output_fields", "runtime.no_sensitive_location"}
+    assert result["disposition"]["recommendation"] == "needs-clarification"
+
+
+def test_missing_processor_log_skips_sensitive_location_check(tmp_path):
+    ctx, source_dir = _context(tmp_path)
+    output_dir = ctx.output_dir("candidate", "normal_session")
+    (output_dir / "processor.log").unlink()
+
+    result = _evaluate(ctx, source_dir)
+
+    checks = {item["id"]: item for item in result["checks"] if item["verification"] == "runtime"}
+    location_check = checks["runtime.no_sensitive_location"]
+    identifiers_check = checks["runtime.no_identifiers_in_log"]
+    assert location_check["status"] == "skip"
+    assert location_check["detail"] == (
+        "candidate output incomplete; missing: ['processor.log']; "
+        "runtime claim not established"
+    )
+    assert location_check["evidence"]["missing_files"] == ["processor.log"]
+    assert identifiers_check["status"] == "skip"
+    assert result["disposition"]["recommendation"] == "needs-clarification"
+
+
 def test_source_scan_skips_existing_directory_without_rust_sources(tmp_path):
     source_dir = tmp_path / "empty-source"
     source_dir.mkdir()
