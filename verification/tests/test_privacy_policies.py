@@ -55,9 +55,17 @@ def test_clean_candidate_inventory_and_fixture_outputs_have_no_material_change(t
     ctx, source_dir = _context(tmp_path, scenarios)
     result = _evaluate(ctx, source_dir)
     assert result["status"] == "pass"
+    assert result["summary"]["status_reason"] == "recommendation is no-material-change"
     assert result["disposition"]["recommendation"] == "no-material-change"
     assert result["inventory"]["candidate"]["path"] == "rust-processor/processing-inventory.yaml"
     assert all(check["status"] == "pass" for check in result["checks"])
+    assert result["summary"]["checks"] == len(result["checks"])
+    assert result["summary"]["passed"] == sum(
+        check["status"] == "pass" for check in result["checks"]
+    )
+    assert result["summary"]["failed"] == sum(
+        check["status"] == "fail" for check in result["checks"]
+    )
     assert all(check["evidence"]["basis"] in {
         "runtime-observed", "declared-manifest", "source-scan", "integrity"
     } for check in result["checks"])
@@ -82,6 +90,10 @@ def test_leaked_location_and_identifier_fail_specific_checks_without_identifier_
     (output / "processor.log").write_text("failed VEH-0012\n", encoding="utf-8")
     result = _evaluate(ctx, source_dir, inventory)
     failed = {item["id"] for item in result["checks"] if item["status"] == "fail"}
+    assert result["status"] == "fail"
+    assert result["summary"]["status_reason"] == (
+        "recommendation is policy-violation; human review required"
+    )
     assert result["disposition"]["recommendation"] == "policy-violation"
     assert {
         "policy.no-new-sensitive-output-fields.static",
@@ -167,6 +179,10 @@ def test_missing_outputs_and_source_do_not_claim_no_material_change(tmp_path):
     missing_outputs = _evaluate(ctx, source_dir)
     runtime = [item for item in missing_outputs["checks"] if item["verification"] == "runtime"]
     assert {item["status"] for item in runtime} == {"skip"}
+    assert missing_outputs["status"] == "error"
+    assert missing_outputs["summary"]["status_reason"] == (
+        "every runtime check was skipped; no candidate outputs inspected"
+    )
     assert missing_outputs["disposition"]["recommendation"] == "needs-clarification"
 
     ctx2, _ = _context(tmp_path / "source")
@@ -176,6 +192,14 @@ def test_missing_outputs_and_source_do_not_claim_no_material_change(tmp_path):
     assert source_check["status"] == "skip"
     assert source_check["detail"] == "candidate source not present; static claim not established"
     assert missing_source["disposition"]["recommendation"] == "needs-clarification"
+    assert all(
+        item["status"] == "pass"
+        for item in missing_source["checks"] if item["verification"] == "runtime"
+    )
+    assert missing_source["status"] == "fail"
+    assert missing_source["summary"]["status_reason"] == (
+        "recommendation is needs-clarification; human review required"
+    )
 
 
 def test_missing_errors_file_skips_output_runtime_checks(tmp_path):
@@ -301,9 +325,12 @@ def test_gate_writes_only_gate_and_does_not_change_governance(tmp_path):
     }
     _evaluate(ctx, source_dir)
     before_gate = {path for path in ctx.run_dir.rglob("*") if path.is_file()}
-    run_gate(ctx)
+    result = run_gate(ctx)
     after_gate = {path for path in ctx.run_dir.rglob("*") if path.is_file()}
     assert after_gate - before_gate == {ctx.gate_path("privacy")}
+    written = json.loads(ctx.gate_path("privacy").read_text(encoding="utf-8"))
+    assert written["status"] == result["status"]
+    assert written["summary"]["status_reason"] == result["summary"]["status_reason"]
     after = {
         path.relative_to(REPO_ROOT): path.read_bytes()
         for item in protected
@@ -318,4 +345,5 @@ def test_unknown_candidate_processor_is_a_gate_error(tmp_path):
     ctx.candidate = "unlisted"
     result = _evaluate(ctx, source_dir)
     assert result["status"] == "error"
+    assert result["summary"]["status_reason"] == f"gate error: {result['error']}"
     assert result["disposition"]["recommendation"] == "needs-clarification"

@@ -49,6 +49,14 @@ decides what action is appropriate. Only a human can move
 `ReadyForReview -> ApprovedForCutover`. Baseline and policy changes are
 human decisions.
 
+## Gate status
+
+The privacy gate reports `error` if gate evaluation has an error, or if no
+runtime check exists or every runtime check was skipped. Otherwise it reports
+`fail` when the disposition recommendation is not `no-material-change`, and
+`pass` when it is. A `pass` is not approval. It only means the automated
+recommendation is `no-material-change` for a human reviewer.
+
 ## What the checks inspect
 
 | Basis | Claims and limits |

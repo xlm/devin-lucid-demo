@@ -228,6 +228,25 @@ def evaluate(ctx: RunContext, *, candidate_inventory: Path | None = None,
         },
         "policies": policies,
     })
+    runtime_checks_found = [
+        item for item in checks if item["verification"] == "runtime"
+    ]
+    recommendation = result["disposition"]["recommendation"]
+    if result["status"] == "error":
+        status_reason = f"gate error: {gate_error}"
+    elif (
+        not runtime_checks_found
+        or all(item["status"] == "skip" for item in runtime_checks_found)
+    ):
+        result["status"] = "error"
+        status_reason = "every runtime check was skipped; no candidate outputs inspected"
+    elif recommendation != "no-material-change":
+        result["status"] = "fail"
+        status_reason = f"recommendation is {recommendation}; human review required"
+    else:
+        result["status"] = "pass"
+        status_reason = "recommendation is no-material-change"
+    result["summary"]["status_reason"] = status_reason
     return result
 
 
