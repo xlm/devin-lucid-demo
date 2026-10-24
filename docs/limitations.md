@@ -30,11 +30,6 @@ repository's local demo and its selected replay inputs.
   one atomic operation. A window with no active producer, duplicates and
   gaps remain possible. The approval prompt is a local demo guard, not a
   real authorization boundary. Agents must not approve.
-- **Cutover scenario selection:** The outer CLI parses `--scenario` before
-  dispatching to the cutover command. In a checked run,
-  `cutover shadow --scenario normal_session` still shadowed all 13
-  scenarios. Do not rely on the cutover subcommand's scenario option to
-  filter a shadow run until that dispatch behavior is corrected.
 - **Integration tier:** `scripts/run-integration.sh` exits with status 3
   and reports that the tier is not implemented at this revision. The
   single-node Redpanda Compose file is a demo configuration, not a live

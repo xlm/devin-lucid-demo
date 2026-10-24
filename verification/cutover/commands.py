@@ -215,7 +215,7 @@ def _cmd_shadow(args, ctx, state_dir: Path) -> int:
     lease = read_lease(state_dir)
     if lease["holder"] != "legacy":
         raise CutoverError("legacy must hold the lease during shadow validation")
-    scenarios = args.scenario or common.all_scenarios(ctx.repo_root)
+    scenarios = args.scenario or ctx.scenarios or common.all_scenarios(ctx.repo_root)
     inputs = {
         scenario: {
             "path": str(_scenario_input(ctx, scenario)),

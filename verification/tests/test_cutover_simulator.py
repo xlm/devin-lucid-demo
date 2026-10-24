@@ -11,6 +11,7 @@ from pathlib import Path
 import yaml
 
 from verification import common
+from verification import cli as verification_cli
 from verification.common import REPO_ROOT, RunContext
 from verification.cutover import commands
 from verification.cutover import main
@@ -200,6 +201,29 @@ def test_shadow_isolated_and_audits_input_hashes(tmp_path):
     shadow = next(entry for entry in read_audit(state_dir) if entry["event"] == "shadow")
     input_path = REPO_ROOT / "fixtures" / "scenarios" / "normal_session" / "input.jsonl"
     assert shadow["details"]["scenario_inputs"]["normal_session"]["sha256"] == sha256_file(input_path)
+
+
+def test_cli_shadow_uses_outer_scenario_selection(tmp_path):
+    state_dir = tmp_path / "state"
+    registry = fake_registry(tmp_path)
+    initialize_state(state_dir)
+    transition(state_dir, "start-candidate")
+
+    assert verification_cli.main(
+        [
+            "cutover",
+            "shadow",
+            "--scenario",
+            "normal_session",
+            "--registry",
+            str(registry),
+            "--state-dir",
+            str(state_dir),
+        ]
+    ) == 0
+
+    shadow_dirs = sorted(path.name for path in (state_dir / "shadow").iterdir())
+    assert shadow_dirs == ["normal_session"]
 
 
 def test_evaluate_missing_gate_fails(tmp_path, monkeypatch, capsys):
