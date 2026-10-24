@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CP_FILE="$HERE/target/replay-classpath.txt"
+if [[ ! -f "$CP_FILE" ]]; then
+  echo "battery-health-processor: $CP_FILE is missing, run legacy-scala/bin/build first" >&2
+  exit 1
+fi
+exec java -Xss8m -cp "$(cat "$CP_FILE")" com.example.telemetry.battery.ReplayMain "$@"
