@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
 # Compiles the legacy processor and records the replay runtime classpath.
 # Spark is a Provided dependency, so it is not on that classpath.
+#
+# --spark additionally writes target/spark-classpath.txt (compile classpath,
+# Spark included) for the optional bin/spark-local smoke demo.
 set -euo pipefail
+with_spark=false
+case "${1:-}" in
+  "") ;;
+  --spark) with_spark=true ;;
+  *) echo "usage: legacy-scala/bin/build [--spark]" >&2; exit 2 ;;
+esac
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$HERE"
 
@@ -27,3 +36,18 @@ if [[ "$classpath" != *ujson* ]]; then
 fi
 printf '%s\n' "$classpath" > target/replay-classpath.txt
 echo "legacy-scala/bin/build: classpath written to target/replay-classpath.txt" >&2
+
+if $with_spark; then
+  out="$("$SBT" -batch -Dsbt.supershell=false -Dsbt.color=false "export Compile/fullClasspath" </dev/null)" || {
+    printf '%s\n' "$out" >&2
+    exit 1
+  }
+  classpath="$(printf '%s\n' "$out" | tail -n 1)"
+  if [[ "$classpath" != *spark-sql* ]]; then
+    printf '%s\n' "$out" >&2
+    echo "legacy-scala/bin/build: could not read the Spark classpath from sbt" >&2
+    exit 1
+  fi
+  printf '%s\n' "$classpath" > target/spark-classpath.txt
+  echo "legacy-scala/bin/build: Spark classpath written to target/spark-classpath.txt" >&2
+fi
