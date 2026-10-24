@@ -196,6 +196,25 @@ def test_reports_unreadable_gate_and_missing_context(tmp_path):
     assert evidence["sections"]["F"]["file_statuses"]["gates/state_ordering.json"] == "unreadable"
 
 
+def test_invalid_gate_shape_marks_file_unreadable_everywhere(tmp_path):
+    ctx = _context(tmp_path)
+    contract_path = ctx.run_dir / "gates" / "contract.json"
+    _write_json(contract_path, {"gate": "contract"})
+
+    result = build(ctx)
+    evidence = json.loads(
+        (ctx.run_dir / "evidence" / "evidence.json").read_text(encoding="utf-8")
+    )
+    markdown = (ctx.run_dir / "evidence" / "evidence.md").read_text(encoding="utf-8")
+
+    assert result["gates"]["contract"] == "unreadable"
+    assert evidence["sections"]["D"]["gates"]["contract"]["status"] == "unreadable"
+    assert evidence["sections"]["F"]["file_statuses"]["gates/contract.json"] == "unreadable"
+    assert evidence["integrity"]["files"]["gates/contract.json"] == _checksum(contract_path)
+    assert "| contract | unreadable |" in markdown
+    assert "| contract | pass |" not in markdown
+
+
 def test_unreadable_privacy_gate_is_not_reported_as_missing_or_pass(tmp_path):
     ctx = _context(tmp_path)
     (ctx.run_dir / "context.json").write_text("{broken", encoding="utf-8")

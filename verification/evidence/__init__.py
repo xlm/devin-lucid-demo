@@ -165,11 +165,14 @@ def _gate_summary(document: dict | None, status: str) -> dict:
 
 
 def _read_gate(reader: RunReader, run_dir: Path, name: str) -> tuple[dict | None, str]:
-    document, parse_status = reader.read_json(run_dir / "gates" / f"{name}.json")
+    path = run_dir / "gates" / f"{name}.json"
+    document, parse_status = reader.read_json(path)
     if parse_status != "present":
         return None, parse_status
     status = document.get("status")
-    if status not in {"pass", "fail", "error"} or not isinstance(document.get("checks"), list):
+    if (not isinstance(status, str) or status not in {"pass", "fail", "error"}
+            or not isinstance(document.get("checks"), list)):
+        reader.file_statuses[path.relative_to(run_dir).as_posix()] = "unreadable"
         return None, "unreadable"
     return document, status
 
