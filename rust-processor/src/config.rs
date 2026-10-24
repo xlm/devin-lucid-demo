@@ -16,6 +16,7 @@ impl Rules {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ServiceConfig {
     pub kafka_bootstrap_servers: String,
+    pub kafka_auto_offset_reset: String,
     pub charging_input_topic: String,
     pub charging_summary_topic: String,
     pub charging_error_topic: String,
@@ -28,6 +29,7 @@ impl ServiceConfig {
     pub fn from_env() -> Self {
         Self {
             kafka_bootstrap_servers: env_value("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092"),
+            kafka_auto_offset_reset: env_value("KAFKA_AUTO_OFFSET_RESET", "earliest"),
             charging_input_topic: env_value("CHARGING_INPUT_TOPIC", "charging.events.v1"),
             charging_summary_topic: env_value(
                 "CHARGING_SUMMARY_TOPIC",
@@ -62,4 +64,19 @@ fn env_i64(name: &str, default: i64) -> i64 {
         .ok()
         .and_then(|value| value.parse().ok())
         .unwrap_or(default)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::ServiceConfig;
+    use std::env;
+
+    #[test]
+    fn kafka_auto_offset_reset_defaults_to_earliest() {
+        let expected =
+            env::var("KAFKA_AUTO_OFFSET_RESET").unwrap_or_else(|_| "earliest".to_owned());
+        let config = ServiceConfig::from_env();
+
+        assert_eq!(config.kafka_auto_offset_reset, expected);
+    }
 }

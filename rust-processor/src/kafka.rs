@@ -30,12 +30,7 @@ pub fn serve(config: ServiceConfig) -> Result<(), Box<dyn Error>> {
 }
 
 async fn serve_async(config: ServiceConfig) -> Result<(), Box<dyn Error>> {
-    let consumer: StreamConsumer = ClientConfig::new()
-        .set("bootstrap.servers", &config.kafka_bootstrap_servers)
-        .set("group.id", &config.charging_consumer_group)
-        .set("isolation.level", "read_committed")
-        .set("enable.auto.commit", "false")
-        .create()?;
+    let consumer: StreamConsumer = consumer_config(&config).create()?;
     consumer.subscribe(&[&config.charging_input_topic])?;
 
     let producer: FutureProducer = ClientConfig::new()
@@ -75,6 +70,17 @@ async fn serve_async(config: ServiceConfig) -> Result<(), Box<dyn Error>> {
             return Err(error);
         }
     }
+}
+
+fn consumer_config(config: &ServiceConfig) -> ClientConfig {
+    let mut consumer = ClientConfig::new();
+    consumer
+        .set("bootstrap.servers", &config.kafka_bootstrap_servers)
+        .set("group.id", &config.charging_consumer_group)
+        .set("isolation.level", "read_committed")
+        .set("enable.auto.commit", "false")
+        .set("auto.offset.reset", &config.kafka_auto_offset_reset);
+    consumer
 }
 
 async fn process_batch(
@@ -154,4 +160,20 @@ async fn produce_output(
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{consumer_config, ServiceConfig};
+
+    #[test]
+    fn consumer_config_uses_configured_offset_reset() {
+        let mut config = ServiceConfig::from_env();
+        config.kafka_auto_offset_reset = "latest".to_owned();
+
+        assert_eq!(
+            consumer_config(&config).get("auto.offset.reset"),
+            Some("latest")
+        );
+    }
 }
