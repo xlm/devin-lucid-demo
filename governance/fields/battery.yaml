@@ -1,0 +1,492 @@
+# Field manifest for the legacy battery-health processor. Owned by humans
+# (privacy reviewer and data owner). Code reads this file, never writes it.
+#
+# Every value here is a synthetic demo declaration. Retention periods,
+# role names and encryption statements describe design intent. No check in
+# this repository verifies retention, access control or encryption at runtime.
+#
+# Classification is per field in isolation. A record is handled at the most
+# restricted classification among its fields.
+# Destination ids: battery.health.daily.v1 and battery.errors.v1 (topics),
+# processor.stderr (diagnostic log), processor.checkpoint (managed state).
+schema_version: "1.0"
+
+topics:
+  - id: battery.telemetry.v1
+    schema: contracts/battery.telemetry.v1.schema.json
+    record_classification: sensitive_location
+    note: Input topic. Records may carry synthetic_location, so the raw record is restricted.
+  - id: battery.health.daily.v1
+    schema: contracts/battery.health.daily.v1.schema.json
+    record_classification: vehicle_identifying
+  - id: battery.errors.v1
+    schema: contracts/battery.errors.v1.schema.json
+    record_classification: vehicle_identifying
+
+fields:
+  # ---------------- battery.telemetry.v1 (input) ----------------
+  - name: event_id
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Producer-assigned event identifier, used for daily-key de-duplication.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation, input-error-reporting]
+    allowed_transformations: [DEDUPE_KEY, COUNT_ACCEPTED_DEDUPED, ECHO_IF_VALID]
+    permitted_destinations: [battery.errors.v1, processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: vehicle_id
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Synthetic vehicle key VEH-nnnn and daily summary key component.
+    source: vehicle telemetry producer (synthetic)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [daily-health-summarisation, input-error-reporting]
+    allowed_transformations: [PASSTHROUGH, DAILY_KEY, ECHO_IF_VALID]
+    permitted_destinations: [battery.health.daily.v1, battery.errors.v1, processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: pack_id
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Synthetic battery pack identifier and daily summary key component.
+    source: vehicle telemetry producer (synthetic)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [daily-health-summarisation, input-error-reporting]
+    allowed_transformations: [PASSTHROUGH, DAILY_KEY, ECHO_IF_VALID]
+    permitted_destinations: [battery.health.daily.v1, battery.errors.v1, processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: event_timestamp
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: UTC event time. Drives the daily key, watermark, lateness and latest SOH selection.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [UTC_DAY_KEY, WATERMARK, LATEST_BY_EVENT_TIMESTAMP_SEQUENCE]
+    permitted_destinations: [processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: ingestion_timestamp
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Ingestion time. Validated, otherwise unused.
+    source: telemetry ingest (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [VALIDATE]
+    permitted_destinations: []
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: sequence_number
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Numeric tie-breaker for selecting latest SOH.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [LATEST_BY_EVENT_TIMESTAMP_SEQUENCE]
+    permitted_destinations: [processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: cell_voltage_min_v
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Minimum cell voltage reading, in volts.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [MIN, MAX_PER_EVENT_SPREAD]
+    permitted_destinations: [battery.health.daily.v1, processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: cell_voltage_max_v
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Maximum cell voltage reading, in volts.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [MAX, MAX_PER_EVENT_SPREAD]
+    permitted_destinations: [battery.health.daily.v1, processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: pack_temp_c
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Battery pack temperature reading, in degrees Celsius.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [MAX]
+    permitted_destinations: [battery.health.daily.v1, processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: state_of_health_pct
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Battery state of health percentage reading.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [LATEST_BY_EVENT_TIMESTAMP_SEQUENCE]
+    permitted_destinations: [battery.health.daily.v1, processor.checkpoint]
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: schema_version
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Input schema version. Validated before other telemetry fields.
+    source: vehicle telemetry producer (synthetic)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [VALIDATE]
+    permitted_destinations: []
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: synthetic_location
+    topic: battery.telemetry.v1
+    schema_version: "1.x"
+    description: Restricted synthetic location. Validated, then discarded.
+    source: vehicle telemetry producer (synthetic)
+    classification: sensitive_location
+    personal: false
+    sensitive: true
+    purpose: [input-validation]
+    allowed_transformations: [VALIDATE_AND_DISCARD]
+    permitted_destinations: []
+    access: battery-health-processor service identity
+    logging: prohibited
+    retention: P7D (input topic)
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  # ---------------- battery.health.daily.v1 (output) ----------------
+  - name: vehicle_id
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: Vehicle identifier for the daily pack summary.
+    source: PASSTHROUGH(battery.telemetry.v1.vehicle_id)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [PASSTHROUGH]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: pack_id
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: Battery pack identifier for the daily summary.
+    source: PASSTHROUGH(battery.telemetry.v1.pack_id)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [PASSTHROUGH]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: day
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: UTC calendar day derived from event_timestamp.
+    source: UTC_DAY_KEY(battery.telemetry.v1.event_timestamp)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [UTC_DAY_KEY]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: min_cell_voltage_v
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: Minimum cell voltage among accepted daily readings.
+    source: MIN(battery.telemetry.v1.cell_voltage_min_v)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [MIN]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: max_cell_voltage_v
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: Maximum cell voltage among accepted daily readings.
+    source: MAX(battery.telemetry.v1.cell_voltage_max_v)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [MAX]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: max_cell_imbalance_v
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: Maximum per-event cell voltage spread among accepted readings.
+    source: MAX_PER_EVENT_SPREAD(battery.telemetry.v1.cell_voltage_min_v, battery.telemetry.v1.cell_voltage_max_v)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [MAX_PER_EVENT_SPREAD]
+    permitted_destinations: [battery.health.daily.v1, processor.checkpoint]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: max_pack_temp_c
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: Maximum pack temperature among accepted daily readings.
+    source: MAX(battery.telemetry.v1.pack_temp_c)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [MAX]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: latest_state_of_health_pct
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: SOH value selected by greatest event timestamp and sequence number.
+    source: LATEST_BY_EVENT_TIMESTAMP_SEQUENCE(battery.telemetry.v1.state_of_health_pct)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [LATEST_BY_EVENT_TIMESTAMP_SEQUENCE]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: event_count
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: Number of accepted, de-duplicated readings in the daily summary.
+    source: COUNT_ACCEPTED_DEDUPED(battery.telemetry.v1.event_id)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [COUNT_ACCEPTED_DEDUPED]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: schema_version
+    topic: battery.health.daily.v1
+    schema_version: "1.0"
+    description: Output schema version, constant "1.0".
+    source: CONSTANT
+    classification: public
+    personal: false
+    sensitive: false
+    purpose: [daily-health-summarisation]
+    allowed_transformations: [CONSTANT]
+    permitted_destinations: [battery.health.daily.v1]
+    access: consumer-battery-health
+    logging: prohibited
+    retention: P90D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  # ---------------- battery.errors.v1 (output) ----------------
+  - name: error_type
+    topic: battery.errors.v1
+    schema_version: "1.0"
+    description: Validation, unsupported-version, or late-event error category.
+    source: VALIDATION_RESULT
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [VALIDATION_RESULT]
+    permitted_destinations: [battery.errors.v1]
+    access: battery-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: field
+    topic: battery.errors.v1
+    schema_version: "1.0"
+    description: Invalid field name, or null for malformed JSON.
+    source: FIELD_NAME_ONLY
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [FIELD_NAME_ONLY]
+    permitted_destinations: [battery.errors.v1]
+    access: battery-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: input_line
+    topic: battery.errors.v1
+    schema_version: "1.0"
+    description: 1-based input position of the offending line.
+    source: INPUT_POSITION
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [INPUT_POSITION]
+    permitted_destinations: [battery.errors.v1]
+    access: battery-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: event_id
+    topic: battery.errors.v1
+    schema_version: "1.0"
+    description: Echo of event_id only when valid on its own.
+    source: ECHO_IF_VALID(battery.telemetry.v1.event_id)
+    classification: internal_operational
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [ECHO_IF_VALID]
+    permitted_destinations: [battery.errors.v1]
+    access: battery-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: vehicle_id
+    topic: battery.errors.v1
+    schema_version: "1.0"
+    description: Echo of vehicle_id only when valid on its own.
+    source: ECHO_IF_VALID(battery.telemetry.v1.vehicle_id)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [ECHO_IF_VALID]
+    permitted_destinations: [battery.errors.v1]
+    access: battery-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: pack_id
+    topic: battery.errors.v1
+    schema_version: "1.0"
+    description: Echo of pack_id only when valid on its own.
+    source: ECHO_IF_VALID(battery.telemetry.v1.pack_id)
+    classification: vehicle_identifying
+    personal: true
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [ECHO_IF_VALID]
+    permitted_destinations: [battery.errors.v1]
+    access: battery-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
+
+  - name: schema_version
+    topic: battery.errors.v1
+    schema_version: "1.0"
+    description: Output schema version, constant "1.0".
+    source: CONSTANT
+    classification: public
+    personal: false
+    sensitive: false
+    purpose: [input-error-reporting]
+    allowed_transformations: [CONSTANT]
+    permitted_destinations: [battery.errors.v1]
+    access: battery-platform-oncall
+    logging: prohibited
+    retention: P14D
+    encryption: in transit TLS to the broker, at rest platform-managed (declared, not verified here)
