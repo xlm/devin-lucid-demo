@@ -14,7 +14,7 @@ removes `rust-processor/`. `validated-migration` is the integration tip itself.
 | `consumer-contract-violation` | D | Summaries add `avg_power_kw` and timestamps use `+00:00` instead of `Z`. | fail | fail | fail | fail | `policy-violation` | `demo/consumer-contract-violation` |
 | `privacy-violation` | E | The last accepted `synthetic_location` is copied to summaries. Session-close logs include `vehicle_id`. | fail | pass | fail | fail | `policy-violation` | `demo/privacy-violation` |
 | `validated-migration` | Core | Validated integration tip with all four gates passing. | pass | pass | pass | pass | `no-material-change` | `build/integration` |
-| `extra-unmigrated` | F | Pending. Planned second processor (battery-health), being built separately. | pending | pending | pending | pending | pending | pending |
+| `extra-unmigrated` | F | Integration tip with battery-health registered as an unmigrated legacy processor. Charging gates still pass. | pass | pass | pass | pass | `no-material-change` | `build/integration` |
 
 Gate values are the statuses recorded in `build-output/latest/evidence/evidence.json`.
 The checker also validates the privacy recommendation and the fast command's
@@ -51,6 +51,8 @@ exit status.
   recommendation `policy-violation`. Behavioral and contract gates also fail
   because the extra summary field violates the output schema. State ordering
   passes.
+- Workflow F uses the integration tip, which includes the planned second
+  processor (battery-health) as unmigrated. All charging gates pass.
 
 ## Checking states
 

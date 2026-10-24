@@ -22,6 +22,7 @@ states=(
   consumer-contract-violation
   privacy-violation
   validated-migration
+  extra-unmigrated
 )
 
 declare -A expected_behavioural=(
@@ -32,6 +33,7 @@ declare -A expected_behavioural=(
   [consumer-contract-violation]=fail
   [privacy-violation]=fail
   [validated-migration]=pass
+  [extra-unmigrated]=pass
 )
 declare -A expected_state_ordering=(
   [legacy-baseline]=error
@@ -41,6 +43,7 @@ declare -A expected_state_ordering=(
   [consumer-contract-violation]=fail
   [privacy-violation]=pass
   [validated-migration]=pass
+  [extra-unmigrated]=pass
 )
 declare -A expected_contract=(
   [legacy-baseline]=fail
@@ -50,6 +53,7 @@ declare -A expected_contract=(
   [consumer-contract-violation]=fail
   [privacy-violation]=fail
   [validated-migration]=pass
+  [extra-unmigrated]=pass
 )
 declare -A expected_privacy=(
   [legacy-baseline]=error
@@ -59,6 +63,7 @@ declare -A expected_privacy=(
   [consumer-contract-violation]=fail
   [privacy-violation]=fail
   [validated-migration]=pass
+  [extra-unmigrated]=pass
 )
 declare -A expected_recommendation=(
   [legacy-baseline]=needs-clarification
@@ -68,6 +73,7 @@ declare -A expected_recommendation=(
   [consumer-contract-violation]=policy-violation
   [privacy-violation]=policy-violation
   [validated-migration]=no-material-change
+  [extra-unmigrated]=no-material-change
 )
 
 worktree_base="$repo_root/build-output/demo-states"
@@ -91,7 +97,7 @@ overall=0
 for state in "${states[@]}"; do
   if [[ "$refs" == tags ]]; then
     ref=$state
-  elif [[ "$state" == validated-migration ]]; then
+  elif [[ "$state" == validated-migration || "$state" == extra-unmigrated ]]; then
     ref=build/integration
   else
     ref="demo/$state"
