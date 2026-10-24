@@ -170,6 +170,21 @@ def test_identical_duplicate_emission_is_idempotent(tmp_path):
     assert checks["contract.no_extra_outputs"]["status"] == "pass"
 
 
+def test_numeric_equivalent_reemission_is_idempotent(tmp_path):
+    scenario = "normal_session"
+    ctx = make_context(tmp_path, [scenario])
+    prepare_candidate(ctx, [scenario])
+    path = ctx.output_dir("candidate", scenario) / "summaries.jsonl"
+    equivalent = read_records(path)[0]
+    equivalent["event_count"] = float(equivalent["event_count"])
+    path.write_text(path.read_text() + json.dumps(equivalent) + "\n")
+
+    check = checks_by_id(run_gate(ctx), scenario)["contract.replay_idempotence"]
+
+    assert check["status"] == "pass"
+    assert check["evidence"]["duplicate_emissions"] >= 1
+
+
 def test_within_vehicle_reordering_fails_but_cross_vehicle_order_is_ignored(tmp_path):
     scenario = "downstream_contract"
     ctx = make_context(tmp_path, [scenario])
