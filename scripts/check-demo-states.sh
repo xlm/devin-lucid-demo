@@ -3,6 +3,7 @@ set -uo pipefail
 
 repo_root=$(git rev-parse --show-toplevel) || exit 2
 source "$repo_root/scripts/_env.sh"
+set +e
 
 refs=branches
 if [[ $# -gt 0 ]]; then
