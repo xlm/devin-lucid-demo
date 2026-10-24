@@ -360,3 +360,71 @@ issue into its PR description under a `## Contract conflicts` heading
 (what, where, proposed change, impact), implements the contract as
 written where possible, and reports the conflict in its final message.
 The orchestrator decides and, if needed, changes the contract for all WPs.
+
+## 13. Technology choices and rationale
+
+The legacy processor uses Scala 2.13 and Spark Structured Streaming via
+sbt. Its `replay` mode reads JSONL files and runs without a Spark cluster.
+`legacy-scala/bin/spark-local` is an optional local Spark smoke demo, not a
+gate. It exercises Spark's file source and micro-batches, whose watermark
+and end-of-input behavior differs from deterministic replay. Keeping it
+outside the gates also avoids making the fast tier depend on Spark runtime
+setup.
+
+The Rust processor uses an in-process keyed `StateStore` trait. Replay uses
+`InMemoryStateStore`. Tokio and `rdkafka` are optional dependencies behind
+the `kafka` feature. RocksDB is a possible future implementation of the
+store trait, not a current dependency.
+
+`docker-compose.yml` defines a single-node Redpanda broker for the optional
+integration design. Redpanda is a lighter Kafka-API-compatible drop-in for
+this demo. Its single-node development configuration has no replication or
+authentication. It is not a production topology or a customer technology
+choice. The integration tier is not implemented at this revision.
+
+Both processors exchange summaries and errors as canonical JSONL for
+language-neutral comparison. The default privacy policy engine, when WP5
+lands, is a typed Python checker. It reads
+`governance/policies/migration-policies.yaml` and dispatches the declared
+rule IDs to Python implementations. The adjacent
+`migration-policies.rego` is optional illustration only. It is not executed
+or used as an automatic fallback by this demo.
+
+## 14. Determinism and numeric precision
+
+Fixtures and processor outputs must use fixed seeds where randomness is
+needed, fixed explicit timestamps, and no wall-clock dependence. Existing
+fixtures use explicit event timestamps. Test-only randomized input uses an
+explicit seed. Processor output semantics must not depend on the time at
+which a replay runs.
+
+Numeric comparison uses the explicit absolute tolerance, default `1e-6`,
+and `--strict` for exact binary64 equality. Strict mode helps surface
+Scala/Rust binary64 representation and accumulation drift. A tolerance can
+hide small differences, while strict binary64 equality is not decimal
+arithmetic or a business-domain accuracy proof. Run metadata and cutover
+audit timestamps may use wall-clock time, but are not processor output
+fields compared as fixture results.
+
+## 15. Work breakdown
+
+Complexity is a relative planning estimate. Owners follow the ownership
+plan in section 11. WP7 is named as tags there, but its detailed tagging
+convention is not specified.
+
+| WP | Scope | Depends on | Parallelisable | Complexity | Owner |
+|---|---|---|---|---|---|
+| WP0 | Shared contract, schemas, fixtures and repository seams | None | No | M | Orchestrator |
+| WP1 | Legacy Scala/Spark processor and replay | WP0 | Yes | L | Sub-agent |
+| WP2 | Rust processor and replay | WP0 | Yes | L | Sub-agent |
+| WP3 | Runner and behavioral/state-ordering comparisons | WP0 | Yes | M | Sub-agent |
+| WP4 | Warranty consumer and contract gate | WP0 | Yes | M | Sub-agent |
+| WP5 | Governance manifests, privacy checks and evidence package | WP0 | Yes | L | Sub-agent |
+| WP6 | Local shadow, cutover and rollback simulator | WP0-WP5 | No | M | Orchestrator |
+| WP7 | Tags, with details to be set by the orchestrator | WP6 | No | S | Orchestrator |
+| WP8 | Documentation and playbooks | WP0-WP7 | No | M | Orchestrator |
+| WP9 | Optional Kafka integration tier | Core WP0-WP8, after core | Yes | L | Orchestrator |
+
+The sequential spine is:
+
+`WP0 -> WP1-WP5 (parallel) -> WP6 -> WP7 -> WP8, WP9 optional after the core.`
