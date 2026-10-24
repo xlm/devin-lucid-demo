@@ -16,7 +16,7 @@ All example data in this processor and its fixtures is synthetic.
 |---|---|---|
 | `battery.telemetry.v1` | Battery pack telemetry input | `vehicle_id` |
 | `battery.health.daily.v1` | One daily pack health summary | `vehicle_id` |
-| `battery.errors.v1` | Validation and late-event errors | No key |
+| `battery.errors.v1` | Validation and late-event errors | `vehicle_id` when it passed validation, otherwise no key |
 
 The summary identity is `(vehicle_id, pack_id, day)`. A vehicle may have
 multiple packs, and each pack may produce a summary for each UTC day.
