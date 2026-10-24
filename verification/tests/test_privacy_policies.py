@@ -16,6 +16,10 @@ def _context(tmp_path, scenarios=("normal_session",)):
     run_dir.mkdir(parents=True, exist_ok=True)
     source_dir = run_dir / "src"
     source_dir.mkdir()
+    (source_dir / "main.rs").write_text(
+        'fn main() { eprintln!("processed {} lines", n); }\n',
+        encoding="utf-8",
+    )
     ctx = RunContext(repo_root=REPO_ROOT, run_dir=run_dir, scenarios=list(scenarios),
                      baseline="expected", candidate="candidate")
     for scenario in scenarios:
@@ -172,6 +176,18 @@ def test_missing_outputs_and_source_do_not_claim_no_material_change(tmp_path):
     assert source_check["status"] == "skip"
     assert source_check["detail"] == "candidate source not present; static claim not established"
     assert missing_source["disposition"]["recommendation"] == "needs-clarification"
+
+
+def test_source_scan_skips_existing_directory_without_rust_sources(tmp_path):
+    source_dir = tmp_path / "empty-source"
+    source_dir.mkdir()
+
+    result = source_scan(source_dir)
+
+    assert result["status"] == "skip"
+    assert result["detail"] == "no Rust sources found; static claim not established"
+    assert result["evidence"]["severity"] == "clarification"
+    assert result["evidence"]["basis"] == "source-scan"
 
 
 @pytest.mark.parametrize(
