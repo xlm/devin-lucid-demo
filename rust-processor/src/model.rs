@@ -100,12 +100,6 @@ impl Num {
     }
 }
 
-pub(crate) fn cmp_numbers(left: &Number, right: &Number) -> Ordering {
-    Num::from_number(left)
-        .expect("validated finite number")
-        .cmp(Num::from_number(right).expect("validated finite number"))
-}
-
 /// Parses, validates and extracts the fields used by session processing.
 pub fn validate_line(line: &str) -> Result<ValidatedEvent, ValidationError> {
     let value: Value = serde_json::from_str(line).map_err(|_| malformed_error())?;
