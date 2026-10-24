@@ -205,10 +205,12 @@ def _record_reemissions(records: list) -> tuple[list[dict], int]:
         key = _valid_key(record)
         if key is None:
             continue
-        encoded = canonical(record)
         if key not in first:
-            first[key] = encoded
-        elif first[key] == encoded:
+            first[key] = record
+        elif set(first[key]) == set(record) and all(
+            _same_json_value(first[key][field], record[field])
+            for field in first[key]
+        ):
             duplicates += 1
         else:
             conflicts.append({
