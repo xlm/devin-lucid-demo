@@ -39,6 +39,10 @@ def summary():
     }
 
 
+def reject_json_constant(token):
+    raise ValueError(token)
+
+
 def test_cli_writes_valid_state_and_value_free_rejects(tmp_path):
     source = tmp_path / "summaries.jsonl"
     output = tmp_path / "nested" / "state.json"
@@ -65,6 +69,35 @@ def test_cli_writes_valid_state_and_value_free_rejects(tmp_path):
     assert "WVW-SYNTHETIC-0001" not in rejects_path.read_text()
     assert "VEH-0001" not in result.stderr
     assert "session" not in result.stderr
+
+
+def test_cli_rejects_overflowing_number_and_writes_strict_json(tmp_path):
+    source = tmp_path / "summaries.jsonl"
+    output = tmp_path / "state.json"
+    line = json.dumps(summary()).replace(
+        '"total_energy_kwh": 1.5',
+        '"total_energy_kwh":1e400',
+    )
+    source.write_text(line + "\n")
+
+    result = run_cli(["--input", source, "--state-out", output])
+
+    assert result.returncode == 0, result.stderr
+    state = json.loads(output.read_text(), parse_constant=reject_json_constant)
+    assert state == {"schema_version": "1.0", "vehicles": {}}
+    rejects_path = Path(str(output) + ".rejects.json")
+    rejects = json.loads(
+        rejects_path.read_text(),
+        parse_constant=reject_json_constant,
+    )
+    assert rejects["accepted"] == 0
+    assert rejects["rejected"] == 1
+    assert rejects["reasons"] == [{
+        "line": 1,
+        "delivery": 1,
+        "path": "total_energy_kwh",
+        "validator": "finite",
+    }]
 
 
 def test_cli_replays_one_two_and_three_produce_same_state(tmp_path):

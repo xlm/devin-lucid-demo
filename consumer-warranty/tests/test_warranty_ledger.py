@@ -70,6 +70,23 @@ def test_invalid_records_are_counted_and_not_applied(mutate):
     assert "WVW-SYNTHETIC-0001" not in json.dumps(ledger.reasons)
 
 
+@pytest.mark.parametrize("field", ["total_energy_kwh", "peak_power_kw"])
+def test_non_finite_summary_numbers_are_rejected(field):
+    ledger = WarrantyLedger()
+
+    assert not ledger.apply(record(**{field: float("inf")}), line=4, delivery=2)
+
+    assert ledger.accepted == 0
+    assert ledger.rejected == 1
+    assert ledger.state() == {"schema_version": "1.0", "vehicles": {}}
+    assert ledger.reasons == [{
+        "line": 4,
+        "delivery": 2,
+        "path": field,
+        "validator": "finite",
+    }]
+
+
 def test_non_object_record_is_rejected_as_parse_error():
     ledger = WarrantyLedger()
 
