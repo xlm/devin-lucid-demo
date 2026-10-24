@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Optional smoke demo, outside the verification gates: runs the real Structured
+# Streaming job on master local[*] against a file source with
+# Trigger.AvailableNow and writes JSONL. Output differs from replay mode by
+# design (micro-batch watermark, no end-of-input flush); see README.md.
+#
+# usage: legacy-scala/bin/spark-local --input <file.jsonl> --output-dir <dir>
+#          [--batch-lines N]   (input lines per micro-batch, default 10)
+# Needs legacy-scala/bin/build --spark first. Overwrites <dir>.
+set -euo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CP_FILE="$HERE/target/spark-classpath.txt"
+
+usage() { echo "usage: legacy-scala/bin/spark-local --input <file.jsonl> --output-dir <dir> [--batch-lines N]" >&2; exit 2; }
+input="" out="" batch=10
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --input) [[ $# -ge 2 ]] || usage; input="$2"; shift 2 ;;
+    --output-dir) [[ $# -ge 2 ]] || usage; out="$2"; shift 2 ;;
+    --batch-lines) [[ $# -ge 2 && "$2" =~ ^[1-9][0-9]*$ ]] || usage; batch="$2"; shift 2 ;;
+    *) usage ;;
+  esac
+done
+[[ -n "$input" && -n "$out" ]] || usage
+[[ -f "$input" ]] || { echo "spark-local: input not found: $input" >&2; exit 1; }
+if [[ ! -f "$CP_FILE" ]]; then
+  echo "spark-local: $CP_FILE is missing; run legacy-scala/bin/build --spark first" >&2
+  exit 1
+fi
+
+rm -rf "$out"
+mkdir -p "$out/_work/input" "$out/_work/parts"
+out="$(cd "$out" && pwd)"
+# The file source has no offsets, so each staged line carries its 1-based line number.
+# One staged file per micro-batch (maxFilesPerTrigger=1). The file source orders files
+# by modification time, so mtimes are set to fixed, increasing values.
+awk -v n="$batch" -v dir="$out/_work/input" '{
+  f = sprintf("%s/batch-%06d.txt", dir, int((NR - 1) / n)); printf "%d\t%s\n", NR, $0 > f
+}' "$input"
+i=0
+for f in "$out"/_work/input/batch-*.txt; do
+  [[ -e "$f" ]] || break
+  touch -d "@$((1767225600 + i))" "$f"
+  i=$((i + 1))
+done
+
+# Spark 3.5 on JDK 17 needs these opens (same list as Spark's own launcher).
+opens=()
+for p in java.lang java.lang.invoke java.lang.reflect java.io java.net java.nio java.util \
+         java.util.concurrent java.util.concurrent.atomic sun.nio.ch sun.nio.cs sun.security.action sun.util.calendar; do
+  opens+=("--add-opens=java.base/$p=ALL-UNNAMED")
+done
+
+java -XX:+IgnoreUnrecognizedVMOptions "${opens[@]}" \
+  -Dspark.master="local[*]" \
+  -Dspark.ui.enabled=false \
+  -Dspark.sql.shuffle.partitions=4 \
+  -Dspark.sql.session.timeZone=UTC \
+  -Dlog4j2.configurationFile="$HERE/conf/log4j2-spark-local.properties" \
+  -cp "$(cat "$CP_FILE")" com.example.telemetry.charging.ChargingSessionProcessor local \
+  --input-dir "$out/_work/input" --output-dir "$out/_work/parts" --checkpoint-dir "$out/_work/checkpoint"
+
+# Part file order is not meaningful; within one part file Spark keeps batch order.
+for kind in summaries errors; do
+  find "$out/_work/parts/$kind" -name 'part-*.txt' -print0 2>/dev/null | sort -z | xargs -0 -r cat > "$out/$kind.jsonl"
+  touch "$out/$kind.jsonl"
+done
+echo "spark-local: $(wc -l < "$out/summaries.jsonl") summaries, $(wc -l < "$out/errors.jsonl") errors in $out" >&2
