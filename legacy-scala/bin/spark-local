@@ -60,7 +60,8 @@ java -XX:+IgnoreUnrecognizedVMOptions "${opens[@]}" \
   -cp "$(cat "$CP_FILE")" com.example.telemetry.charging.ChargingSessionProcessor local \
   --input-dir "$out/_work/input" --output-dir "$out/_work/parts" --checkpoint-dir "$out/_work/checkpoint"
 
-# Part file order is not meaningful; within one part file Spark keeps batch order.
+# Order across queries and part files is not meaningful. Batch ids are zero-padded,
+# so sorting keeps each query's batches in order.
 for kind in summaries errors; do
   find "$out/_work/parts/$kind" -name 'part-*.txt' -print0 2>/dev/null | sort -z | xargs -0 -r cat > "$out/$kind.jsonl"
   touch "$out/$kind.jsonl"
