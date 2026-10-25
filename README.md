@@ -11,7 +11,14 @@ personal data.
 This integration branch contains WP0-WP9, including privacy and evidence,
 the migration playbook and workflows, and the battery-health legacy
 processor registered as unmigrated. The fast replay tier is implemented.
-The optional integration tier is not implemented at this revision.
+The optional integration tier runs the Kafka-feature Rust service against
+local Redpanda with fresh scenario topics. It checks bounded output,
+transactional offsets, key partition affinity and restart reprocessing. It
+does not establish end-to-end exactly-once delivery, durable processor state,
+production readiness or cutover approval.
+
+See the [migration playbook](playbooks/migration-playbook.md), the
+[workflow guides](docs/workflows/), and the [demo states](docs/demo-states.md).
 
 ## Layout
 

@@ -30,10 +30,15 @@ repository's local demo and its selected replay inputs.
   one atomic operation. A window with no active producer, duplicates and
   gaps remain possible. The approval prompt is a local demo guard, not a
   real authorization boundary. Agents must not approve.
-- **Integration tier:** `scripts/run-integration.sh` exits with status 3
-  and reports that the tier is not implemented at this revision. The
-  single-node Redpanda Compose file is a demo configuration, not a live
-  integration result.
+- **Integration tier:** `scripts/run-integration.sh` exercises the Kafka
+  `serve` process with fresh input, summary and error topics. Each input
+  topic has one partition because the watermark is global and cross-partition
+  interleaving can change late-event outcomes. A schema-valid sentinel
+  advances the watermark past fixture events. The restart scenarios are
+  skipped because dedupe, watermark and open-session state are in memory.
+  Durable state needs a Kafka changelog written in the same transaction.
+  Redpanda exercises Kafka-to-Kafka transactions on one demo node. This is
+  not end-to-end exactly-once delivery or a production topology.
 - **Fast runner evidence handling:** `scripts/run-fast.sh` runs evidence
   packaging even when verification fails, then returns a non-zero status if
   either verification or evidence fails.
@@ -41,8 +46,10 @@ repository's local demo and its selected replay inputs.
 ## Risks
 
 - **Spark/sbt build weight:** Use file-replay mode for the fast workflow.
-- **Live Kafka exactly-once fragility:** Keep transaction exercises in the
-  optional integration tier only. That tier is not implemented yet.
+- **Live Kafka transaction limits:** Keep transaction exercises in the
+  optional integration tier. It checks Kafka-to-Kafka transactions on one
+  Redpanda node, not end-to-end exactly-once delivery. Restart recovery is
+  not tested for in-memory `serve` state.
 - **Atomic cutover not achievable locally:** Use the single-active-producer
   lease for the demo and document the non-atomic handover gap.
 - **Lineage overclaim:** Compare declared manifests with runtime inspection,

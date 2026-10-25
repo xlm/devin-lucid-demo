@@ -71,8 +71,17 @@ The fast tier uses local replay and synthetic fixtures without Kafka or
 Docker. Its four gates check behavior, state ordering, downstream contract
 and privacy. The evidence package records the run and gate results.
 
-The optional integration tier is not implemented at this revision.
-`scripts/run-integration.sh` exits 3 when
-`verification/integration/__init__.py` is absent. The Compose Redpanda
-service is a single-node demo simplification, not an integration result or
-a production topology.
+The optional integration tier builds the Kafka-feature Rust service and
+runs the 11 single-mode fixtures against fresh Redpanda topics. Input topics
+have one partition because the watermark is global and cross-partition
+interleaving can alter late-event outcomes. A schema-valid sentinel advances
+the watermark past the fixture timestamps. The harness checks
+`read_committed` outputs, transactional offsets, summary key-partition
+affinity, and whether a second `serve` process reprocesses committed input.
+
+The two restart-mode scenarios are explicitly skipped because dedupe,
+watermark and open-session state are in memory. Durable state would need a
+Kafka changelog in the same transaction. These checks exercise Kafka-to-Kafka
+transactions on one Redpanda node. They do not prove end-to-end exactly-once
+delivery, global ordering, durable restart recovery or production readiness.
+Redpanda is a demo simplification.

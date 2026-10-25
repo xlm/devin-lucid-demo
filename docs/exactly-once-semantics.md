@@ -12,22 +12,33 @@ Its lease is one coordination file protected by `fcntl.flock`. This is a
 local demonstration mechanism, not a distributed lease, a broker fence, or
 an exactly-once protocol.
 
-## Planned Kafka integration tier
+## Optional Kafka integration tier
 
-The optional integration tier is not implemented at this revision.
-`scripts/run-integration.sh` exits with status 3 until
-`verification/integration/__init__.py` is present. Once implemented, it is
-intended to exercise keyed Kafka records, producer transactions,
-`read_committed` consumers, and offsets committed in the same transaction as
-produced records. Records are keyed by `vehicle_id`, so Kafka partition
-order is per vehicle key.
+`scripts/run-integration.sh` builds the Kafka-feature Rust service and runs
+the 11 single-mode fixtures on fresh topics. Each input topic has one
+partition. The processor's watermark is global, so interleaving records
+across input partitions could change which events are late. Summary and
+error topics have three partitions. Summary keys and per-vehicle partition
+and order behavior are checked.
 
-Kafka transactions provide exactly-once processing only within Kafka-to-Kafka
-transactions on one cluster, when producers and consumers are configured and
-used correctly. They do not make the entire pipeline exactly-once. External
-side effects, processor state, replay, and consumer databases need their own
-coordination or idempotency. A single-node Redpanda setup is a demo
-simplification, not a production availability or failure model.
+After fixture input, the harness produces a schema-valid
+`VEH-9999` watermark sentinel with an event timestamp 24 hours later than
+the latest fixture event. That advances the watermark so inactivity timers
+can emit expected summaries. Sentinel records are excluded from saved
+candidate output. The sentinel vehicle ID is reserved and checked against
+all fixtures.
+
+The `processor_restart` and `state_recovery` scenarios are reported as
+skipped. `serve` keeps dedupe, watermark and open-session state in memory, so
+a restart loses state. A future remedy is durable state in a Kafka changelog
+written in the same transaction as output records and input offsets.
+
+The checks cover Kafka-to-Kafka transactions and committed offsets on one
+Redpanda node, plus a short restart check for reprocessing. They do not
+establish end-to-end exactly-once delivery. External side effects, durable
+processor state, replay and consumer databases need their own coordination
+or idempotency. Single-node Redpanda is a demo simplification, not a
+production availability or failure model.
 
 ## Lease handover and rollback
 

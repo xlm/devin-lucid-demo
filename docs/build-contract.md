@@ -380,7 +380,8 @@ store trait, not a current dependency.
 integration design. Redpanda is a lighter Kafka-API-compatible drop-in for
 this demo. Its single-node development configuration has no replication or
 authentication. It is not a production topology or a customer technology
-choice. The integration tier is not implemented at this revision.
+choice. The optional integration tier runs bounded Kafka `serve` checks but
+does not prove end-to-end exactly-once delivery or production readiness.
 
 Both processors exchange summaries and errors as canonical JSONL for
 language-neutral comparison. The default privacy policy engine, when WP5
