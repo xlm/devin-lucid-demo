@@ -82,7 +82,7 @@ jobs:
         with: {python-version: "3.10"}
       - uses: dtolnay/rust-toolchain@stable
       - run: docker --version && docker compose version
-      - run: scripts/run-integration.sh
+      - run: PYTHON=python scripts/run-integration.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: integration-gates, path: build-output/integration/gates}
