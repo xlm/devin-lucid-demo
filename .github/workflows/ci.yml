@@ -71,3 +71,18 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: build-output, path: build-output/}
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: detect
+    if: needs.detect.outputs.fast == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.10"}
+      - uses: dtolnay/rust-toolchain@stable
+      - run: docker --version && docker compose version
+      - run: scripts/run-integration.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: integration-gates, path: build-output/integration/gates}
