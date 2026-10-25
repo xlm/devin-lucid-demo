@@ -1,0 +1,12 @@
+{
+  "name": "out_of_order",
+  "description": "Readings arrive out of event-time order within allowed lateness. latest_state_of_health_pct follows the greatest event_timestamp, not arrival order, and on equal timestamps the greater sequence_number wins even when it arrives first.",
+  "covers": [
+    "out-of-order",
+    "latest by event time",
+    "sequence tie-break"
+  ],
+  "run": {
+    "mode": "single"
+  }
+}

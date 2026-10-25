@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/battery.health.daily.v1.schema.json",
+  "title": "battery.health.daily.v1",
+  "description": "One daily record per (vehicle_id, pack_id, UTC day). Kafka message key = vehicle_id.",
+  "type": "object",
+  "required": ["vehicle_id", "pack_id", "day", "min_cell_voltage_v", "max_cell_voltage_v",
+               "max_cell_imbalance_v", "max_pack_temp_c", "latest_state_of_health_pct",
+               "event_count", "schema_version"],
+  "properties": {
+    "vehicle_id": {"type": "string", "pattern": "^VEH-[0-9]{4}$"},
+    "pack_id": {"type": "string", "minLength": 1, "maxLength": 64},
+    "day": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "min_cell_voltage_v": {"type": "number", "minimum": 0, "maximum": 5},
+    "max_cell_voltage_v": {"type": "number", "minimum": 0, "maximum": 5},
+    "max_cell_imbalance_v": {"type": "number", "minimum": 0, "maximum": 5},
+    "max_pack_temp_c": {"type": "number", "minimum": -50, "maximum": 100},
+    "latest_state_of_health_pct": {"type": "number", "minimum": 0, "maximum": 100},
+    "event_count": {"type": "integer", "minimum": 1},
+    "schema_version": {"const": "1.0"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,31 @@
+[package]
+name = "charging-processor"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80"
+
+[lib]
+name = "charging_processor"
+path = "src/lib.rs"
+
+[[bin]]
+name = "charging-processor"
+path = "src/main.rs"
+
+[features]
+default = []
+kafka = ["dep:rdkafka", "dep:tokio"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["arbitrary_precision"] }
+rdkafka = { version = "0.36", features = ["tokio"], optional = true }
+
+[dependencies.tokio]
+version = "1"
+default-features = false
+features = ["rt-multi-thread", "macros", "time", "signal"]
+optional = true
+
+[dev-dependencies]
+tempfile = "3"

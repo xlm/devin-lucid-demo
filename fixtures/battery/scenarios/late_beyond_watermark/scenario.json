@@ -1,0 +1,12 @@
+{
+  "name": "late_beyond_watermark",
+  "description": "Watermark = max event time - 10 min. A reading exactly at the watermark is accepted, one 1 ms behind it is DROPPED_LATE and does not move the watermark, a later copy of that dropped reading is silently de-duplicated, and readings far behind are dropped.",
+  "covers": [
+    "late events",
+    "watermark boundary",
+    "dedupe before lateness"
+  ],
+  "run": {
+    "mode": "single"
+  }
+}

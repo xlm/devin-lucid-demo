@@ -1,0 +1,12 @@
+{
+  "name": "normal_session",
+  "description": "One vehicle, one charging session, events in order, ends with COMPLETE.",
+  "covers": [
+    "normal session",
+    "cumulative energy = MAX"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

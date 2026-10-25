@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""Run the battery replay processor over its scenarios and compare parsed JSONL.
+
+Scenario restart metadata is honored by stopping, writing a checkpoint and
+resuming into the same output directory. With --every-split, try every line.
+"""
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+LEGACY = Path(__file__).resolve().parents[1]
+ROOT = LEGACY.parent
+PROCESSOR = LEGACY / "bin" / "battery-health-processor"
+SCENARIOS = ROOT / "fixtures" / "battery" / "scenarios"
+EXPECTED = ROOT / "fixtures" / "battery" / "expected"
+
+
+def read_jsonl(path: Path) -> list:
+    if not path.exists():
+        return []
+    return [json.loads(line, parse_int=float) for line in path.read_text(encoding="utf-8").splitlines() if line]
+
+
+def canonical(record: dict) -> str:
+    return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def replay(*args: str) -> None:
+    process = subprocess.run([str(PROCESSOR), "replay", *args], capture_output=True, text=True)
+    if process.returncode != 0:
+        raise RuntimeError(f"exit {process.returncode}: {process.stderr.strip()}")
+
+
+def run_scenario(scenario: Path, stop_after: int | None) -> tuple[list, list]:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        output = root / "out"
+        common = ["--input", str(scenario / "input.jsonl"), "--output-dir", str(output)]
+        if stop_after is None:
+            replay(*common)
+        else:
+            checkpoint = str(root / "checkpoint.json")
+            replay(*common, "--stop-after", str(stop_after), "--checkpoint", checkpoint)
+            replay(*common, "--resume-from", checkpoint)
+        return read_jsonl(output / "summaries.jsonl"), read_jsonl(output / "errors.jsonl")
+
+
+def compare(scenario: Path, found: tuple[list, list]) -> list[str]:
+    problems = []
+    for kind, records in zip(("summaries", "errors"), found):
+        expected = read_jsonl(EXPECTED / scenario.name / f"{kind}.jsonl")
+        have = [canonical(record) for record in records]
+        want = [canonical(record) for record in expected]
+        if have != want:
+            problems.append(f"{kind}: expected {len(want)} records, got {len(have)}")
+            problems.extend(f"  expected {record}" for record in want)
+            problems.extend(f"  found    {record}" for record in have)
+    return problems
+
+
+def main(argv: list[str]) -> int:
+    every_split = "--every-split" in argv
+    names = [argument for argument in argv if not argument.startswith("--")]
+    if not PROCESSOR.exists() or not (LEGACY / "target" / "replay-classpath.txt").exists():
+        print("check-battery-fixtures: run legacy-scala/bin/build first", file=sys.stderr)
+        return 1
+    known = {path.name for path in SCENARIOS.iterdir() if path.is_dir()}
+    unknown = sorted(set(names) - known)
+    if unknown:
+        print(f"check-battery-fixtures: unknown scenario(s): {', '.join(unknown)}", file=sys.stderr)
+        return 2
+
+    scenarios = sorted(SCENARIOS / name for name in known if not names or name in names)
+    failed = 0
+    for scenario in scenarios:
+        metadata = json.loads((scenario / "scenario.json").read_text(encoding="utf-8"))
+        run = metadata["run"]
+        plans = [run.get("stop_after") if run["mode"] == "restart" else None]
+        if every_split:
+            count = len((scenario / "input.jsonl").read_text(encoding="utf-8").splitlines())
+            plans.extend(index for index in range(count + 1) if index not in plans)
+        problems = []
+        for stop_after in plans:
+            label = "single" if stop_after is None else f"restart@{stop_after}"
+            try:
+                problems.extend(f"[{label}] {problem}" for problem in compare(scenario, run_scenario(scenario, stop_after)))
+            except RuntimeError as error:
+                problems.append(f"[{label}] {error}")
+        mode = run["mode"] + (f" stop_after={run['stop_after']}" if run["mode"] == "restart" else "")
+        extra = f", +{len(plans) - 1} split points" if every_split else ""
+        print(f"{'PASS' if not problems else 'FAIL'} {scenario.name} ({mode}{extra})")
+        for problem in problems:
+            print(f"    {problem}")
+        failed += bool(problems)
+    print(f"{len(scenarios) - failed}/{len(scenarios)} scenarios match fixtures/battery/expected")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

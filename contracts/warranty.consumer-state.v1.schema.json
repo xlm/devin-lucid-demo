@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/warranty.consumer-state.v1.schema.json",
+  "title": "warranty.consumer-state.v1",
+  "description": "Observable application state of consumer-warranty after consuming a summary stream. Semantics in docs/build-contract.md section 8.",
+  "type": "object",
+  "required": ["schema_version", "vehicles"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "vehicles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["warranty_energy_kwh", "session_count", "high_power_session_count", "inactivity_timeout_count"],
+        "properties": {
+          "warranty_energy_kwh": {"type": "number", "minimum": 0},
+          "session_count": {"type": "integer", "minimum": 1},
+          "high_power_session_count": {"type": "integer", "minimum": 0},
+          "inactivity_timeout_count": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

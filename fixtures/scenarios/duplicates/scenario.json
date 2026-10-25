@@ -1,0 +1,14 @@
+{
+  "name": "duplicates",
+  "description": "Exact duplicates, a same-event_id duplicate with a different payload (first wins), event_id reuse on a different session key (both accepted), a duplicate after the session closed (silently dropped), and a new event for a closed session.",
+  "covers": [
+    "duplicates",
+    "dedupe keeps first",
+    "dedupe is scoped to session key",
+    "closed session"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

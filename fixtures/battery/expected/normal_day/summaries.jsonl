@@ -1,0 +1,2 @@
+{"day":"2026-01-15","event_count":8,"latest_state_of_health_pct":97.33,"max_cell_imbalance_v":0.040000000000000036,"max_cell_voltage_v":3.66,"max_pack_temp_c":24.5,"min_cell_voltage_v":3.62,"pack_id":"PK-0101-A","schema_version":"1.0","vehicle_id":"VEH-0101"}
+{"day":"2026-01-15","event_count":4,"latest_state_of_health_pct":93.07,"max_cell_imbalance_v":0.040000000000000036,"max_cell_voltage_v":3.62,"max_pack_temp_c":21.0,"min_cell_voltage_v":3.58,"pack_id":"PK-0101-B","schema_version":"1.0","vehicle_id":"VEH-0101"}

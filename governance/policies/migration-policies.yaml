@@ -1,0 +1,148 @@
+# Migration privacy policies evaluated by the typed Python checker in
+# verification/privacy, the default and only policy engine executed in
+# this demo. migration-policies.rego is optional illustrative material
+# for teams that use OPA: it mirrors these rule ids and their intent but
+# is not executed and is not a guaranteed-equivalent implementation. A
+# test keeps the rule-id sets of both files equal.
+#
+# Static rules compare human declarations (inventories, manifest,
+# baseline) only. They do not observe data flow. Only the runtime parts
+# inspect actual candidate outputs and logs.
+#
+# Owned by humans (privacy reviewer). No automated check or agent may
+# edit this file, the baseline or the acceptance tests to make a run pass.
+#
+# Terms: B = approved baseline dimensions
+# (governance/baselines/charging.baseline.json), C = candidate inventory
+# dimensions, M = governance/fields/charging.yaml. Every dimension is a
+# list of items with a unique id. A rule result is a recommendation input
+# for a human reviewer, not a legal or compliance determination.
+schema_version: "1.0"
+owner: privacy-reviewer (synthetic demo)
+
+severities:
+  violation: {disposition: policy-violation}
+  review: {disposition: new-processing-requires-review}
+
+parameters:
+  restricted_classifications: [sensitive_location, security_sensitive]
+  identifier_classifications: [vehicle_identifying]
+  log_destination_kinds: [log]
+  restricted_value_pattern: "(?<![A-Za-z0-9-])SYN-[A-Z0-9-]+"
+
+rules:
+  - id: no-new-sensitive-output-fields
+    severity: violation
+    dimensions: [output_schema]
+    verification: [static, runtime]
+    title: No new or sensitive output fields
+    static: >-
+      For every C.output_schema item, its fields are a subset of the B item
+      with the same id (a new item counts as all-new fields), and no field
+      name equals the name of an M field whose classification is in
+      restricted_classifications.
+    runtime: >-
+      Every key observed in the candidate summaries.jsonl / errors.jsonl
+      records is in the B.output_schema fields of that topic.
+
+  - id: no-sensitive-location-propagation
+    severity: violation
+    dimensions: [sensitive_fields]
+    verification: [static, runtime]
+    title: Restricted location never leaves the processor
+    static: >-
+      Every C.sensitive_fields item whose classification is in
+      restricted_classifications has propagates_to == [].
+    runtime: >-
+      No candidate summaries.jsonl, errors.jsonl or processor.log contains a
+      match of restricted_value_pattern or any non-null synthetic_location
+      string from the scenario input.
+
+  - id: no-identifiers-to-unapproved-destinations
+    severity: violation
+    dimensions: [sensitive_fields, output_destinations]
+    verification: [static, runtime]
+    title: Vehicle-identifying values only reach approved topics, never logs
+    static: >-
+      For every C.sensitive_fields item whose classification is in
+      identifier_classifications, propagates_to is a subset of the B item's
+      propagates_to and of the M input field's permitted_destinations, and
+      contains no destination whose kind is in log_destination_kinds; and
+      every C.output_destinations item's identifiers are a subset of the B
+      item's identifiers (empty for a destination absent from B).
+    runtime: >-
+      No candidate processor.log contains any vehicle_id or session_id
+      string value from the scenario input (matched as a whole token).
+
+  - id: no-retention-change
+    severity: violation
+    dimensions: [retention]
+    verification: [static]
+    title: No retention change
+    static: C.retention equals B.retention (no item added, removed or changed).
+
+  - id: no-new-destinations
+    severity: violation
+    dimensions: [output_destinations]
+    verification: [static]
+    title: No new output destinations
+    static: Every C.output_destinations id exists in B.output_destinations.
+
+  - id: no-expanded-access
+    severity: violation
+    dimensions: [access]
+    verification: [static]
+    title: No expanded access
+    static: >-
+      Every C.access id exists in B.access, and its readers and writers are
+      subsets of the B item's readers and writers.
+
+  - id: no-altered-sensitive-transformations
+    severity: violation
+    dimensions: [transforms]
+    verification: [static]
+    title: No silently altered transformations of personal or sensitive fields
+    static: >-
+      No C.transforms item is added, removed or changed relative to B where
+      the B or C version's inputs include an M charging.events.v1 field with
+      personal or sensitive set to true.
+
+  - id: no-relaxed-logging-restrictions
+    severity: violation
+    dimensions: [logging]
+    verification: [static]
+    title: No relaxed logging restrictions
+    static: >-
+      Every C.logging id exists in B.logging, its prohibited_content is a
+      superset of the B item's and its allowed_content is a subset of the B
+      item's.
+
+  - id: review-new-external-dependencies
+    severity: review
+    dimensions: [external_deps]
+    verification: [static]
+    title: New or changed external dependencies need review
+    static: No C.external_deps item is added or changed relative to B.
+
+  - id: review-replication-change
+    severity: review
+    dimensions: [replication]
+    verification: [static]
+    title: Replication changes need review
+    static: C.replication equals B.replication.
+
+  - id: review-deployment-boundary-change
+    severity: review
+    dimensions: [deployment_boundary]
+    verification: [static]
+    title: Deployment-boundary changes need review
+    static: C.deployment_boundary equals B.deployment_boundary.
+
+  - id: review-new-inputs-or-purposes
+    severity: review
+    dimensions: [inputs, purposes, sensitive_fields]
+    verification: [static]
+    title: New inputs, purposes or personal fields need review
+    static: >-
+      No C.inputs, C.purposes or C.sensitive_fields item is added or
+      changed relative to B.

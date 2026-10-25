@@ -1,0 +1,13 @@
+{
+  "name": "concurrent_sessions",
+  "description": "Interleaved sessions across vehicles; sequential sessions on one vehicle; a mid-stream inactivity timeout and an end-of-input timeout.",
+  "covers": [
+    "concurrent sessions",
+    "inactivity timeout",
+    "end-of-input flush"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

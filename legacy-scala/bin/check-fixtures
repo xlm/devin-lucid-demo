@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+"""Self-check: run every fixture scenario through bin/charging-processor and compare.
+
+Each scenario runs as its scenario.json says (single, or restart: --stop-after n
+--checkpoint, then --resume-from into the same output dir). Parsed records must
+equal fixtures/expected as a multiset, and records of each (vehicle_id, session_id)
+key must keep the expected order. Order across keys is not checked (contract
+section 6.3). With --every-split, restart is also tried at every line.
+
+This checks the legacy processor against its own approved fixtures only. It is not
+a verification gate and says nothing about production safety.
+
+Usage: legacy-scala/bin/check-fixtures [--every-split] [scenario ...]
+Stdlib only.
+"""
+from __future__ import annotations
+
+import json
+import subprocess
+from collections import Counter, defaultdict
+import sys
+import tempfile
+from pathlib import Path
+
+LEGACY = Path(__file__).resolve().parents[1]
+ROOT = LEGACY.parent
+PROCESSOR = LEGACY / "bin" / "charging-processor"
+SCENARIOS = ROOT / "fixtures" / "scenarios"
+EXPECTED = ROOT / "fixtures" / "expected"
+
+
+def read_jsonl(path: Path) -> list:
+    if not path.exists():
+        return []
+    # Parsed-value comparison: 15 and 15.0 are the same number (contract section 6.3).
+    return [json.loads(line, parse_int=float) for line in path.read_text(encoding="utf-8").splitlines() if line]
+
+
+def canonical(record) -> str:
+    return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def replay(*args: str) -> None:
+    proc = subprocess.run([str(PROCESSOR), "replay", *args], capture_output=True, text=True)
+    if proc.returncode != 0:
+        raise RuntimeError(f"exit {proc.returncode}: {proc.stderr.strip()}")
+
+
+def run_scenario(scenario: Path, stop_after: int | None) -> tuple[list, list]:
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp) / "out"
+        common = ["--input", str(scenario / "input.jsonl"), "--output-dir", str(out)]
+        if stop_after is None:
+            replay(*common)
+        else:
+            ckpt = str(Path(tmp) / "checkpoint.json")
+            replay(*common, "--stop-after", str(stop_after), "--checkpoint", ckpt)
+            replay(*common, "--resume-from", ckpt)
+        return read_jsonl(out / "summaries.jsonl"), read_jsonl(out / "errors.jsonl")
+
+
+def per_key(records: list) -> dict:
+    by_key = defaultdict(list)
+    for r in records:
+        by_key[(r.get("vehicle_id"), r.get("session_id"))].append(canonical(r))
+    return dict(by_key)
+
+
+def compare(name: str, got: tuple[list, list]) -> list[str]:
+    problems = []
+    for kind, records in zip(("summaries", "errors"), got):
+        expected = read_jsonl(EXPECTED / name / f"{kind}.jsonl")
+        want = Counter(canonical(r) for r in expected)
+        have = Counter(canonical(r) for r in records)
+        if have != want:
+            problems.append(f"{kind}: expected {sum(want.values())}, got {sum(have.values())}")
+            problems += [f"  missing {r}" for r in sorted((want - have).elements())]
+            problems += [f"  extra   {r}" for r in sorted((have - want).elements())]
+        elif per_key(records) != per_key(expected):
+            problems.append(f"{kind}: same records, different order within a session key")
+    return problems
+
+
+def main(argv: list[str]) -> int:
+    every_split = "--every-split" in argv
+    names = [a for a in argv if not a.startswith("--")]
+    if not PROCESSOR.exists() or not (LEGACY / "target" / "replay-classpath.txt").exists():
+        print("check-fixtures: run legacy-scala/bin/build first", file=sys.stderr)
+        return 1
+    known = {p.name for p in SCENARIOS.iterdir() if p.is_dir()}
+    unknown = sorted(set(names) - known)
+    if unknown:
+        print(f"check-fixtures: unknown scenario(s): {', '.join(unknown)}", file=sys.stderr)
+        return 2
+    scenarios = sorted(SCENARIOS / n for n in known if not names or n in names)
+    failed = 0
+    for scenario in scenarios:
+        meta = json.loads((scenario / "scenario.json").read_text(encoding="utf-8"))
+        run = meta["run"]
+        plans = [run.get("stop_after") if run["mode"] == "restart" else None]
+        if every_split:
+            n_lines = len((scenario / "input.jsonl").read_bytes().split(b"\n"))
+            plans += [n for n in range(n_lines + 1) if n not in plans]
+        problems = []
+        for stop_after in plans:
+            label = "single" if stop_after is None else f"restart@{stop_after}"
+            try:
+                found = compare(scenario.name, run_scenario(scenario, stop_after))
+            except RuntimeError as e:
+                found = [str(e)]
+            problems += [f"[{label}] {p}" for p in found]
+        mode = run["mode"] + (f" stop_after={run['stop_after']}" if run["mode"] == "restart" else "")
+        extra = f", +{len(plans) - 1} split points" if every_split else ""
+        print(f"{'PASS' if not problems else 'FAIL'} {scenario.name} ({mode}{extra})")
+        for p in problems:
+            print(f"    {p}")
+        failed += bool(problems)
+    print(f"{len(scenarios) - failed}/{len(scenarios)} scenarios match fixtures/expected")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

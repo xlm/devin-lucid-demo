@@ -1,0 +1,12 @@
+{
+  "name": "imbalance_trap",
+  "description": "The lowest cell voltage and the highest cell voltage of the day come from different readings. max_cell_imbalance_v is the largest per-reading (max - min) spread, which is well below max_cell_voltage_v - min_cell_voltage_v. A second pack has its worst spread on a reading that sets neither daily extreme.",
+  "covers": [
+    "semantic trap",
+    "per-reading imbalance",
+    "binary64 subtraction"
+  ],
+  "run": {
+    "mode": "single"
+  }
+}

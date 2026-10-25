@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/charging.errors.v1.schema.json",
+  "title": "charging.errors.v1",
+  "description": "Error-path record. Never carries the raw payload, measurements or synthetic_location. Identifier echo rules are in docs/build-contract.md section 6.",
+  "type": "object",
+  "required": ["error_type", "field", "input_line", "event_id", "vehicle_id", "session_id", "schema_version"],
+  "properties": {
+    "error_type": {"enum": ["MALFORMED_JSON", "MISSING_FIELD", "INVALID_FIELD", "UNSUPPORTED_SCHEMA_VERSION", "LATE_EVENT_DROPPED", "SESSION_ALREADY_CLOSED"]},
+    "field": {"type": ["string", "null"]},
+    "input_line": {"type": "integer", "minimum": 1},
+    "event_id": {"type": ["string", "null"]},
+    "vehicle_id": {"type": ["string", "null"], "pattern": "^VEH-[0-9]{4}$"},
+    "session_id": {"type": ["string", "null"]},
+    "schema_version": {"const": "1.0"}
+  },
+  "additionalProperties": false
+}

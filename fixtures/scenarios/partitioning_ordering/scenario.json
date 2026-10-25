@@ -1,0 +1,13 @@
+{
+  "name": "partitioning_ordering",
+  "description": "Six vehicles (as if spread over partitions) with two sequential sessions each, interleaved. Only per-key order is meaningful; cross-key order is not asserted.",
+  "covers": [
+    "partitioning",
+    "per-key ordering",
+    "no global ordering"
+  ],
+  "run": {
+    "mode": "single"
+  },
+  "consumer_replays": 1
+}

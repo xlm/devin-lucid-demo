@@ -1,0 +1,19 @@
+# Replay adapters used by verification/. Frozen by docs/build-contract.md section 7.
+# Every command receives the common replay argv appended:
+#   replay --input <file> --output-dir <dir> [--stop-after <n> --checkpoint <file>] [--resume-from <file>]
+processors:
+  legacy:
+    description: Legacy Scala/Spark charging-session processor (replay mode, no Spark runtime)
+    build: ["legacy-scala/bin/build"]
+    command: ["legacy-scala/bin/charging-processor"]
+  candidate:
+    description: Rust charging-session processor (replay mode)
+    build: ["cargo", "build", "--release", "--quiet", "--manifest-path", "rust-processor/Cargo.toml"]
+    command: ["rust-processor/target/release/charging-processor"]
+
+unmigrated:
+  battery-health-legacy:
+    description: Legacy Scala/Spark battery-health daily processor (replay mode, no Spark runtime). Not yet migrated, no candidate exists (see Workflow F).
+    build: ["legacy-scala/bin/build"]
+    command: ["legacy-scala/bin/battery-health-processor"]
+    candidate: null

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/battery.telemetry.v1.schema.json",
+  "title": "battery.telemetry.v1",
+  "description": "Synthetic battery telemetry event. Minor versions 1.x may add optional fields. Consumers ignore unknown fields. Processors apply the stricter validation rules in docs/battery-health-processor.md.",
+  "type": "object",
+  "required": ["event_id", "vehicle_id", "pack_id", "event_timestamp", "ingestion_timestamp",
+               "sequence_number", "cell_voltage_min_v", "cell_voltage_max_v", "pack_temp_c",
+               "state_of_health_pct", "schema_version"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1, "maxLength": 64},
+    "vehicle_id": {"type": "string", "pattern": "^VEH-[0-9]{4}$", "description": "Synthetic vehicle key. Classification: vehicle_identifying."},
+    "pack_id": {"type": "string", "minLength": 1, "maxLength": 64, "description": "Battery pack key. Classification: vehicle_identifying."},
+    "event_timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"},
+    "ingestion_timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"},
+    "sequence_number": {"type": "number", "minimum": 0, "maximum": 9007199254740991, "multipleOf": 1},
+    "cell_voltage_min_v": {"type": "number", "minimum": 0, "maximum": 5},
+    "cell_voltage_max_v": {"type": "number", "minimum": 0, "maximum": 5},
+    "pack_temp_c": {"type": "number", "minimum": -50, "maximum": 100},
+    "state_of_health_pct": {"type": "number", "minimum": 0, "maximum": 100},
+    "schema_version": {"type": "string", "pattern": "^1\\.[0-9]+$"},
+    "synthetic_location": {"type": ["string", "null"], "pattern": "^SYN-[A-Z0-9-]+$", "description": "Optional synthetic grid cell. Classification: sensitive_location. Restricted: validate and discard, never propagate."}
+  },
+  "additionalProperties": true
+}

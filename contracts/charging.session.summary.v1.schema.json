@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/charging.session.summary.v1.schema.json",
+  "title": "charging.session.summary.v1",
+  "description": "One record per finalised (vehicle_id, session_id). Kafka message key = vehicle_id. Field semantics are in docs/build-contract.md section 5; this schema only checks syntax.",
+  "type": "object",
+  "required": ["session_id", "vehicle_id", "start_ts", "end_ts", "total_energy_kwh",
+               "peak_power_kw", "event_count", "completion_reason", "schema_version"],
+  "properties": {
+    "session_id": {"type": "string", "minLength": 1, "maxLength": 64},
+    "vehicle_id": {"type": "string", "pattern": "^VEH-[0-9]{4}$"},
+    "start_ts": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"},
+    "end_ts": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"},
+    "total_energy_kwh": {"type": "number", "minimum": 0},
+    "peak_power_kw": {"type": "number", "minimum": 0},
+    "event_count": {"type": "integer", "minimum": 1},
+    "completion_reason": {"enum": ["COMPLETE", "INACTIVITY_TIMEOUT"]},
+    "schema_version": {"const": "1.0"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+target/
+legacy-scala/project/target/
+legacy-scala/project/project/
+.bsp/
+.metals/
+.idea/
+.worktrees/
+build-output/
+.cutover/

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/contracts/charging.events.v1.schema.json",
+  "title": "charging.events.v1",
+  "description": "Synthetic vehicle charging telemetry event. Minor versions 1.x may add optional fields; consumers ignore unknown fields. Processors apply the stricter validation rules in docs/build-contract.md section 4.",
+  "type": "object",
+  "required": ["event_id", "vehicle_id", "session_id", "event_timestamp", "ingestion_timestamp",
+               "sequence_number", "charging_state", "battery_soc", "charging_power_kw",
+               "energy_delivered_kwh", "schema_version"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1, "maxLength": 64},
+    "vehicle_id": {"type": "string", "pattern": "^VEH-[0-9]{4}$", "description": "Synthetic, non-identifying vehicle key. Classification: vehicle_identifying."},
+    "session_id": {"type": "string", "minLength": 1, "maxLength": 64},
+    "event_timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"},
+    "ingestion_timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"},
+    "sequence_number": {"type": "number", "minimum": 0, "maximum": 9007199254740991, "multipleOf": 1},
+    "charging_state": {"enum": ["IDLE", "CHARGING", "COMPLETE", "FAULT"]},
+    "battery_soc": {"type": "number", "minimum": 0, "maximum": 100},
+    "charging_power_kw": {"type": "number", "minimum": 0},
+    "energy_delivered_kwh": {"type": "number", "minimum": 0, "description": "CUMULATIVE energy delivered since session start, not a per-event delta."},
+    "schema_version": {"type": "string", "pattern": "^1\\.[0-9]+$"},
+    "synthetic_location": {"type": ["string", "null"], "pattern": "^SYN-[A-Z0-9-]+$", "description": "Optional synthetic grid cell. Classification: sensitive_location. Restricted: must never appear in any output, log or error record."}
+  },
+  "additionalProperties": true
+}

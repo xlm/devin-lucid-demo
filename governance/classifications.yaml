@@ -1,0 +1,26 @@
+# Frozen by docs/build-contract.md. Ordered from least to most restricted.
+schema_version: "1.0"
+classifications:
+  - id: public
+    rank: 0
+    description: Non-sensitive data that may be published.
+  - id: internal_operational
+    rank: 1
+    description: Operational telemetry and metadata with no link to a person.
+  - id: vehicle_identifying
+    rank: 2
+    description: >-
+      Keys that single out a vehicle (here only synthetic VEH-nnnn ids). Treated
+      as potentially personal data because a vehicle can be linked to a person.
+    personal_data: potentially
+  - id: sensitive_location
+    rank: 3
+    description: >-
+      Location of a vehicle. Only synthetic SYN-* grid cells exist in this demo.
+      Restricted: no propagation to outputs, logs or error records.
+    personal_data: potentially
+    sensitive: true
+  - id: security_sensitive
+    rank: 4
+    description: Credentials, keys and security configuration. Never in telemetry.
+    sensitive: true

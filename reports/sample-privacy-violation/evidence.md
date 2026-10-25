@@ -1,0 +1,1513 @@
+# Verification evidence
+
+## Disposition
+
+**Recommendation:** policy-violation
+
+Automated recommendation for a human reviewer, not a legal or compliance determination.
+
+This automated result does not approve cutover or production release and does not discharge privacy-review obligations. Passing checks are not proof of production safety. The ReadyForReview -> ApprovedForCutover transition is a human decision.
+
+## Gate summary
+
+| Gate | Status | Checks | Passed | Failed | Skipped | Runtime | Static |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| behavioural | fail | 456 | 454 | 2 | 0 | 456 | 0 |
+| state_ordering | pass | 22 | 22 | 0 | 0 | 22 | 0 |
+| contract | fail | 91 | 88 | 3 | 0 | 91 | 0 |
+| privacy | fail | 75 | 59 | 16 | 0 | 39 | 36 |
+
+Package SHA-256: `a3bf03420a83481df5e7a0d88c70d733d8567079788a22a3be4ed4e8067bf510`
+evidence.json SHA-256: `16424e49f06b5e8085fd549afdb4d6771c4c508bfafa3b8808579f9083b6c805`
+
+## A. Identity
+
+| Item | Value |
+| --- | --- |
+| Repository | github.com/xlm/devin-lucid-demo |
+| Run git SHA / dirty | {"git_dirty":false,"git_sha":"518258b815a8c2fa29fbf58033b0c0817524ccdb"} |
+| Built-at SHA / mismatch | {"git_sha":"518258b815a8c2fa29fbf58033b0c0817524ccdb","sha_mismatch":false} |
+| Processors | {"baseline":"legacy","candidate":"candidate","runs":[{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"concurrent_sessions","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"consumer_replay","status":"present"},{"duration_ms":3,"exit_codes":[0],"processor":"candidate","scenario":"downstream_contract","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"duplicates","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"late_events_window_boundary","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"malformed_null","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"normal_session","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"numeric_precision","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"out_of_order","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"partitioning_ordering","status":"present"},{"duration_ms":6,"exit_codes":[0,0],"processor":"candidate","scenario":"processor_restart","status":"present"},{"duration_ms":1,"exit_codes":[0],"processor":"candidate","scenario":"schema_evolution","status":"present"},{"duration_ms":4,"exit_codes":[0,0],"processor":"candidate","scenario":"state_recovery","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"concurrent_sessions","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"consumer_replay","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"downstream_contract","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"duplicates","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"late_events_window_boundary","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"malformed_null","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"normal_session","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"numeric_precision","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"out_of_order","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"partitioning_ordering","status":"present"},{"duration_ms":530,"exit_codes":[0,0],"processor":"legacy","scenario":"processor_restart","status":"present"},{"duration_ms":265,"exit_codes":[0],"processor":"legacy","scenario":"schema_evolution","status":"present"},{"duration_ms":530,"exit_codes":[0,0],"processor":"legacy","scenario":"state_recovery","status":"present"}]} |
+| Scenarios | ["concurrent_sessions","consumer_replay","downstream_contract","duplicates","late_events_window_boundary","malformed_null","normal_session","numeric_precision","out_of_order","partitioning_ordering","processor_restart","schema_evolution","state_recovery"] |
+| Mode | {"baseline":"legacy","strict":false,"tolerance":1e-06} |
+| Tool versions | {"PyYAML":"6.0.3","cargo":"cargo 1.97.1 (c980f4866 2026-06-30)","java":"openjdk version \"17.0.19\" 2026-04-21","jsonschema":"4.26.0","python":"3.10.12","rustc":"rustc 1.97.1 (8bab26f4f 2026-07-14)"} |
+
+### Raw JSON
+
+```json
+{
+  "git": {
+    "built_at": {
+      "git_dirty": false,
+      "git_sha": "518258b815a8c2fa29fbf58033b0c0817524ccdb"
+    },
+    "run_time": {
+      "git_dirty": false,
+      "git_sha": "518258b815a8c2fa29fbf58033b0c0817524ccdb"
+    },
+    "sha_mismatch": false
+  },
+  "mode": {
+    "baseline": "legacy",
+    "strict": false,
+    "tolerance": 1e-06
+  },
+  "processors": {
+    "baseline": "legacy",
+    "candidate": "candidate",
+    "runs": [
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "concurrent_sessions",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "consumer_replay",
+        "status": "present"
+      },
+      {
+        "duration_ms": 3,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "downstream_contract",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "duplicates",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "late_events_window_boundary",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "malformed_null",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "normal_session",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "numeric_precision",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "out_of_order",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "partitioning_ordering",
+        "status": "present"
+      },
+      {
+        "duration_ms": 6,
+        "exit_codes": [
+          0,
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "processor_restart",
+        "status": "present"
+      },
+      {
+        "duration_ms": 1,
+        "exit_codes": [
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "schema_evolution",
+        "status": "present"
+      },
+      {
+        "duration_ms": 4,
+        "exit_codes": [
+          0,
+          0
+        ],
+        "processor": "candidate",
+        "scenario": "state_recovery",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "concurrent_sessions",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "consumer_replay",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "downstream_contract",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "duplicates",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "late_events_window_boundary",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "malformed_null",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "normal_session",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "numeric_precision",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "out_of_order",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "partitioning_ordering",
+        "status": "present"
+      },
+      {
+        "duration_ms": 530,
+        "exit_codes": [
+          0,
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "processor_restart",
+        "status": "present"
+      },
+      {
+        "duration_ms": 265,
+        "exit_codes": [
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "schema_evolution",
+        "status": "present"
+      },
+      {
+        "duration_ms": 530,
+        "exit_codes": [
+          0,
+          0
+        ],
+        "processor": "legacy",
+        "scenario": "state_recovery",
+        "status": "present"
+      }
+    ]
+  },
+  "repo": "github.com/xlm/devin-lucid-demo",
+  "scenario_set": [
+    "concurrent_sessions",
+    "consumer_replay",
+    "downstream_contract",
+    "duplicates",
+    "late_events_window_boundary",
+    "malformed_null",
+    "normal_session",
+    "numeric_precision",
+    "out_of_order",
+    "partitioning_ordering",
+    "processor_restart",
+    "schema_evolution",
+    "state_recovery"
+  ],
+  "status": "present",
+  "tool_versions": {
+    "PyYAML": "6.0.3",
+    "cargo": "cargo 1.97.1 (c980f4866 2026-06-30)",
+    "java": "openjdk version \"17.0.19\" 2026-04-21",
+    "jsonschema": "4.26.0",
+    "python": "3.10.12",
+    "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+  },
+  "tool_versions_label": "observed when the evidence package was built"
+}
+```
+
+## B. Processing inventory
+
+### Baseline approval
+
+| Item | Value |
+| --- | --- |
+| Approval | {"approved_at":"2026-01-10T09:00:00Z","approved_by":"privacy-reviewer (synthetic demo)","reference":"DEMO-APPROVAL-0001","scope":"The 12 processing dimensions of charging-session-processor as declared in legacy-scala/processing-inventory.yaml. Covers declared processing only. Does not approve any migration, cutover or production release."} |
+| Baseline inventory | {"content_sha256_computed":"d1be4378aefa777ba09a54dcc9ca885780f5172ebbdfa43b5c3c80941ae7b8fa","content_sha256_recorded":"d1be4378aefa777ba09a54dcc9ca885780f5172ebbdfa43b5c3c80941ae7b8fa","path":"governance/baselines/charging.baseline.json","processor":"legacy"} |
+| Candidate inventory | {"path":"rust-processor/processing-inventory.yaml","processor":"candidate"} |
+
+| Dimension | Baseline IDs | Candidate IDs | Status |
+| --- | --- | --- | --- |
+| access | charging.errors.v1, charging.events.v1, charging.session.summary.v1, processor.checkpoint, processor.stderr | charging.errors.v1, charging.events.v1, charging.session.summary.v1, processor.checkpoint, processor.stderr | unchanged |
+| deployment_boundary | charging-processing-zone | charging-processing-zone | unchanged |
+| external_deps | kafka-compatible-broker | kafka-compatible-broker | unchanged |
+| inputs | charging.events.v1 | charging.events.v1 | unchanged |
+| logging | processor.stderr | processor.stderr | unchanged |
+| output_destinations | charging.errors.v1, charging.session.summary.v1, processor.stderr | charging.errors.v1, charging.session.summary.v1, processor.stderr | unchanged |
+| output_schema | charging.errors.v1, charging.session.summary.v1 | charging.errors.v1, charging.session.summary.v1 | unchanged |
+| purposes | charging-session-summarisation, input-error-reporting | charging-session-summarisation, input-error-reporting | unchanged |
+| replication | processor.checkpoint | processor.checkpoint | unchanged |
+| retention | charging.errors.v1, charging.session.summary.v1, processor.checkpoint, processor.stderr | charging.errors.v1, charging.session.summary.v1, processor.checkpoint, processor.stderr | unchanged |
+| sensitive_fields | session_id, synthetic_location, vehicle_id | session_id, synthetic_location, vehicle_id | unchanged |
+| transforms | charging.errors.v1.error_type, charging.errors.v1.event_id, charging.errors.v1.field, charging.errors.v1.input_line, charging.errors.v1.schema_version, charging.errors.v1.session_id, charging.errors.v1.vehicle_id, charging.events.v1.synthetic_location, charging.session.summary.v1.completion_reason, charging.session.summary.v1.end_ts, charging.session.summary.v1.event_count, charging.session.summary.v1.peak_power_kw, charging.session.summary.v1.schema_version, charging.session.summary.v1.session_id, charging.session.summary.v1.start_ts, charging.session.summary.v1.total_energy_kwh, charging.session.summary.v1.vehicle_id | charging.errors.v1.error_type, charging.errors.v1.event_id, charging.errors.v1.field, charging.errors.v1.input_line, charging.errors.v1.schema_version, charging.errors.v1.session_id, charging.errors.v1.vehicle_id, charging.events.v1.synthetic_location, charging.session.summary.v1.completion_reason, charging.session.summary.v1.end_ts, charging.session.summary.v1.event_count, charging.session.summary.v1.peak_power_kw, charging.session.summary.v1.schema_version, charging.session.summary.v1.session_id, charging.session.summary.v1.start_ts, charging.session.summary.v1.total_energy_kwh, charging.session.summary.v1.vehicle_id | unchanged |
+
+Implementation (informational): baseline {"logs":"diagnostic logs to stderr only, no identifiers or location","runtime":"Scala 2.13 on JDK 17; Spark 3.5 Structured Streaming for the streaming job, plain JVM for replay mode","source":"legacy-scala/"}, candidate {"logs":"diagnostic logs to stderr only, no identifiers or location","runtime":"Rust (stable) single-process binary, no Spark or JVM; default build has no Kafka or C dependencies","source":"rust-processor/"}, changed true.
+
+### Raw JSON
+
+```json
+{
+  "baseline": {
+    "content_sha256_computed": "d1be4378aefa777ba09a54dcc9ca885780f5172ebbdfa43b5c3c80941ae7b8fa",
+    "content_sha256_recorded": "d1be4378aefa777ba09a54dcc9ca885780f5172ebbdfa43b5c3c80941ae7b8fa",
+    "path": "governance/baselines/charging.baseline.json",
+    "processor": "legacy"
+  },
+  "baseline_approval": {
+    "approved_at": "2026-01-10T09:00:00Z",
+    "approved_by": "privacy-reviewer (synthetic demo)",
+    "reference": "DEMO-APPROVAL-0001",
+    "scope": "The 12 processing dimensions of charging-session-processor as declared in legacy-scala/processing-inventory.yaml. Covers declared processing only. Does not approve any migration, cutover or production release."
+  },
+  "candidate": {
+    "path": "rust-processor/processing-inventory.yaml",
+    "processor": "candidate"
+  },
+  "dimensions": {
+    "access": {
+      "baseline_ids": [
+        "charging.errors.v1",
+        "charging.events.v1",
+        "charging.session.summary.v1",
+        "processor.checkpoint",
+        "processor.stderr"
+      ],
+      "candidate_ids": [
+        "charging.errors.v1",
+        "charging.events.v1",
+        "charging.session.summary.v1",
+        "processor.checkpoint",
+        "processor.stderr"
+      ],
+      "status": "unchanged"
+    },
+    "deployment_boundary": {
+      "baseline_ids": [
+        "charging-processing-zone"
+      ],
+      "candidate_ids": [
+        "charging-processing-zone"
+      ],
+      "status": "unchanged"
+    },
+    "external_deps": {
+      "baseline_ids": [
+        "kafka-compatible-broker"
+      ],
+      "candidate_ids": [
+        "kafka-compatible-broker"
+      ],
+      "status": "unchanged"
+    },
+    "inputs": {
+      "baseline_ids": [
+        "charging.events.v1"
+      ],
+      "candidate_ids": [
+        "charging.events.v1"
+      ],
+      "status": "unchanged"
+    },
+    "logging": {
+      "baseline_ids": [
+        "processor.stderr"
+      ],
+      "candidate_ids": [
+        "processor.stderr"
+      ],
+      "status": "unchanged"
+    },
+    "output_destinations": {
+      "baseline_ids": [
+        "charging.errors.v1",
+        "charging.session.summary.v1",
+        "processor.stderr"
+      ],
+      "candidate_ids": [
+        "charging.errors.v1",
+        "charging.session.summary.v1",
+        "processor.stderr"
+      ],
+      "status": "unchanged"
+    },
+    "output_schema": {
+      "baseline_ids": [
+        "charging.errors.v1",
+        "charging.session.summary.v1"
+      ],
+      "candidate_ids": [
+        "charging.errors.v1",
+        "charging.session.summary.v1"
+      ],
+      "status": "unchanged"
+    },
+    "purposes": {
+      "baseline_ids": [
+        "charging-session-summarisation",
+        "input-error-reporting"
+      ],
+      "candidate_ids": [
+        "charging-session-summarisation",
+        "input-error-reporting"
+      ],
+      "status": "unchanged"
+    },
+    "replication": {
+      "baseline_ids": [
+        "processor.checkpoint"
+      ],
+      "candidate_ids": [
+        "processor.checkpoint"
+      ],
+      "status": "unchanged"
+    },
+    "retention": {
+      "baseline_ids": [
+        "charging.errors.v1",
+        "charging.session.summary.v1",
+        "processor.checkpoint",
+        "processor.stderr"
+      ],
+      "candidate_ids": [
+        "charging.errors.v1",
+        "charging.session.summary.v1",
+        "processor.checkpoint",
+        "processor.stderr"
+      ],
+      "status": "unchanged"
+    },
+    "sensitive_fields": {
+      "baseline_ids": [
+        "session_id",
+        "synthetic_location",
+        "vehicle_id"
+      ],
+      "candidate_ids": [
+        "session_id",
+        "synthetic_location",
+        "vehicle_id"
+      ],
+      "status": "unchanged"
+    },
+    "transforms": {
+      "baseline_ids": [
+        "charging.errors.v1.error_type",
+        "charging.errors.v1.event_id",
+        "charging.errors.v1.field",
+        "charging.errors.v1.input_line",
+        "charging.errors.v1.schema_version",
+        "charging.errors.v1.session_id",
+        "charging.errors.v1.vehicle_id",
+        "charging.events.v1.synthetic_location",
+        "charging.session.summary.v1.completion_reason",
+        "charging.session.summary.v1.end_ts",
+        "charging.session.summary.v1.event_count",
+        "charging.session.summary.v1.peak_power_kw",
+        "charging.session.summary.v1.schema_version",
+        "charging.session.summary.v1.session_id",
+        "charging.session.summary.v1.start_ts",
+        "charging.session.summary.v1.total_energy_kwh",
+        "charging.session.summary.v1.vehicle_id"
+      ],
+      "candidate_ids": [
+        "charging.errors.v1.error_type",
+        "charging.errors.v1.event_id",
+        "charging.errors.v1.field",
+        "charging.errors.v1.input_line",
+        "charging.errors.v1.schema_version",
+        "charging.errors.v1.session_id",
+        "charging.errors.v1.vehicle_id",
+        "charging.events.v1.synthetic_location",
+        "charging.session.summary.v1.completion_reason",
+        "charging.session.summary.v1.end_ts",
+        "charging.session.summary.v1.event_count",
+        "charging.session.summary.v1.peak_power_kw",
+        "charging.session.summary.v1.schema_version",
+        "charging.session.summary.v1.session_id",
+        "charging.session.summary.v1.start_ts",
+        "charging.session.summary.v1.total_energy_kwh",
+        "charging.session.summary.v1.vehicle_id"
+      ],
+      "status": "unchanged"
+    }
+  },
+  "implementation": {
+    "baseline": {
+      "logs": "diagnostic logs to stderr only, no identifiers or location",
+      "runtime": "Scala 2.13 on JDK 17; Spark 3.5 Structured Streaming for the streaming job, plain JVM for replay mode",
+      "source": "legacy-scala/"
+    },
+    "candidate": {
+      "logs": "diagnostic logs to stderr only, no identifiers or location",
+      "runtime": "Rust (stable) single-process binary, no Spark or JVM; default build has no Kafka or C dependencies",
+      "source": "rust-processor/"
+    },
+    "changed": true,
+    "informational": true
+  },
+  "status": "present"
+}
+```
+
+## C. Change assessment
+
+| Dimension | Added | Removed | Changed |
+| --- | --- | --- | --- |
+| access | none | none | none |
+| deployment_boundary | none | none | none |
+| external_deps | none | none | none |
+| inputs | none | none | none |
+| logging | none | none | none |
+| output_destinations | none | none | none |
+| output_schema | none | none | none |
+| purposes | none | none | none |
+| replication | none | none | none |
+| retention | none | none | none |
+| sensitive_fields | none | none | none |
+| transforms | none | none | none |
+
+### Policy results
+
+| ID | Severity | Status |
+| --- | --- | --- |
+| no-new-sensitive-output-fields | violation | pass |
+| no-sensitive-location-propagation | violation | pass |
+| no-identifiers-to-unapproved-destinations | violation | pass |
+| no-retention-change | violation | pass |
+| no-new-destinations | violation | pass |
+| no-expanded-access | violation | pass |
+| no-altered-sensitive-transformations | violation | pass |
+| no-relaxed-logging-restrictions | violation | pass |
+| review-new-external-dependencies | review | pass |
+| review-replication-change | review | pass |
+| review-deployment-boundary-change | review | pass |
+| review-new-inputs-or-purposes | review | pass |
+
+### Raw JSON
+
+```json
+{
+  "diff": {
+    "access": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "deployment_boundary": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "external_deps": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "inputs": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "logging": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "output_destinations": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "output_schema": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "purposes": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "replication": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "retention": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "sensitive_fields": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    },
+    "transforms": {
+      "added": [],
+      "changed": [],
+      "removed": []
+    }
+  },
+  "implementation_changed": true,
+  "policies": [
+    {
+      "id": "no-new-sensitive-output-fields",
+      "severity": "violation",
+      "status": "pass",
+      "title": "No new or sensitive output fields"
+    },
+    {
+      "id": "no-sensitive-location-propagation",
+      "severity": "violation",
+      "status": "pass",
+      "title": "Restricted location never leaves the processor"
+    },
+    {
+      "id": "no-identifiers-to-unapproved-destinations",
+      "severity": "violation",
+      "status": "pass",
+      "title": "Vehicle-identifying values only reach approved topics, never logs"
+    },
+    {
+      "id": "no-retention-change",
+      "severity": "violation",
+      "status": "pass",
+      "title": "No retention change"
+    },
+    {
+      "id": "no-new-destinations",
+      "severity": "violation",
+      "status": "pass",
+      "title": "No new output destinations"
+    },
+    {
+      "id": "no-expanded-access",
+      "severity": "violation",
+      "status": "pass",
+      "title": "No expanded access"
+    },
+    {
+      "id": "no-altered-sensitive-transformations",
+      "severity": "violation",
+      "status": "pass",
+      "title": "No silently altered transformations of personal or sensitive fields"
+    },
+    {
+      "id": "no-relaxed-logging-restrictions",
+      "severity": "violation",
+      "status": "pass",
+      "title": "No relaxed logging restrictions"
+    },
+    {
+      "id": "review-new-external-dependencies",
+      "severity": "review",
+      "status": "pass",
+      "title": "New or changed external dependencies need review"
+    },
+    {
+      "id": "review-replication-change",
+      "severity": "review",
+      "status": "pass",
+      "title": "Replication changes need review"
+    },
+    {
+      "id": "review-deployment-boundary-change",
+      "severity": "review",
+      "status": "pass",
+      "title": "Deployment-boundary changes need review"
+    },
+    {
+      "id": "review-new-inputs-or-purposes",
+      "severity": "review",
+      "status": "pass",
+      "title": "New inputs, purposes or personal fields need review"
+    }
+  ],
+  "status": "present"
+}
+```
+
+## D. Validation evidence
+
+### behavioural gate
+
+Status: fail
+
+### Counts by evidence basis
+
+| Basis | Checks |
+| --- | --- |
+| unspecified | 456 |
+
+### Failing checks
+
+| ID | Scenario | Category | Verification | Detail |
+| --- | --- | --- | --- | --- |
+| schema_evolution:candidate_vs_expected:SCHEMA_INCOMPATIBLE | schema_evolution | SCHEMA_INCOMPATIBLE | runtime | 1 SCHEMA_INCOMPATIBLE finding(s): summaries record 0 does not match its schema: Additional properties are not allowed ('synthetic_location' was unexpected) |
+| schema_evolution:candidate_vs_legacy:SCHEMA_INCOMPATIBLE | schema_evolution | SCHEMA_INCOMPATIBLE | runtime | 1 SCHEMA_INCOMPATIBLE finding(s): summaries record 0 does not match its schema: Additional properties are not allowed ('synthetic_location' was unexpected) |
+
+### state_ordering gate
+
+Status: pass
+
+### Counts by evidence basis
+
+| Basis | Checks |
+| --- | --- |
+| unspecified | 22 |
+
+### Failing checks
+
+| ID | Scenario | Category | Verification | Detail |
+| --- | --- | --- | --- | --- |
+| None |  |  |  |  |
+
+### contract gate
+
+Status: fail
+
+### Counts by evidence basis
+
+| Basis | Checks |
+| --- | --- |
+| unspecified | 91 |
+
+### Failing checks
+
+| ID | Scenario | Category | Verification | Detail |
+| --- | --- | --- | --- | --- |
+| contract.json_schema | schema_evolution | json_schema | runtime | Candidate summary or error records do not all parse and validate against their schemas. |
+| contract.no_extra_outputs | schema_evolution | no_extra_outputs | runtime | Candidate output contains new keys or fields not present in the baseline contract. |
+| contract.consumer_state | schema_evolution | consumer_state | runtime | Baseline and candidate consumer application states differ or a consumer run failed. |
+
+### privacy gate
+
+Status: fail
+
+### Counts by evidence basis
+
+| Basis | Checks |
+| --- | --- |
+| declared-manifest | 34 |
+| integrity | 1 |
+| runtime-observed | 39 |
+| source-scan | 1 |
+
+### Failing checks
+
+| ID | Scenario | Category | Verification | Detail |
+| --- | --- | --- | --- | --- |
+| source_scan.identifier_logging | unknown | static_source_scan | static | heuristic source scan found identifier-like names in log macro arguments |
+| runtime.no_identifiers_in_log | concurrent_sessions | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | consumer_replay | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | downstream_contract | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | duplicates | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | late_events_window_boundary | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | malformed_null | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | normal_session | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | numeric_precision | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | out_of_order | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | partitioning_ordering | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | processor_restart | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.output_fields | schema_evolution | runtime_privacy | runtime | candidate output contains fields outside baseline schemas: ['summaries.jsonl:synthetic_location'] |
+| runtime.no_sensitive_location | schema_evolution | runtime_privacy | runtime | restricted location values occur in candidate output |
+| runtime.no_identifiers_in_log | schema_evolution | runtime_privacy | runtime | identifier values occur in processor.log |
+| runtime.no_identifiers_in_log | state_recovery | runtime_privacy | runtime | identifier values occur in processor.log |
+
+### Raw JSON
+
+```json
+{
+  "gates": {
+    "behavioural": {
+      "by_basis": {
+        "unspecified": 456
+      },
+      "by_verification_kind": {
+        "runtime": 456,
+        "static": 0
+      },
+      "failing_checks": [
+        {
+          "category": "SCHEMA_INCOMPATIBLE",
+          "detail": "1 SCHEMA_INCOMPATIBLE finding(s): summaries record 0 does not match its schema: Additional properties are not allowed ('synthetic_location' was unexpected)",
+          "id": "schema_evolution:candidate_vs_expected:SCHEMA_INCOMPATIBLE",
+          "scenario": "schema_evolution",
+          "verification": "runtime"
+        },
+        {
+          "category": "SCHEMA_INCOMPATIBLE",
+          "detail": "1 SCHEMA_INCOMPATIBLE finding(s): summaries record 0 does not match its schema: Additional properties are not allowed ('synthetic_location' was unexpected)",
+          "id": "schema_evolution:candidate_vs_legacy:SCHEMA_INCOMPATIBLE",
+          "scenario": "schema_evolution",
+          "verification": "runtime"
+        }
+      ],
+      "skipped_count": 0,
+      "status": "fail",
+      "summary_counts": {
+        "checks": 456,
+        "failed": 2,
+        "passed": 454,
+        "skipped": 0
+      }
+    },
+    "contract": {
+      "by_basis": {
+        "unspecified": 91
+      },
+      "by_verification_kind": {
+        "runtime": 91,
+        "static": 0
+      },
+      "failing_checks": [
+        {
+          "category": "json_schema",
+          "detail": "Candidate summary or error records do not all parse and validate against their schemas.",
+          "id": "contract.json_schema",
+          "scenario": "schema_evolution",
+          "verification": "runtime"
+        },
+        {
+          "category": "no_extra_outputs",
+          "detail": "Candidate output contains new keys or fields not present in the baseline contract.",
+          "id": "contract.no_extra_outputs",
+          "scenario": "schema_evolution",
+          "verification": "runtime"
+        },
+        {
+          "category": "consumer_state",
+          "detail": "Baseline and candidate consumer application states differ or a consumer run failed.",
+          "id": "contract.consumer_state",
+          "scenario": "schema_evolution",
+          "verification": "runtime"
+        }
+      ],
+      "skipped_count": 0,
+      "status": "fail",
+      "summary_counts": {
+        "checks": 91,
+        "failed": 3,
+        "passed": 88,
+        "skipped": 0
+      }
+    },
+    "privacy": {
+      "by_basis": {
+        "declared-manifest": 34,
+        "integrity": 1,
+        "runtime-observed": 39,
+        "source-scan": 1
+      },
+      "by_verification_kind": {
+        "runtime": 39,
+        "static": 36
+      },
+      "failing_checks": [
+        {
+          "category": "static_source_scan",
+          "detail": "heuristic source scan found identifier-like names in log macro arguments",
+          "id": "source_scan.identifier_logging",
+          "scenario": null,
+          "verification": "static"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "concurrent_sessions",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "consumer_replay",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "downstream_contract",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "duplicates",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "late_events_window_boundary",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "malformed_null",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "normal_session",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "numeric_precision",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "out_of_order",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "partitioning_ordering",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "processor_restart",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "candidate output contains fields outside baseline schemas: ['summaries.jsonl:synthetic_location']",
+          "id": "runtime.output_fields",
+          "scenario": "schema_evolution",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "restricted location values occur in candidate output",
+          "id": "runtime.no_sensitive_location",
+          "scenario": "schema_evolution",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "schema_evolution",
+          "verification": "runtime"
+        },
+        {
+          "category": "runtime_privacy",
+          "detail": "identifier values occur in processor.log",
+          "id": "runtime.no_identifiers_in_log",
+          "scenario": "state_recovery",
+          "verification": "runtime"
+        }
+      ],
+      "skipped_count": 0,
+      "status": "fail",
+      "summary_counts": {
+        "checks": 75,
+        "failed": 16,
+        "passed": 59,
+        "skipped": 0
+      }
+    },
+    "state_ordering": {
+      "by_basis": {
+        "unspecified": 22
+      },
+      "by_verification_kind": {
+        "runtime": 22,
+        "static": 0
+      },
+      "failing_checks": [],
+      "skipped_count": 0,
+      "status": "pass",
+      "summary_counts": {
+        "checks": 22,
+        "failed": 0,
+        "passed": 22,
+        "skipped": 0
+      }
+    }
+  },
+  "status": "present"
+}
+```
+
+## E. Review disposition
+
+Recommendation: policy-violation
+
+### Reasons
+
+| Severity | Checks or reasons |
+| --- | --- |
+| violation | runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log, runtime.output_fields, runtime.no_sensitive_location, runtime.no_identifiers_in_log, runtime.no_identifiers_in_log |
+| review | none |
+| clarification | source_scan.identifier_logging |
+
+### Required human actions
+
+- A human reviewer assesses each violation and determines remediation.
+- A privacy reviewer reviews this package and decides what action is appropriate.
+- ReadyForReview -&gt; ApprovedForCutover is a human action.
+- Only humans change baselines and policies.
+- A human reviewer reviews the behavioural gate and addresses its fail status.
+- A human reviewer reviews the contract gate and addresses its fail status.
+- A human reviewer reviews the privacy gate and addresses its fail status.
+
+### Guarantee boundaries
+
+This package covers fast-tier replay. The contract provides per-key ordering only; restart behavior is at-least-once. No exactly-once, global ordering or atomic cutover claim is made.
+
+### Raw JSON
+
+```json
+{
+  "disposition": {
+    "reasons": {
+      "clarification": [
+        "source_scan.identifier_logging"
+      ],
+      "review": [],
+      "violation": [
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log",
+        "runtime.output_fields",
+        "runtime.no_sensitive_location",
+        "runtime.no_identifiers_in_log",
+        "runtime.no_identifiers_in_log"
+      ]
+    },
+    "recommendation": "policy-violation",
+    "required_human_actions": [
+      "A human reviewer assesses each violation and determines remediation.",
+      "A privacy reviewer reviews this package and decides what action is appropriate.",
+      "ReadyForReview -> ApprovedForCutover is a human action.",
+      "Only humans change baselines and policies."
+    ],
+    "statement": "Automated recommendation for a human privacy reviewer. It is not a legal or compliance determination, does not approve cutover and does not discharge privacy-review obligations."
+  },
+  "guarantee_boundaries": "This package covers fast-tier replay. The contract provides per-key ordering only; restart behavior is at-least-once. No exactly-once, global ordering or atomic cutover claim is made.",
+  "required_human_actions": [
+    "A human reviewer assesses each violation and determines remediation.",
+    "A privacy reviewer reviews this package and decides what action is appropriate.",
+    "ReadyForReview -> ApprovedForCutover is a human action.",
+    "Only humans change baselines and policies.",
+    "A human reviewer reviews the behavioural gate and addresses its fail status.",
+    "A human reviewer reviews the contract gate and addresses its fail status.",
+    "A human reviewer reviews the privacy gate and addresses its fail status."
+  ],
+  "statement": "This automated result does not approve cutover or production release and does not discharge privacy-review obligations. Passing checks are not proof of production safety. The ReadyForReview -> ApprovedForCutover transition is a human decision."
+}
+```
+
+## F. Integrity
+
+| File | SHA-256 | Status |
+| --- | --- | --- |
+| context.json | 8b8c27f5d79d76b9bd72f9385a43ed05659790fffa7eae61083ef3167f4f855f | present |
+| gates/behavioural.json | 9b759492ebabdda04b60848e1704ab6b8ffe3f6d19d3c3bff4abd2013fbbf291 | present |
+| gates/contract.json | 7bada32d2d913028908297d4ab09a3a2c68d06432be9834dd5786334e6a0f3b8 | present |
+| gates/privacy.json | 30074d2e3c12f6e5b896d64f906246ba3e0a5663bf5dfb0e24f275ba772313ce | present |
+| gates/state_ordering.json | c95b2c4852f64d36a6a6de928ed39e32eab9384b8d934bf556f3cea0b7af51d0 | present |
+| outputs/candidate/build.json | 45ffb3bba4554bedcb714c25ee3872885f31abc6c8c1a7c81c4d0d432af3e3d6 | present |
+| outputs/candidate/build.log | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/concurrent_sessions/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/concurrent_sessions/processor.log | fcdc5a0eaa20a296d7759b4c616774637fe43fe41c529805dade7675fa6cd021 | present |
+| outputs/candidate/concurrent_sessions/run.json | 020cb9d87e730b0e0582fdee593e8051c540687c06c4baefc1817beac50ec1a6 | present |
+| outputs/candidate/concurrent_sessions/summaries.jsonl | c5ed2ed929640cf4e4a6e9ba923b8712a017d7142f622cf17afa1bd384430b3f | present |
+| outputs/candidate/consumer_replay/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/consumer_replay/processor.log | 0ef737ecb476ef6b076c4382f2b5039ac0496f324825a01ede0476dbde10c6f5 | present |
+| outputs/candidate/consumer_replay/run.json | 64c3d051678cdf107ef946e497bd960593ebc734667ef9f05e90300f7bef6539 | present |
+| outputs/candidate/consumer_replay/summaries.jsonl | 92aca789b37b02b4283a1df58a9a9a53a5d520a68da43a57ee17bf381f82f537 | present |
+| outputs/candidate/downstream_contract/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/downstream_contract/processor.log | 0923e5bbc7949aa9c6f1ba4fc9b0e68bdfad65e2145d23960625f08046ac9f99 | present |
+| outputs/candidate/downstream_contract/run.json | f5b9f2738af7d7d7e46a25ff2c68c24b506b2e7cfa254f38f2e590b21df5033e | present |
+| outputs/candidate/downstream_contract/summaries.jsonl | 1e44ef4e522002634e6c306cf598bc3709688f418a8c9c6d54c188f91d437522 | present |
+| outputs/candidate/duplicates/errors.jsonl | f5e9d93d80b46222ddacd1b353f7acf0633a33c674150b4b6300993095b180c5 | present |
+| outputs/candidate/duplicates/processor.log | 4cf63dc7780e7b0d3dcf7ca76470a47be729cdc61ed1aca08145d7ac203bdae9 | present |
+| outputs/candidate/duplicates/run.json | 01b8c5953c756b445cfd08a4854c022a27a5ae1dbfb6531eabd8dc661e1af6ef | present |
+| outputs/candidate/duplicates/summaries.jsonl | 8ba360e52df9796be14d6bf1e0ddb4970a9042c90bcf17bbc7b0f23111db57ce | present |
+| outputs/candidate/late_events_window_boundary/errors.jsonl | 4b90c3962a9b3b4dd64c8038ec8b607b3d95f06e0ec18eb228bf8fe094819b33 | present |
+| outputs/candidate/late_events_window_boundary/processor.log | a58e47514ef8420ce093744b51c92b58ac7383704c703beacaea6df74d91c7d2 | present |
+| outputs/candidate/late_events_window_boundary/run.json | 7ab92ccc265c4cc1c417f2423dcd1bb29a697d72ad90c4503b364cedda24857c | present |
+| outputs/candidate/late_events_window_boundary/summaries.jsonl | 5307dd011d6d90e07e198689b1954721e54be4e6ad91c049943d763b30fc0e19 | present |
+| outputs/candidate/malformed_null/errors.jsonl | 0e69043f2b809704102eda3914795325ce90a10b238eeee0ec3f3c0b8621bf61 | present |
+| outputs/candidate/malformed_null/processor.log | 85e30649af4e6456b802054dcdfb025c09a4d39caf641b5150b6fe6999e0e1c4 | present |
+| outputs/candidate/malformed_null/run.json | a59df5e7b74485b8e79f3a3873ce71d409ea697e7deffff8e2875808b0fb85b2 | present |
+| outputs/candidate/malformed_null/summaries.jsonl | c96b06adadcb6293d3abfcb8e8e119827a846e25c252f71f97d903d0503bd2aa | present |
+| outputs/candidate/normal_session/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/normal_session/processor.log | 65d2f64f5939fd25c45724939d30f569ad924db93bcf9a56f70af526b48c60e0 | present |
+| outputs/candidate/normal_session/run.json | 49730df401904bd09f5b04f6762b172e336ce34e2bc5bcfeb3a6c22ae4aeacb3 | present |
+| outputs/candidate/normal_session/summaries.jsonl | dc1c61276b543f9b782a845901caa2f786800c49169a087d6e1fead4d8c219e4 | present |
+| outputs/candidate/numeric_precision/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/numeric_precision/processor.log | a20191c5ac855e5d08c149085900262ead73d5616b63ce9e08335b6e42d44adb | present |
+| outputs/candidate/numeric_precision/run.json | f4310b2972192f876a754623c6273ccd64a228526ca33ad352ca099e20646788 | present |
+| outputs/candidate/numeric_precision/summaries.jsonl | f47c9bbf6eac8144564ae3076ec653e6b644638852a2e93c91f605ad40df9742 | present |
+| outputs/candidate/out_of_order/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/out_of_order/processor.log | 4a3492dc82a2a8640413018c59c95e72c655a3276064c51e54e534f1ca39aadb | present |
+| outputs/candidate/out_of_order/run.json | 95cc32d3aad4dd643488a4c6e210646f332ccadfbb01f8df8bb11c4edaf854ab | present |
+| outputs/candidate/out_of_order/summaries.jsonl | 008247c9303f79ab55ae2e0443957720f514ae1062e258d7d8d612e939aeea1f | present |
+| outputs/candidate/partitioning_ordering/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/partitioning_ordering/processor.log | 8f77c7cad79596d981a86e6ea2e54c075557b273798e08233f812e844d63266d | present |
+| outputs/candidate/partitioning_ordering/run.json | 69cb8300f5ad88360d6d173dcb01f9b71fb19a0a03fc6d1a0dc2748fbb9bda49 | present |
+| outputs/candidate/partitioning_ordering/summaries.jsonl | 9379108d04fbc3a42f57eabc84a61c0b38fd89a6653f8150bc4301be1f5a68cf | present |
+| outputs/candidate/processor_restart/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/candidate/processor_restart/processor.log | edcf8d2407170a6b1fb29e0f5c79524f6ef9e25e2f313388f05c9a01ca6a32ba | present |
+| outputs/candidate/processor_restart/run.json | 9dfa0f66ac342404c3adf77848ec729d4c3b2603da2ffd3ef020a92bfceae145 | present |
+| outputs/candidate/processor_restart/summaries.jsonl | c157a948c54dd7a69decd6e2906d3d0e2b9912fd95019cc6399f32b0cb1e1ed1 | present |
+| outputs/candidate/schema_evolution/errors.jsonl | bf57b04103ce49866e626b72d49ee9f977a5d949b0a9b92b6191b4b58eb6f7c0 | present |
+| outputs/candidate/schema_evolution/processor.log | f6c96766fe041ff6edafd8aa0eeab364eaeb2f2147cf8c1f60d7d8f5c307e425 | present |
+| outputs/candidate/schema_evolution/run.json | 754e2b858be819c1eeaa5c7ecf940ff5e5f18ea620139e981227e7adb8fbd362 | present |
+| outputs/candidate/schema_evolution/summaries.jsonl | 15c99a54eda64b61aa4ad11de09315eab8aa1a00df4bd3b7f303ff783b485eb7 | present |
+| outputs/candidate/state_recovery/errors.jsonl | bf9c45c3481db3babed09ea6d4562414a5700f0c28175fd686f3d4d2e88092d3 | present |
+| outputs/candidate/state_recovery/processor.log | ad2562fd1400aa6bbc24f5604dfa27427e23c7c12a7d5d11b3215def5cd4f853 | present |
+| outputs/candidate/state_recovery/run.json | 617aa13a49cbe49dedc5767499cb25978a8e19d07ecd738540c78b64ca90736d | present |
+| outputs/candidate/state_recovery/summaries.jsonl | 6dc557ad8bda3ead47ef3b5be0cfaac9cd6c98c41892de0fad199673b5aa4ad3 | present |
+| outputs/legacy/build.json | 5e442f1a90c5e67ff79edb37468e764702e5caf37bffa5cd34136b68654c6169 | present |
+| outputs/legacy/build.log | c545d0d233682d3542278c7615dd682cbd7d7987f836dcf059944b4c4d706dbb | present |
+| outputs/legacy/concurrent_sessions/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/legacy/concurrent_sessions/processor.log | 9bdea2a7c3133b73c3cd05c2325466d0a6e21095075cd1871f6c07131906e5e5 | present |
+| outputs/legacy/concurrent_sessions/run.json | 62153a7c31f11059797a408962fb3439eb04b72ea8d2fc1f3cb2c9c69ec7aadd | present |
+| outputs/legacy/concurrent_sessions/summaries.jsonl | 64c1ab512e0a443d17d5489955f45d44f4a808fc96f7fb68bbec74fc1581fe7f | present |
+| outputs/legacy/consumer_replay/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/legacy/consumer_replay/processor.log | 45f2629fa7d878f84eb78ca74ecf4f90d482048f527ce42b013fbf27fcd2ac58 | present |
+| outputs/legacy/consumer_replay/run.json | 355b1a9376709d20aacfa3e0b30a35678c9c83439824bbc32c3bb85e911aab5d | present |
+| outputs/legacy/consumer_replay/summaries.jsonl | e8946fccaf354ccf5be687a1093cb6c1fa731355897b7bf2d282590f02651bbd | present |
+| outputs/legacy/downstream_contract/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/legacy/downstream_contract/processor.log | 133087f419c81ed8d79b50dfaffc7a7ca448e33f6a29bdb39c9003a091341da6 | present |
+| outputs/legacy/downstream_contract/run.json | 9b6ad88dd0edcd16283a32adc03ad97345d2a69f36a36953dc1f0998a2858df7 | present |
+| outputs/legacy/downstream_contract/summaries.jsonl | 8199253634ee605c062b6c85f647f68ab766ff2eba1a5112bd1942089b076535 | present |
+| outputs/legacy/duplicates/errors.jsonl | 4df3c8e8c2c304aa59785ecddbfd8468e3b45698cc662bc85b9879b90930fd4a | present |
+| outputs/legacy/duplicates/processor.log | 48626b53290c8b1be66476fcb1449c6272f27975d4004655ff15977abb08837b | present |
+| outputs/legacy/duplicates/run.json | 7457dc52c5ad9698cc0254047baf5c43dd0c2631250e2d6319cfdeffbc6a83ee | present |
+| outputs/legacy/duplicates/summaries.jsonl | 9613e569374dc80ed2febe92f5e327b8d25856d0d8b122e88925235bb06e7981 | present |
+| outputs/legacy/late_events_window_boundary/errors.jsonl | 123d32f340b6d57c09247d692c42e202941180b93d7efb300f4257d4d8adf59d | present |
+| outputs/legacy/late_events_window_boundary/processor.log | a9b3412786b2f373f04942824e44d364dd146d70edd8bd9bb64ee5b8262a9ae6 | present |
+| outputs/legacy/late_events_window_boundary/run.json | 4babde66b27e67742740a0437de8965f717fcfbf254f19e039b4af016d99bc2f | present |
+| outputs/legacy/late_events_window_boundary/summaries.jsonl | 3cc887c44d50e910fe1dae6fc3291c385f1e1eb24bc57edcd06bf1cbad89dd92 | present |
+| outputs/legacy/malformed_null/errors.jsonl | ca3058d837ce3867cdaa8c6e7b2971ab7ed62ac4cb17a7a16dcb86a98159ed20 | present |
+| outputs/legacy/malformed_null/processor.log | 5e20a4e8f86b92d06a71bc6e52e53da8c986c8fecb856ed509591926f095943b | present |
+| outputs/legacy/malformed_null/run.json | 3e43b8d91910a34409a2109c24d3f4ccc0ac7426d91c8978875fe4ebeb54239b | present |
+| outputs/legacy/malformed_null/summaries.jsonl | 4d7c1357df9663ecbe76ce56465a3a269550abeef6ff313d30bd31dc50b8df7c | present |
+| outputs/legacy/normal_session/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/legacy/normal_session/processor.log | 1787463960c16ebbaa5beea822c2aebdb78c9411b5b3ba6bf5032fc7edc0d682 | present |
+| outputs/legacy/normal_session/run.json | 12fb277bd15399040f141d57527ec980f7a0e77b02924470d9dba8d7eaf6045f | present |
+| outputs/legacy/normal_session/summaries.jsonl | bf8565d58707f7b1c9b049870048852d29e898fb6ced1ba99b9b14a1c4717723 | present |
+| outputs/legacy/numeric_precision/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/legacy/numeric_precision/processor.log | 86a634e0041807df1b2a95a6ac46d4c4c69b170cd778ab219de61e94bf195ff0 | present |
+| outputs/legacy/numeric_precision/run.json | fd63fe416677b580e1cb1307ac4eb98c7b2a536096533e416b3f15cdada4e971 | present |
+| outputs/legacy/numeric_precision/summaries.jsonl | 575a5bc1d33781b491403f3de6f8ac6ed164433f238c892bb19ce6515e94ec85 | present |
+| outputs/legacy/out_of_order/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/legacy/out_of_order/processor.log | 375a374f2ac6479e28288e720f411cd2d8e319149f638158742788c0a73be08f | present |
+| outputs/legacy/out_of_order/run.json | ebedc48851c39b3485f97bf9777d7283075ba08bd5783cc8172ecca43880e44c | present |
+| outputs/legacy/out_of_order/summaries.jsonl | a7613a511c1615b271c23d950636b654d4b672b7425d712afca3262395285192 | present |
+| outputs/legacy/partitioning_ordering/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/legacy/partitioning_ordering/processor.log | 4befc96487be60976c3307c6ff889c9f92df0cd53b057ba6dbe157a50c9cc797 | present |
+| outputs/legacy/partitioning_ordering/run.json | 0bbc7196ff9b1192495f52d0d660691b81657d6f048c5ea4f607a8f86efb5739 | present |
+| outputs/legacy/partitioning_ordering/summaries.jsonl | ee33419783ac6e7021448e374929c3513255a4c09ee4e7a4355c25c1a72ed534 | present |
+| outputs/legacy/processor_restart/errors.jsonl | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | present |
+| outputs/legacy/processor_restart/processor.log | dd47f278df8ed1ad47ac0d454d982eda804ad8b17d900e03923a64a04976c3d0 | present |
+| outputs/legacy/processor_restart/run.json | f22d63eb0c3324e091817e54e3551fb5f2466a659533ee80330592450b90111a | present |
+| outputs/legacy/processor_restart/summaries.jsonl | 97dda4c7ffded5f7a74f13a123ec6e70f6fcd2cf3168161bee320c7b57d14aa0 | present |
+| outputs/legacy/schema_evolution/errors.jsonl | f32fcc1bb339bfd361eed9967d8c741b6f5e3163e71f55245554c65f2af71d3f | present |
+| outputs/legacy/schema_evolution/processor.log | 20d38e2466d693ce30c543db2633933af8a21f8ba512a5fd19a842090a5cb312 | present |
+| outputs/legacy/schema_evolution/run.json | beea63d5e9bd4d2f24dbf5543e09aba701e58f9b8f12246c17a5b854bc65d838 | present |
+| outputs/legacy/schema_evolution/summaries.jsonl | b8f3cbd28f7cdda71cd8f2a51b95a005ea6f96a538a8978491c149832aa30070 | present |
+| outputs/legacy/state_recovery/errors.jsonl | 82f6ac19fc92f74f7dffc6e4904c23cdb9677b17da4b72b91d129ef4f6abab7f | present |
+| outputs/legacy/state_recovery/processor.log | ef1295a7d8dba335f568d398377c4bb4219ecb2e0981de91772a74256a60748a | present |
+| outputs/legacy/state_recovery/run.json | 6be8bb94843cbfa31188c39e7e1fed1a9caf70ea72164f3357c72474bed99f52 | present |
+| outputs/legacy/state_recovery/summaries.jsonl | 707e2808fcaa3dcf4c4f4d99667f72105e6285ea30882ca37488106ef762a149 | present |
+
+Package SHA-256: a3bf03420a83481df5e7a0d88c70d733d8567079788a22a3be4ed4e8067bf510
+
+Package SHA-256 method: SHA-256 of canonical JSON (sorted keys, compact separators, UTF-8) for the complete evidence.json object with integrity.package_sha256 set to null.
+
+### Git SHAs
+
+| Item | Value |
+| --- | --- |
+| Run-time | 518258b815a8c2fa29fbf58033b0c0817524ccdb |
+| Built-at | 518258b815a8c2fa29fbf58033b0c0817524ccdb |
+| SHA mismatch | false |
+
+### Raw JSON
+
+```json
+{
+  "file_statuses": {
+    "context.json": "present",
+    "gates/behavioural.json": "present",
+    "gates/contract.json": "present",
+    "gates/privacy.json": "present",
+    "gates/state_ordering.json": "present",
+    "outputs/candidate/build.json": "present",
+    "outputs/candidate/build.log": "present",
+    "outputs/candidate/concurrent_sessions/errors.jsonl": "present",
+    "outputs/candidate/concurrent_sessions/processor.log": "present",
+    "outputs/candidate/concurrent_sessions/run.json": "present",
+    "outputs/candidate/concurrent_sessions/summaries.jsonl": "present",
+    "outputs/candidate/consumer_replay/errors.jsonl": "present",
+    "outputs/candidate/consumer_replay/processor.log": "present",
+    "outputs/candidate/consumer_replay/run.json": "present",
+    "outputs/candidate/consumer_replay/summaries.jsonl": "present",
+    "outputs/candidate/downstream_contract/errors.jsonl": "present",
+    "outputs/candidate/downstream_contract/processor.log": "present",
+    "outputs/candidate/downstream_contract/run.json": "present",
+    "outputs/candidate/downstream_contract/summaries.jsonl": "present",
+    "outputs/candidate/duplicates/errors.jsonl": "present",
+    "outputs/candidate/duplicates/processor.log": "present",
+    "outputs/candidate/duplicates/run.json": "present",
+    "outputs/candidate/duplicates/summaries.jsonl": "present",
+    "outputs/candidate/late_events_window_boundary/errors.jsonl": "present",
+    "outputs/candidate/late_events_window_boundary/processor.log": "present",
+    "outputs/candidate/late_events_window_boundary/run.json": "present",
+    "outputs/candidate/late_events_window_boundary/summaries.jsonl": "present",
+    "outputs/candidate/malformed_null/errors.jsonl": "present",
+    "outputs/candidate/malformed_null/processor.log": "present",
+    "outputs/candidate/malformed_null/run.json": "present",
+    "outputs/candidate/malformed_null/summaries.jsonl": "present",
+    "outputs/candidate/normal_session/errors.jsonl": "present",
+    "outputs/candidate/normal_session/processor.log": "present",
+    "outputs/candidate/normal_session/run.json": "present",
+    "outputs/candidate/normal_session/summaries.jsonl": "present",
+    "outputs/candidate/numeric_precision/errors.jsonl": "present",
+    "outputs/candidate/numeric_precision/processor.log": "present",
+    "outputs/candidate/numeric_precision/run.json": "present",
+    "outputs/candidate/numeric_precision/summaries.jsonl": "present",
+    "outputs/candidate/out_of_order/errors.jsonl": "present",
+    "outputs/candidate/out_of_order/processor.log": "present",
+    "outputs/candidate/out_of_order/run.json": "present",
+    "outputs/candidate/out_of_order/summaries.jsonl": "present",
+    "outputs/candidate/partitioning_ordering/errors.jsonl": "present",
+    "outputs/candidate/partitioning_ordering/processor.log": "present",
+    "outputs/candidate/partitioning_ordering/run.json": "present",
+    "outputs/candidate/partitioning_ordering/summaries.jsonl": "present",
+    "outputs/candidate/processor_restart/errors.jsonl": "present",
+    "outputs/candidate/processor_restart/processor.log": "present",
+    "outputs/candidate/processor_restart/run.json": "present",
+    "outputs/candidate/processor_restart/summaries.jsonl": "present",
+    "outputs/candidate/schema_evolution/errors.jsonl": "present",
+    "outputs/candidate/schema_evolution/processor.log": "present",
+    "outputs/candidate/schema_evolution/run.json": "present",
+    "outputs/candidate/schema_evolution/summaries.jsonl": "present",
+    "outputs/candidate/state_recovery/errors.jsonl": "present",
+    "outputs/candidate/state_recovery/processor.log": "present",
+    "outputs/candidate/state_recovery/run.json": "present",
+    "outputs/candidate/state_recovery/summaries.jsonl": "present",
+    "outputs/legacy/build.json": "present",
+    "outputs/legacy/build.log": "present",
+    "outputs/legacy/concurrent_sessions/errors.jsonl": "present",
+    "outputs/legacy/concurrent_sessions/processor.log": "present",
+    "outputs/legacy/concurrent_sessions/run.json": "present",
+    "outputs/legacy/concurrent_sessions/summaries.jsonl": "present",
+    "outputs/legacy/consumer_replay/errors.jsonl": "present",
+    "outputs/legacy/consumer_replay/processor.log": "present",
+    "outputs/legacy/consumer_replay/run.json": "present",
+    "outputs/legacy/consumer_replay/summaries.jsonl": "present",
+    "outputs/legacy/downstream_contract/errors.jsonl": "present",
+    "outputs/legacy/downstream_contract/processor.log": "present",
+    "outputs/legacy/downstream_contract/run.json": "present",
+    "outputs/legacy/downstream_contract/summaries.jsonl": "present",
+    "outputs/legacy/duplicates/errors.jsonl": "present",
+    "outputs/legacy/duplicates/processor.log": "present",
+    "outputs/legacy/duplicates/run.json": "present",
+    "outputs/legacy/duplicates/summaries.jsonl": "present",
+    "outputs/legacy/late_events_window_boundary/errors.jsonl": "present",
+    "outputs/legacy/late_events_window_boundary/processor.log": "present",
+    "outputs/legacy/late_events_window_boundary/run.json": "present",
+    "outputs/legacy/late_events_window_boundary/summaries.jsonl": "present",
+    "outputs/legacy/malformed_null/errors.jsonl": "present",
+    "outputs/legacy/malformed_null/processor.log": "present",
+    "outputs/legacy/malformed_null/run.json": "present",
+    "outputs/legacy/malformed_null/summaries.jsonl": "present",
+    "outputs/legacy/normal_session/errors.jsonl": "present",
+    "outputs/legacy/normal_session/processor.log": "present",
+    "outputs/legacy/normal_session/run.json": "present",
+    "outputs/legacy/normal_session/summaries.jsonl": "present",
+    "outputs/legacy/numeric_precision/errors.jsonl": "present",
+    "outputs/legacy/numeric_precision/processor.log": "present",
+    "outputs/legacy/numeric_precision/run.json": "present",
+    "outputs/legacy/numeric_precision/summaries.jsonl": "present",
+    "outputs/legacy/out_of_order/errors.jsonl": "present",
+    "outputs/legacy/out_of_order/processor.log": "present",
+    "outputs/legacy/out_of_order/run.json": "present",
+    "outputs/legacy/out_of_order/summaries.jsonl": "present",
+    "outputs/legacy/partitioning_ordering/errors.jsonl": "present",
+    "outputs/legacy/partitioning_ordering/processor.log": "present",
+    "outputs/legacy/partitioning_ordering/run.json": "present",
+    "outputs/legacy/partitioning_ordering/summaries.jsonl": "present",
+    "outputs/legacy/processor_restart/errors.jsonl": "present",
+    "outputs/legacy/processor_restart/processor.log": "present",
+    "outputs/legacy/processor_restart/run.json": "present",
+    "outputs/legacy/processor_restart/summaries.jsonl": "present",
+    "outputs/legacy/schema_evolution/errors.jsonl": "present",
+    "outputs/legacy/schema_evolution/processor.log": "present",
+    "outputs/legacy/schema_evolution/run.json": "present",
+    "outputs/legacy/schema_evolution/summaries.jsonl": "present",
+    "outputs/legacy/state_recovery/errors.jsonl": "present",
+    "outputs/legacy/state_recovery/processor.log": "present",
+    "outputs/legacy/state_recovery/run.json": "present",
+    "outputs/legacy/state_recovery/summaries.jsonl": "present"
+  },
+  "files": {
+    "context.json": "8b8c27f5d79d76b9bd72f9385a43ed05659790fffa7eae61083ef3167f4f855f",
+    "gates/behavioural.json": "9b759492ebabdda04b60848e1704ab6b8ffe3f6d19d3c3bff4abd2013fbbf291",
+    "gates/contract.json": "7bada32d2d913028908297d4ab09a3a2c68d06432be9834dd5786334e6a0f3b8",
+    "gates/privacy.json": "30074d2e3c12f6e5b896d64f906246ba3e0a5663bf5dfb0e24f275ba772313ce",
+    "gates/state_ordering.json": "c95b2c4852f64d36a6a6de928ed39e32eab9384b8d934bf556f3cea0b7af51d0",
+    "outputs/candidate/build.json": "45ffb3bba4554bedcb714c25ee3872885f31abc6c8c1a7c81c4d0d432af3e3d6",
+    "outputs/candidate/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/concurrent_sessions/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/concurrent_sessions/processor.log": "fcdc5a0eaa20a296d7759b4c616774637fe43fe41c529805dade7675fa6cd021",
+    "outputs/candidate/concurrent_sessions/run.json": "020cb9d87e730b0e0582fdee593e8051c540687c06c4baefc1817beac50ec1a6",
+    "outputs/candidate/concurrent_sessions/summaries.jsonl": "c5ed2ed929640cf4e4a6e9ba923b8712a017d7142f622cf17afa1bd384430b3f",
+    "outputs/candidate/consumer_replay/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/consumer_replay/processor.log": "0ef737ecb476ef6b076c4382f2b5039ac0496f324825a01ede0476dbde10c6f5",
+    "outputs/candidate/consumer_replay/run.json": "64c3d051678cdf107ef946e497bd960593ebc734667ef9f05e90300f7bef6539",
+    "outputs/candidate/consumer_replay/summaries.jsonl": "92aca789b37b02b4283a1df58a9a9a53a5d520a68da43a57ee17bf381f82f537",
+    "outputs/candidate/downstream_contract/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/downstream_contract/processor.log": "0923e5bbc7949aa9c6f1ba4fc9b0e68bdfad65e2145d23960625f08046ac9f99",
+    "outputs/candidate/downstream_contract/run.json": "f5b9f2738af7d7d7e46a25ff2c68c24b506b2e7cfa254f38f2e590b21df5033e",
+    "outputs/candidate/downstream_contract/summaries.jsonl": "1e44ef4e522002634e6c306cf598bc3709688f418a8c9c6d54c188f91d437522",
+    "outputs/candidate/duplicates/errors.jsonl": "f5e9d93d80b46222ddacd1b353f7acf0633a33c674150b4b6300993095b180c5",
+    "outputs/candidate/duplicates/processor.log": "4cf63dc7780e7b0d3dcf7ca76470a47be729cdc61ed1aca08145d7ac203bdae9",
+    "outputs/candidate/duplicates/run.json": "01b8c5953c756b445cfd08a4854c022a27a5ae1dbfb6531eabd8dc661e1af6ef",
+    "outputs/candidate/duplicates/summaries.jsonl": "8ba360e52df9796be14d6bf1e0ddb4970a9042c90bcf17bbc7b0f23111db57ce",
+    "outputs/candidate/late_events_window_boundary/errors.jsonl": "4b90c3962a9b3b4dd64c8038ec8b607b3d95f06e0ec18eb228bf8fe094819b33",
+    "outputs/candidate/late_events_window_boundary/processor.log": "a58e47514ef8420ce093744b51c92b58ac7383704c703beacaea6df74d91c7d2",
+    "outputs/candidate/late_events_window_boundary/run.json": "7ab92ccc265c4cc1c417f2423dcd1bb29a697d72ad90c4503b364cedda24857c",
+    "outputs/candidate/late_events_window_boundary/summaries.jsonl": "5307dd011d6d90e07e198689b1954721e54be4e6ad91c049943d763b30fc0e19",
+    "outputs/candidate/malformed_null/errors.jsonl": "0e69043f2b809704102eda3914795325ce90a10b238eeee0ec3f3c0b8621bf61",
+    "outputs/candidate/malformed_null/processor.log": "85e30649af4e6456b802054dcdfb025c09a4d39caf641b5150b6fe6999e0e1c4",
+    "outputs/candidate/malformed_null/run.json": "a59df5e7b74485b8e79f3a3873ce71d409ea697e7deffff8e2875808b0fb85b2",
+    "outputs/candidate/malformed_null/summaries.jsonl": "c96b06adadcb6293d3abfcb8e8e119827a846e25c252f71f97d903d0503bd2aa",
+    "outputs/candidate/normal_session/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/normal_session/processor.log": "65d2f64f5939fd25c45724939d30f569ad924db93bcf9a56f70af526b48c60e0",
+    "outputs/candidate/normal_session/run.json": "49730df401904bd09f5b04f6762b172e336ce34e2bc5bcfeb3a6c22ae4aeacb3",
+    "outputs/candidate/normal_session/summaries.jsonl": "dc1c61276b543f9b782a845901caa2f786800c49169a087d6e1fead4d8c219e4",
+    "outputs/candidate/numeric_precision/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/numeric_precision/processor.log": "a20191c5ac855e5d08c149085900262ead73d5616b63ce9e08335b6e42d44adb",
+    "outputs/candidate/numeric_precision/run.json": "f4310b2972192f876a754623c6273ccd64a228526ca33ad352ca099e20646788",
+    "outputs/candidate/numeric_precision/summaries.jsonl": "f47c9bbf6eac8144564ae3076ec653e6b644638852a2e93c91f605ad40df9742",
+    "outputs/candidate/out_of_order/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/out_of_order/processor.log": "4a3492dc82a2a8640413018c59c95e72c655a3276064c51e54e534f1ca39aadb",
+    "outputs/candidate/out_of_order/run.json": "95cc32d3aad4dd643488a4c6e210646f332ccadfbb01f8df8bb11c4edaf854ab",
+    "outputs/candidate/out_of_order/summaries.jsonl": "008247c9303f79ab55ae2e0443957720f514ae1062e258d7d8d612e939aeea1f",
+    "outputs/candidate/partitioning_ordering/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/partitioning_ordering/processor.log": "8f77c7cad79596d981a86e6ea2e54c075557b273798e08233f812e844d63266d",
+    "outputs/candidate/partitioning_ordering/run.json": "69cb8300f5ad88360d6d173dcb01f9b71fb19a0a03fc6d1a0dc2748fbb9bda49",
+    "outputs/candidate/partitioning_ordering/summaries.jsonl": "9379108d04fbc3a42f57eabc84a61c0b38fd89a6653f8150bc4301be1f5a68cf",
+    "outputs/candidate/processor_restart/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/candidate/processor_restart/processor.log": "edcf8d2407170a6b1fb29e0f5c79524f6ef9e25e2f313388f05c9a01ca6a32ba",
+    "outputs/candidate/processor_restart/run.json": "9dfa0f66ac342404c3adf77848ec729d4c3b2603da2ffd3ef020a92bfceae145",
+    "outputs/candidate/processor_restart/summaries.jsonl": "c157a948c54dd7a69decd6e2906d3d0e2b9912fd95019cc6399f32b0cb1e1ed1",
+    "outputs/candidate/schema_evolution/errors.jsonl": "bf57b04103ce49866e626b72d49ee9f977a5d949b0a9b92b6191b4b58eb6f7c0",
+    "outputs/candidate/schema_evolution/processor.log": "f6c96766fe041ff6edafd8aa0eeab364eaeb2f2147cf8c1f60d7d8f5c307e425",
+    "outputs/candidate/schema_evolution/run.json": "754e2b858be819c1eeaa5c7ecf940ff5e5f18ea620139e981227e7adb8fbd362",
+    "outputs/candidate/schema_evolution/summaries.jsonl": "15c99a54eda64b61aa4ad11de09315eab8aa1a00df4bd3b7f303ff783b485eb7",
+    "outputs/candidate/state_recovery/errors.jsonl": "bf9c45c3481db3babed09ea6d4562414a5700f0c28175fd686f3d4d2e88092d3",
+    "outputs/candidate/state_recovery/processor.log": "ad2562fd1400aa6bbc24f5604dfa27427e23c7c12a7d5d11b3215def5cd4f853",
+    "outputs/candidate/state_recovery/run.json": "617aa13a49cbe49dedc5767499cb25978a8e19d07ecd738540c78b64ca90736d",
+    "outputs/candidate/state_recovery/summaries.jsonl": "6dc557ad8bda3ead47ef3b5be0cfaac9cd6c98c41892de0fad199673b5aa4ad3",
+    "outputs/legacy/build.json": "5e442f1a90c5e67ff79edb37468e764702e5caf37bffa5cd34136b68654c6169",
+    "outputs/legacy/build.log": "c545d0d233682d3542278c7615dd682cbd7d7987f836dcf059944b4c4d706dbb",
+    "outputs/legacy/concurrent_sessions/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/legacy/concurrent_sessions/processor.log": "9bdea2a7c3133b73c3cd05c2325466d0a6e21095075cd1871f6c07131906e5e5",
+    "outputs/legacy/concurrent_sessions/run.json": "62153a7c31f11059797a408962fb3439eb04b72ea8d2fc1f3cb2c9c69ec7aadd",
+    "outputs/legacy/concurrent_sessions/summaries.jsonl": "64c1ab512e0a443d17d5489955f45d44f4a808fc96f7fb68bbec74fc1581fe7f",
+    "outputs/legacy/consumer_replay/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/legacy/consumer_replay/processor.log": "45f2629fa7d878f84eb78ca74ecf4f90d482048f527ce42b013fbf27fcd2ac58",
+    "outputs/legacy/consumer_replay/run.json": "355b1a9376709d20aacfa3e0b30a35678c9c83439824bbc32c3bb85e911aab5d",
+    "outputs/legacy/consumer_replay/summaries.jsonl": "e8946fccaf354ccf5be687a1093cb6c1fa731355897b7bf2d282590f02651bbd",
+    "outputs/legacy/downstream_contract/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/legacy/downstream_contract/processor.log": "133087f419c81ed8d79b50dfaffc7a7ca448e33f6a29bdb39c9003a091341da6",
+    "outputs/legacy/downstream_contract/run.json": "9b6ad88dd0edcd16283a32adc03ad97345d2a69f36a36953dc1f0998a2858df7",
+    "outputs/legacy/downstream_contract/summaries.jsonl": "8199253634ee605c062b6c85f647f68ab766ff2eba1a5112bd1942089b076535",
+    "outputs/legacy/duplicates/errors.jsonl": "4df3c8e8c2c304aa59785ecddbfd8468e3b45698cc662bc85b9879b90930fd4a",
+    "outputs/legacy/duplicates/processor.log": "48626b53290c8b1be66476fcb1449c6272f27975d4004655ff15977abb08837b",
+    "outputs/legacy/duplicates/run.json": "7457dc52c5ad9698cc0254047baf5c43dd0c2631250e2d6319cfdeffbc6a83ee",
+    "outputs/legacy/duplicates/summaries.jsonl": "9613e569374dc80ed2febe92f5e327b8d25856d0d8b122e88925235bb06e7981",
+    "outputs/legacy/late_events_window_boundary/errors.jsonl": "123d32f340b6d57c09247d692c42e202941180b93d7efb300f4257d4d8adf59d",
+    "outputs/legacy/late_events_window_boundary/processor.log": "a9b3412786b2f373f04942824e44d364dd146d70edd8bd9bb64ee5b8262a9ae6",
+    "outputs/legacy/late_events_window_boundary/run.json": "4babde66b27e67742740a0437de8965f717fcfbf254f19e039b4af016d99bc2f",
+    "outputs/legacy/late_events_window_boundary/summaries.jsonl": "3cc887c44d50e910fe1dae6fc3291c385f1e1eb24bc57edcd06bf1cbad89dd92",
+    "outputs/legacy/malformed_null/errors.jsonl": "ca3058d837ce3867cdaa8c6e7b2971ab7ed62ac4cb17a7a16dcb86a98159ed20",
+    "outputs/legacy/malformed_null/processor.log": "5e20a4e8f86b92d06a71bc6e52e53da8c986c8fecb856ed509591926f095943b",
+    "outputs/legacy/malformed_null/run.json": "3e43b8d91910a34409a2109c24d3f4ccc0ac7426d91c8978875fe4ebeb54239b",
+    "outputs/legacy/malformed_null/summaries.jsonl": "4d7c1357df9663ecbe76ce56465a3a269550abeef6ff313d30bd31dc50b8df7c",
+    "outputs/legacy/normal_session/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/legacy/normal_session/processor.log": "1787463960c16ebbaa5beea822c2aebdb78c9411b5b3ba6bf5032fc7edc0d682",
+    "outputs/legacy/normal_session/run.json": "12fb277bd15399040f141d57527ec980f7a0e77b02924470d9dba8d7eaf6045f",
+    "outputs/legacy/normal_session/summaries.jsonl": "bf8565d58707f7b1c9b049870048852d29e898fb6ced1ba99b9b14a1c4717723",
+    "outputs/legacy/numeric_precision/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/legacy/numeric_precision/processor.log": "86a634e0041807df1b2a95a6ac46d4c4c69b170cd778ab219de61e94bf195ff0",
+    "outputs/legacy/numeric_precision/run.json": "fd63fe416677b580e1cb1307ac4eb98c7b2a536096533e416b3f15cdada4e971",
+    "outputs/legacy/numeric_precision/summaries.jsonl": "575a5bc1d33781b491403f3de6f8ac6ed164433f238c892bb19ce6515e94ec85",
+    "outputs/legacy/out_of_order/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/legacy/out_of_order/processor.log": "375a374f2ac6479e28288e720f411cd2d8e319149f638158742788c0a73be08f",
+    "outputs/legacy/out_of_order/run.json": "ebedc48851c39b3485f97bf9777d7283075ba08bd5783cc8172ecca43880e44c",
+    "outputs/legacy/out_of_order/summaries.jsonl": "a7613a511c1615b271c23d950636b654d4b672b7425d712afca3262395285192",
+    "outputs/legacy/partitioning_ordering/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/legacy/partitioning_ordering/processor.log": "4befc96487be60976c3307c6ff889c9f92df0cd53b057ba6dbe157a50c9cc797",
+    "outputs/legacy/partitioning_ordering/run.json": "0bbc7196ff9b1192495f52d0d660691b81657d6f048c5ea4f607a8f86efb5739",
+    "outputs/legacy/partitioning_ordering/summaries.jsonl": "ee33419783ac6e7021448e374929c3513255a4c09ee4e7a4355c25c1a72ed534",
+    "outputs/legacy/processor_restart/errors.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/legacy/processor_restart/processor.log": "dd47f278df8ed1ad47ac0d454d982eda804ad8b17d900e03923a64a04976c3d0",
+    "outputs/legacy/processor_restart/run.json": "f22d63eb0c3324e091817e54e3551fb5f2466a659533ee80330592450b90111a",
+    "outputs/legacy/processor_restart/summaries.jsonl": "97dda4c7ffded5f7a74f13a123ec6e70f6fcd2cf3168161bee320c7b57d14aa0",
+    "outputs/legacy/schema_evolution/errors.jsonl": "f32fcc1bb339bfd361eed9967d8c741b6f5e3163e71f55245554c65f2af71d3f",
+    "outputs/legacy/schema_evolution/processor.log": "20d38e2466d693ce30c543db2633933af8a21f8ba512a5fd19a842090a5cb312",
+    "outputs/legacy/schema_evolution/run.json": "beea63d5e9bd4d2f24dbf5543e09aba701e58f9b8f12246c17a5b854bc65d838",
+    "outputs/legacy/schema_evolution/summaries.jsonl": "b8f3cbd28f7cdda71cd8f2a51b95a005ea6f96a538a8978491c149832aa30070",
+    "outputs/legacy/state_recovery/errors.jsonl": "82f6ac19fc92f74f7dffc6e4904c23cdb9677b17da4b72b91d129ef4f6abab7f",
+    "outputs/legacy/state_recovery/processor.log": "ef1295a7d8dba335f568d398377c4bb4219ecb2e0981de91772a74256a60748a",
+    "outputs/legacy/state_recovery/run.json": "6be8bb94843cbfa31188c39e7e1fed1a9caf70ea72164f3357c72474bed99f52",
+    "outputs/legacy/state_recovery/summaries.jsonl": "707e2808fcaa3dcf4c4f4d99667f72105e6285ea30882ca37488106ef762a149"
+  },
+  "git_shas": {
+    "built_at": "518258b815a8c2fa29fbf58033b0c0817524ccdb",
+    "run_time": "518258b815a8c2fa29fbf58033b0c0817524ccdb",
+    "sha_mismatch": false
+  },
+  "package_sha256_method": "SHA-256 of canonical JSON (sorted keys, compact separators, UTF-8) for the complete evidence.json object with integrity.package_sha256 set to null.",
+  "status": "present"
+}
+```
+
+This package covers fast-tier replay. The contract provides per-key ordering only; restart behavior is at-least-once. No exactly-once, global ordering or atomic cutover claim is made.

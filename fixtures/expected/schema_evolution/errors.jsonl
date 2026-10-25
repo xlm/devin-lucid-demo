@@ -1,0 +1,3 @@
+{"error_type":"UNSUPPORTED_SCHEMA_VERSION","event_id":"EVT-MAL-B20","field":"schema_version","input_line":4,"schema_version":"1.0","session_id":"S-0012-A","vehicle_id":"VEH-0012"}
+{"error_type":"INVALID_FIELD","event_id":"EVT-MAL-B21","field":"schema_version","input_line":5,"schema_version":"1.0","session_id":"S-0012-A","vehicle_id":"VEH-0012"}
+{"error_type":"INVALID_FIELD","event_id":"EVT-SCH-004","field":"synthetic_location","input_line":6,"schema_version":"1.0","session_id":"S-0012-A","vehicle_id":"VEH-0012"}

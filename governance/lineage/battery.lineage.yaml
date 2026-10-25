@@ -1,0 +1,40 @@
+# Field lineage for the legacy battery-health processor.
+# Field paths are <topic>.<field>. A bare destination id means that a value
+# may appear in that destination. Owned by humans. Code reads it, never writes it.
+schema_version: "1.0"
+
+edges:
+  - {from: battery.telemetry.v1.vehicle_id, to: battery.health.daily.v1.vehicle_id, transform: PASSTHROUGH}
+  - {from: battery.telemetry.v1.pack_id, to: battery.health.daily.v1.pack_id, transform: PASSTHROUGH}
+  - {from: battery.telemetry.v1.event_timestamp, to: battery.health.daily.v1.day, transform: UTC_DAY_KEY}
+  - {from: battery.telemetry.v1.cell_voltage_min_v, to: battery.health.daily.v1.min_cell_voltage_v, transform: MIN}
+  - {from: battery.telemetry.v1.cell_voltage_max_v, to: battery.health.daily.v1.max_cell_voltage_v, transform: MAX}
+  - {from: battery.telemetry.v1.cell_voltage_min_v, to: battery.health.daily.v1.max_cell_imbalance_v, transform: MAX_PER_EVENT_SPREAD}
+  - {from: battery.telemetry.v1.cell_voltage_max_v, to: battery.health.daily.v1.max_cell_imbalance_v, transform: MAX_PER_EVENT_SPREAD}
+  - {from: battery.telemetry.v1.pack_temp_c, to: battery.health.daily.v1.max_pack_temp_c, transform: MAX}
+  - {from: battery.telemetry.v1.state_of_health_pct, to: battery.health.daily.v1.latest_state_of_health_pct, transform: LATEST_BY_EVENT_TIMESTAMP_SEQUENCE}
+  - {from: battery.telemetry.v1.event_timestamp, to: battery.health.daily.v1.latest_state_of_health_pct, transform: LATEST_BY_EVENT_TIMESTAMP_SEQUENCE}
+  - {from: battery.telemetry.v1.sequence_number, to: battery.health.daily.v1.latest_state_of_health_pct, transform: LATEST_BY_EVENT_TIMESTAMP_SEQUENCE}
+  - {from: battery.telemetry.v1.event_id, to: battery.health.daily.v1.event_count, transform: COUNT_ACCEPTED_DEDUPED}
+  - {from: battery.telemetry.v1.event_id, to: processor.checkpoint, transform: DEDUPE_KEY}
+  - {from: battery.telemetry.v1.event_id, to: battery.errors.v1.event_id, transform: ECHO_IF_VALID}
+  - {from: battery.telemetry.v1.vehicle_id, to: battery.errors.v1.vehicle_id, transform: ECHO_IF_VALID}
+  - {from: battery.telemetry.v1.pack_id, to: battery.errors.v1.pack_id, transform: ECHO_IF_VALID}
+
+generated:
+  - {field: battery.health.daily.v1.event_count, transform: COUNT_ACCEPTED_DEDUPED}
+  - {field: battery.health.daily.v1.schema_version, transform: CONSTANT}
+  - {field: battery.errors.v1.error_type, transform: VALIDATION_RESULT}
+  - {field: battery.errors.v1.field, transform: FIELD_NAME_ONLY}
+  - {field: battery.errors.v1.input_line, transform: INPUT_POSITION}
+  - {field: battery.errors.v1.schema_version, transform: CONSTANT}
+
+validated_only:
+  - battery.telemetry.v1.ingestion_timestamp
+  - battery.telemetry.v1.schema_version
+
+restricted:
+  - field: battery.telemetry.v1.synthetic_location
+    classification: sensitive_location
+    handling: restricted_input
+    prohibited_destinations: [battery.health.daily.v1, battery.errors.v1, processor.stderr, processor.checkpoint]
