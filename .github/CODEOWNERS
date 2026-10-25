@@ -1,0 +1,3 @@
+# Owner review covers policies, baselines, contracts and expected
+# fixtures, which must not be edited to force a gate pass.
+* @xlm
